@@ -15,7 +15,7 @@
   type vertex
 
   
-  val (==) (x y: vertex) : bool
+  val eq_vertex (x y: vertex) : bool
     ensures { result <-> x = y }
 
   constant vertices: fset vertex
@@ -40,10 +40,10 @@ module SCCTarjan72
   use list.Mem as L
   use list.NumOcc
   use list.Elements as E
-    use set.SetImp 
   use GraphSetSucc
   use map.Map
- 
+
+  clone set.SetImp with type elt = vertex
 
   
 predicate lmem (x: 'a) (s: list 'a) = L.mem x s
@@ -325,7 +325,7 @@ ensures {let (s1, _) = result in lmem x s -> is_last x s1}
 variant {s}
   match s with
   | Nil -> (Nil, Nil)
-  | Cons y s' -> if (x == y) then (Cons x Nil, s') else 
+  | Cons y s' -> if (eq_vertex x y) then (Cons x Nil, s') else 
        let (s1', s2) = split x s' in
         ((Cons y s1'), s2) 
   end
