@@ -330,7 +330,7 @@ variant {s}
         ((Cons y s1'), s2) 
   end
 
-let add_stack_incr x e =
+let add_stack_incr (x : vertex) (e : env) : env =
 ensures {result.black = e.black /\ result.gray = add x e.gray
           /\ result.sccs = e.sccs /\ result.stack = Cons x e.stack
           /\ result.sn = e.sn + 1 /\ result.num = e.num[x <-e.sn]}
