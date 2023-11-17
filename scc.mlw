@@ -9,13 +9,7 @@
 *)
 
  (* use export fset.Fset *)
-   use list.List
-  use array.Array
   use map.Map
-  use map.Const
-  use int.Int
-  use ref.Ref
-  use option.Option
   use set.SetImp 
   
   type vertex
