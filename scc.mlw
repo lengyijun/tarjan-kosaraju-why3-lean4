@@ -1,0 +1,421 @@
+ module GraphSetSucc
+
+(** A graph is represented by a pair ([vertices], [successor])
+{h
+<ul>
+<li> <code>vertices</code> : this constant is the fset of graph vertices
+<li> <code>successor</code> : this function gives for each vertex the fset of vertices directly joinable from it
+</ul>
+*)
+
+ (* use export fset.Fset *)
+   use list.List
+  use array.Array
+  use map.Map
+  use map.Const
+  use int.Int
+  use ref.Ref
+  use option.Option
+  use set.SetImp 
+  
+  type vertex
+
+  
+  val (==) (x y: vertex) : bool
+    ensures { result <-> x = y }
+
+  constant vertices: fset vertex
+
+  function successors vertex : fset vertex
+
+  axiom successors_vertices:
+    forall x. mem x vertices -> subset (successors x) vertices
+
+  predicate edge (x y: vertex) = mem x vertices /\ mem y (successors x)
+
+  clone export graph.Path with type vertex = vertex, predicate edge = edge
+
+end
+
+module SCCTarjan72
+  use int.Int
+  use int.MinMax
+  use list.List
+  use list.Length
+  use list.Append
+  use list.Mem as L
+  use list.NumOcc
+  use list.Elements as E
+    use set.SetImp 
+  use GraphSetSucc
+  use map.Map
+ 
+
+  
+predicate lmem (x: 'a) (s: list 'a) = L.mem x s
+function infty (): int = cardinal vertices
+
+lemma lmem_dec:
+  forall x: 'a, l: list 'a. lmem x l \/ not lmem x l
+
+(* Sets *)
+
+lemma inter_com:
+  forall s1 s2: fset 'a. inter s1 s2 == inter s2 s1
+
+lemma inter_add_l:
+  forall s1 s2: fset 'a, x: 'a. mem x s2 -> inter (add x s1) s2 == add x (inter s1 s2)
+
+lemma inter_not_add_l:
+  forall s1 s2: fset 'a, x: 'a. not mem x s2 -> inter (add x s1) s2 == inter s1 s2
+
+lemma diff_add_l:
+  forall x: 'a, s1 s2: fset 'a. not mem x s2 -> diff (add x s1) s2 == add x (diff s1 s2) 
+
+lemma diff_not_add_l:
+  forall x: 'a, s1 s2: fset 'a. mem x s2 -> diff (add x s1) s2 == diff s1 s2
+
+lemma subset_add_r:
+  forall x: 'a, s s': fset 'a. subset s' (add x s) -> mem x s' \/ subset s' s
+
+lemma union_add_l:
+  forall x: 'a, s s': fset 'a. union (add x s) s' == add x (union s s')
+
+lemma union_add_r:
+  forall x: 'a, s s': fset 'a. union s (add x s') == add x (union s s')
+
+lemma union_com:
+  forall s s': fset 'a. union s s' == union s' s
+
+lemma union_var_l:
+  forall s s' t: fset 'a. subset s s' -> subset (union s t) (union s' t)
+
+lemma union_var_r:
+  forall s t t': fset 'a. subset t t' -> subset (union s t) (union s t')
+
+(* sets of sets *)
+
+function set_of (fset (fset 'a)): fset 'a
+  
+axiom set_of_empty:
+  set_of empty = (empty : fset 'a)
+
+axiom set_of_add:
+  forall s: fset 'a, sx. set_of (add s sx) == union s (set_of sx)
+
+predicate one_in_set_of (sccs: fset (fset 'a)) =
+  forall x. mem x (set_of sccs) -> exists cc. mem x cc /\ mem cc sccs
+
+clone set.FsetInduction with
+   type t = fset vertex, predicate p = one_in_set_of
+  
+lemma set_of_elt:
+  forall sccs: fset (fset vertex). one_in_set_of sccs
+  by forall sccs: fset (fset vertex). one_in_set_of sccs -> forall cc. not mem cc sccs ->
+     one_in_set_of (add cc sccs)
+
+lemma elt_set_of:
+  forall x: 'a, cc sccs. mem x cc -> mem cc sccs -> mem x (set_of sccs)
+
+lemma subset_set_of:
+  forall s s': fset (fset vertex). subset s s' -> subset (set_of s) (set_of s')
+
+(* Ranks and Lists *)
+
+lemma elts_cons:
+  forall x: 'a, l: list 'a. E.elements (Cons x l) == add x (E.elements l)
+
+lemma elts_app:
+  forall s s': list 'a. E.elements (s ++ s') == union (E.elements s) (E.elements s')
+
+lemma list_simpl_r:  
+  forall l1 l2 l: list 'a. l1 ++ l = l2 ++ l -> l1 = l2
+
+lemma snoc_app:
+  forall l1 l2: list 'a, x: 'a. (l1 ++ (Cons x Nil)) ++ l2 = l1 ++ (Cons x l2)
+
+predicate is_last (x: 'a) (s: list 'a) =
+  exists s'. s = s' ++ Cons x Nil  
+
+predicate precedes (x y: 'a) (s: list 'a) =
+  exists s1 s2. s = s1 ++ (Cons x s2) /\ lmem y (Cons x s2)
+
+lemma precedes_mem:
+  forall x y, s: list 'a. precedes x y s -> lmem x s /\ lmem y s
+
+lemma head_precedes:
+  forall x y, s: list 'a. lmem y (Cons x s) -> precedes x y (Cons x s)
+
+lemma precedes_tail:
+  forall x y z, s: list 'a. x <> z -> (precedes x y (Cons z s) <-> precedes x y s)
+
+lemma tail_not_precedes:
+  forall x y, s: list 'a. precedes y x (Cons x s) -> not lmem x s -> y = x
+
+lemma split_list_precedes:
+  forall x y, s1 s2: list 'a. lmem y (s1 ++ Cons x Nil) -> precedes y x (s1 ++ Cons x s2)
+
+lemma precedes_refl:
+  forall x, s: list 'a. precedes x x s <-> lmem x s
+
+lemma precedes_append_left:
+  forall x y, s1 s2: list 'a. precedes x y s1 -> precedes x y (s2 ++ s1)
+
+lemma precedes_append_left_iff:
+  forall x y, s1 s2: list 'a. not lmem x s1 -> precedes x y (s1 ++ s2) <-> precedes x y s2
+
+lemma precedes_append_right:
+  forall x y, s1 s2: list 'a. precedes x y s1 -> precedes x y (s1 ++ s2)
+
+lemma precedes_append_right_iff:
+  forall x y, s1 s2: list 'a. not lmem y s2 -> precedes x y (s1 ++ s2) <-> precedes x y s1
+
+(* simple lists *)
+
+predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
+
+lemma simplelist_tl:
+  forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not lmem x l
+
+lemma simplelist_split: 
+  forall x: 'a, l1 l2 l3 l4. simplelist (l1 ++ Cons x l2)
+     -> l1 ++ Cons x l2 = l3 ++ Cons x l4 -> l1 = l3 /\ l2 = l4
+
+lemma simplelist_app_disjoint:
+  forall l1 l2: list 'a. simplelist (l1 ++ l2) -> inter (E.elements l1) (E.elements l2) = empty
+
+lemma simplelist_length:
+  forall s: list 'a. simplelist s -> length s = cardinal (E.elements s)
+
+lemma precedes_antisym:
+  forall x y, s: list 'a. simplelist s
+    -> precedes x y s -> precedes y x s -> x = y
+
+lemma precedes_trans:
+  forall x y z, s: list 'a. simplelist s
+    -> precedes x y s -> precedes y z s -> precedes x z s
+
+(* Paths *)
+
+predicate reachable (x y: vertex) =
+  exists l. path x l y
+
+lemma reachable_refl:
+  forall x. reachable x x
+
+lemma reachable_trans:
+  forall x y z. reachable x y -> reachable y z -> reachable x z
+
+lemma xpath_xedge:
+  forall x y l s. mem x s -> not mem y s -> path x l y ->
+  exists x' y'. mem x' s /\ not mem y' s /\ edge x' y' /\ reachable x x' /\ reachable y' y
+
+(* Strongly connected components *)
+
+predicate in_same_scc (x y: vertex)  =
+  reachable x y /\ reachable y x
+
+predicate is_subscc (s: fset vertex) = 
+  forall x y. mem x s -> mem y s -> in_same_scc x y
+
+predicate is_scc (s: fset vertex) = not is_empty s /\
+  is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
+    
+lemma same_scc_refl:
+  forall x. in_same_scc x x
+
+lemma same_scc_sym: 
+  forall x z. in_same_scc x z -> in_same_scc z x 
+
+lemma same_scc_trans: 
+  forall x y z. 
+    in_same_scc x y -> in_same_scc y z -> in_same_scc x z
+
+lemma subscc_add:
+  forall x y cc. is_subscc cc -> mem x cc -> in_same_scc x y -> is_subscc (add y cc)
+
+lemma scc_max:
+  forall x y cc. is_scc cc -> mem x cc -> in_same_scc x y -> mem y cc
+
+(* Invariant definitions *)
+
+type env = {ghost black: fset vertex; ghost gray: fset vertex;
+          stack: list vertex; sccs: fset (fset vertex);
+          sn: int; num: map vertex int}
+
+predicate wf_color (e: env) = 
+  let {stack = s; black = b; gray = g; sccs = ccs} = e in 
+  subset (union g b) vertices /\
+  inter b g == empty /\    
+  E.elements s == union g (diff b (set_of ccs)) /\
+  subset (set_of ccs) b 
+
+predicate wf_num (e: env) =
+  let {stack = s; black = b; gray = g; sccs = ccs; sn = n; num = f} = e in 
+  (forall x. -1 <= f[x] < n <= infty() \/ f[x] = infty())  /\
+  n = cardinal (union g b) /\
+  (forall x. f[x] = infty() <-> mem x (set_of ccs)) /\
+  (forall x. f[x] = -1 <-> not mem x (union g b)) /\
+  (forall x y. lmem x s -> lmem y s -> f[x] <= f[y] <-> precedes y x s) 
+
+predicate no_black_to_white (black gray: fset vertex) =
+  forall x x'. edge x x' -> mem x black -> mem x' (union black gray) 
+
+predicate wf_env (e: env) = let {stack = s; black = b; gray = g} = e in
+  wf_color e /\ wf_num e /\
+  no_black_to_white b g /\ simplelist s /\
+  (forall x y. lmem x s -> lmem y s -> e.num[x] <= e.num [y] -> reachable x y) /\
+  (forall y. lmem y s -> exists x. mem x g /\ e.num[x] <= e.num[y] /\ reachable y x) /\
+  (forall cc. mem cc e.sccs <-> subset cc b /\ is_scc cc)
+
+predicate subenv (e e': env) =
+  (exists s. e'.stack = s ++ e.stack /\ subset (E.elements s) e'.black) /\
+  subset e.black e'.black /\ subset e.sccs e'.sccs /\
+  (forall x. lmem x e.stack -> e.num[x] = e'.num[x]) /\
+  e.gray == e'.gray
+
+predicate access_from (x: vertex) (s: fset vertex) =
+  forall y. mem y s -> reachable x y
+
+predicate access_to (s: fset vertex) (y: vertex) =
+  forall x. mem x s -> reachable x y
+
+predicate num_of_reachable (n: int) (x: vertex) (e: env) =
+  exists y. lmem y e.stack /\ n = e.num[y] /\ reachable x y
+
+predicate xedge_to (s1 s3: list vertex) (y: vertex) =
+  (exists s2. s1 = s2 ++ s3 /\ exists x. lmem x s2 /\ edge x y) /\ lmem y s3
+
+predicate splitted (x: 'alpha) (s s1 s2: list 'alpha) =
+  s = s1 ++ s2 /\ is_last x s1
+
+(* 6 specialized lemmas *)
+
+lemma subscc_after_last_gray:
+  forall e x s2 s3. wf_env e ->
+   let {stack = s; black = b; gray = g} = e in
+   mem x g -> s2 ++ s3 = s -> is_last x s2 -> 
+   subset (E.elements s2) (add x b) -> is_subscc (E.elements s2)
+      by (access_to g x
+          by forall y. mem y g -> precedes x y s
+          by inter g (E.elements s2) == add x empty)
+      /\ (access_from x (E.elements s2)
+          by forall y. lmem y s2 -> precedes y x s)
+
+lemma wf_color_postcond_split:
+  forall s2 s3 g b sccs: fset vertex. union s2 s3 == union g (diff b sccs) -> inter s2 s3 == empty
+        -> inter g s2 == empty -> s3 == union g (diff b (union s2 sccs))
+
+lemma wf_color_sccs:
+  forall e. wf_color e -> set_of e.sccs == diff (union e.black e.gray) (E.elements e.stack)
+
+lemma wf_color_3_cases:
+  forall x e. wf_color e -> mem x (set_of e.sccs) \/ mem x (E.elements e.stack) \/ not (mem x (union e.black e.gray))
+
+lemma num_lmem:
+  forall e x. wf_env e -> 0 <= e.num[x] < infty() <-> lmem x e.stack
+
+lemma num_rank_strict:
+    forall e x y. wf_env e -> lmem x e.stack -> lmem y e.stack -> 
+       e.num[x] < e.num[y] <-> precedes y x e.stack /\ x <> y
+
+lemma simplelist_x_prec_strict_y':
+   forall s1: list 'alpha, s2 s3 x y'. s1 = s2 ++ s3 -> simplelist s1 -> is_last x s2 -> lmem y' s3 ->
+     precedes x y' s1 /\ y' <> x
+
+(* auxiliary functions *)
+
+let rec split (x : vertex) (s: list vertex) : (list vertex, list vertex) =
+ensures {let (s1, s2) = result in s1 ++ s2 = s}
+ensures {let (s1, _) = result in lmem x s -> is_last x s1} 
+variant {s}
+  match s with
+  | Nil -> (Nil, Nil)
+  | Cons y s' -> if (x == y) then (Cons x Nil, s') else 
+       let (s1', s2) = split x s' in
+        ((Cons y s1'), s2) 
+  end
+
+let add_stack_incr x e =
+ensures {result.black = e.black /\ result.gray = add x e.gray
+          /\ result.sccs = e.sccs /\ result.stack = Cons x e.stack
+          /\ result.sn = e.sn + 1 /\ result.num = e.num[x <-e.sn]}
+  let n = e.sn in
+  {black = e.black; gray = add x e.gray; 
+   stack = Cons x e.stack; sccs = e.sccs; sn = n+1; num = e.num[x <-n]}
+
+let add_black x e =
+returns {r -> r.black = add x e.black /\ r.gray = remove x e.gray 
+          /\ r.stack = e.stack /\ r.sccs = e.sccs
+          /\ r.sn = e.sn /\ r.num = e.num}
+ {black = add x e.black; gray = remove x e.gray; 
+  stack = e.stack; sccs = e.sccs; sn = e.sn; num = e.num}
+
+let rec set_infty (s : list vertex)(f : map vertex int) =
+returns {f' -> forall x. lmem x s -> f'[x] = infty()}
+returns {f' -> forall x. not lmem x s -> f'[x] = f[x] }
+  match s with
+  | Nil -> f
+  | Cons x s' -> (set_infty s' f)[x <- infty()]
+  end
+
+(* dfs1 *)
+let rec dfs1 x e  =
+requires {mem x vertices} 
+requires {access_to e.gray x} 
+requires {not mem x (union e.black e.gray)} 
+requires {wf_env e} (* invariant I *)
+returns {(_, e') -> wf_env e' /\ subenv e e'} 
+(* post-conditions *)
+returns {(_, e') -> mem x e'.black} 
+returns {(n, e') -> n <= e'.num[x]} 
+returns {(n, e') -> n = infty() \/ num_of_reachable n x e'} 
+returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
+
+  let n0 = e.sn in
+  let (n1, e1) = dfs (successors x) (add_stack_incr x e) in
+  let (s2, s3) = split x e1.stack in 
+  assert {is_last x s2 /\ s3 = e.stack /\ subset (elements s2) (add x e1.black)};
+  assert {is_subscc (elements s2)};
+  if n1 < n0 then begin
+    assert {n1 <> infty()};
+    assert {exists y. y <> x /\ mem y e1.gray /\ e1.num[y] < e1.num[x] /\ in_same_scc x y};
+    (n1, add_black x e1) end
+  else begin
+    assert {forall y. in_same_scc y x -> lmem y s2};  
+    assert {is_scc (elements s2)};
+    assert {inter e.gray (elements s2) == empty}; 
+    (infty(), {black = add x e1.black; gray = e.gray;
+      stack = s3; sccs = add (elements s2) e1.sccs;
+      sn = e1.sn; num = set_infty s2 e1.num}) end
+
+(* dfs *)
+
+with  dfs roots e =
+requires {subset roots vertices} 
+requires {forall x. mem x roots -> access_to e.gray x} 
+requires {wf_env e} (* invariant I *)
+returns {(_, e') -> wf_env e' /\ subenv e e'}
+(* post-conditions *)
+returns {(_, e') -> subset roots (union e'.black e'.gray)} 
+returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]} 
+returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x e'} 
+returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
+
+  if is_empty roots then (infty(), e) else
+  let x = choose roots in
+  let roots' = remove x roots in
+  let (n1, e1) =
+    if e.num[x] <> -1 then (e.num[x], e) else dfs1 x e in
+  let (n2, e2) = dfs roots' e1 in (min n1 n2, e2)
+
+(* tarjan *)
+
+let tarjan () =
+returns {r -> forall cc. mem cc r <-> subset cc vertices /\ is_scc cc}
+  let e = {black = empty; gray = empty; stack = Nil; sccs = empty; sn = 0; num = const (-1)} in
+  let (_, e') = dfs vertices e in
+    assert {subset vertices e'.black};
+    e'.sccs
+end
+
