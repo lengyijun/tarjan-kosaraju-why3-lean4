@@ -354,7 +354,7 @@ variant {s}
   end
 
 (* dfs1 *)
-let rec dfs1 x e  =
+let rec ghost dfs1 x e  =
 requires {mem x vertices} 
 requires {access_to e.gray x} 
 requires {not mem x (union e.black e.gray)} 
@@ -369,23 +369,23 @@ returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
   let n0 = e.sn in
   let (n1, e1) = dfs (successors x) (add_stack_incr x e) in
   let (s2, s3) = split x e1.stack in 
-  assert {is_last x s2 /\ s3 = e.stack /\ subset (elements s2) (add x e1.black)};
-  assert {is_subscc (elements s2)};
+  assert {is_last x s2 /\ s3 = e.stack /\ subset (E.elements s2) (add x e1.black)};
+  assert {is_subscc (E.elements s2)};
   if n1 < n0 then begin
     assert {n1 <> infty()};
     assert {exists y. y <> x /\ mem y e1.gray /\ e1.num[y] < e1.num[x] /\ in_same_scc x y};
     (n1, add_black x e1) end
   else begin
     assert {forall y. in_same_scc y x -> lmem y s2};  
-    assert {is_scc (elements s2)};
-    assert {inter e.gray (elements s2) == empty}; 
+    assert {is_scc (E.elements s2)};
+    assert {inter e.gray (E.elements s2) == empty}; 
     (infty(), {black = add x e1.black; gray = e.gray;
       stack = s3; sccs = add (E.elements s2) e1.sccs;
       sn = e1.sn; num = set_infty s2 e1.num}) end
 
 (* dfs *)
 
-with  dfs roots e =
+with  ghost dfs roots e =
 requires {subset roots vertices} 
 requires {forall x. mem x roots -> access_to e.gray x} 
 requires {wf_env e} (* invariant I *)
@@ -397,7 +397,7 @@ returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
 
   if is_empty roots then (infty(), e) else
-  let x = choose roots in
+  let x = pick roots in
   let roots' = remove x roots in
   let (n1, e1) =
     if e.num[x] <> -1 then (e.num[x], e) else dfs1 x e in
