@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Alt-Ergo" version="2.5.1" timelimit="10" steplimit="0" memlimit="10000"/>
+<prover id="1" name="Z3" version="4.12.2" timelimit="10" steplimit="0" memlimit="10000"/>
+<prover id="2" name="CVC4" version="1.8" timelimit="50" steplimit="0" memlimit="10000"/>
+<prover id="3" name="CVC5" version="1.0.8" timelimit="50" steplimit="0" memlimit="10000"/>
+<file format="whyml">
+<path name=".."/><path name="scc.mlw"/>
+<theory name="SCCTarjan72">
+ <goal name="lmem_dec" proved="true">
+ <proof prover="0"><result status="valid" time="0.021601" steps="1"/></proof>
+ </goal>
+ <goal name="inter_com" proved="true">
+ <proof prover="0"><result status="valid" time="0.028130" steps="17"/></proof>
+ </goal>
+ <goal name="inter_add_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.043438" steps="186"/></proof>
+ </goal>
+ <goal name="inter_not_add_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.071530" steps="146"/></proof>
+ </goal>
+ <goal name="diff_add_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.055531" steps="187"/></proof>
+ </goal>
+ <goal name="diff_not_add_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.058910" steps="123"/></proof>
+ </goal>
+ <goal name="subset_add_r" proved="true">
+ <proof prover="0"><result status="valid" time="0.030581" steps="43"/></proof>
+ </goal>
+ <goal name="union_add_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.059837" steps="109"/></proof>
+ </goal>
+ <goal name="union_add_r" proved="true">
+ <proof prover="0"><result status="valid" time="0.037427" steps="77"/></proof>
+ </goal>
+ <goal name="union_com" proved="true">
+ <proof prover="0"><result status="valid" time="0.031726" steps="19"/></proof>
+ </goal>
+ <goal name="union_var_l" proved="true">
+ <proof prover="0"><result status="valid" time="0.068692" steps="114"/></proof>
+ </goal>
+ <goal name="union_var_r" proved="true">
+ <proof prover="0"><result status="valid" time="0.038862" steps="116"/></proof>
+ </goal>
+ <goal name="set_of_elt" proved="true">
+ <proof prover="0"><result status="valid" time="0.124112" steps="375"/></proof>
+ </goal>
+ <goal name="elt_set_of" proved="true">
+ <proof prover="0"><result status="valid" time="0.104716" steps="780"/></proof>
+ </goal>
+ <goal name="subset_set_of" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="59852"/></proof>
+ <proof prover="1"><result status="valid" time="0.452001" steps="1640390"/></proof>
+ </goal>
+ <goal name="elts_cons" proved="true">
+ <proof prover="0"><result status="valid" time="0.021474" steps="18"/></proof>
+ </goal>
+ <goal name="elts_app" proved="true">
+ <proof prover="0"><result status="valid" time="0.045300" steps="220"/></proof>
+ </goal>
+ <goal name="list_simpl_r">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="204943"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="12093573"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="6363441"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1413711"/></proof>
+ </goal>
+ <goal name="snoc_app" proved="true">
+ <proof prover="0"><result status="valid" time="0.043765" steps="208"/></proof>
+ </goal>
+ <goal name="precedes_mem" proved="true">
+ <proof prover="0"><result status="valid" time="0.059349" steps="338"/></proof>
+ </goal>
+ <goal name="head_precedes" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="54469"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="15484841"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.213812" steps="23953"/></proof>
+ </goal>
+ <goal name="precedes_tail" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="51570"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="14464411"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="2.763041" steps="274155"/></proof>
+ </goal>
+ <goal name="tail_not_precedes" proved="true">
+ <proof prover="0"><result status="valid" time="0.047428" steps="42"/></proof>
+ </goal>
+ <goal name="split_list_precedes" proved="true">
+ <proof prover="0" timelimit="50"><result status="valid" time="13.383701" steps="79728"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="4729618"/></proof>
+ <proof prover="2" timelimit="10"><result status="timeout" time="10.000000" steps="969762"/></proof>
+ </goal>
+ <goal name="precedes_refl" proved="true">
+ <proof prover="0"><result status="valid" time="0.069290" steps="169"/></proof>
+ </goal>
+ <goal name="precedes_append_left" proved="true">
+ <proof prover="0"><result status="valid" time="0.104163" steps="373"/></proof>
+ </goal>
+ <goal name="precedes_append_left_iff">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="219806"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="11979639"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="3268817"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1048273"/></proof>
+ </goal>
+ <goal name="precedes_append_right" proved="true">
+ <proof prover="0"><result status="valid" time="1.003451" steps="4359"/></proof>
+ </goal>
+ <goal name="precedes_append_right_iff">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="150333"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="12289228"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="4176995"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="678417"/></proof>
+ </goal>
+ <goal name="simplelist_tl" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="38694"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="31629919"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.289767" steps="34645"/></proof>
+ </goal>
+ <goal name="simplelist_split">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="405113"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="71446516"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="4427130"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="720618"/></proof>
+ </goal>
+ <goal name="simplelist_app_disjoint" proved="true">
+ <proof prover="0"><result status="valid" time="0.540987" steps="2752"/></proof>
+ </goal>
+ <goal name="simplelist_length">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="180338"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="71844965"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="5527013"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1356295"/></proof>
+ </goal>
+ <goal name="precedes_antisym" proved="true">
+ <proof prover="0"><result status="valid" time="0.518888" steps="4645"/></proof>
+ </goal>
+ <goal name="precedes_trans" proved="true">
+ <proof prover="0"><result status="valid" time="0.186604" steps="1098"/></proof>
+ </goal>
+ <goal name="reachable_refl">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="295175"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="11486603"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="5453760"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="988879"/></proof>
+ </goal>
+ <goal name="reachable_trans" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="54543"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="3853944"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.162740" steps="20390"/></proof>
+ </goal>
+ <goal name="xpath_xedge">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="464963"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="8894700"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="6602461"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="997588"/></proof>
+ </goal>
+ <goal name="same_scc_refl" proved="true">
+ <proof prover="0"><result status="valid" time="0.050095" steps="11"/></proof>
+ </goal>
+ <goal name="same_scc_sym" proved="true">
+ <proof prover="0"><result status="valid" time="0.047231" steps="6"/></proof>
+ </goal>
+ <goal name="same_scc_trans" proved="true">
+ <proof prover="0"><result status="valid" time="0.048743" steps="24"/></proof>
+ </goal>
+ <goal name="subscc_add" proved="true">
+ <proof prover="0"><result status="valid" time="0.105293" steps="265"/></proof>
+ </goal>
+ <goal name="scc_max" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="47030"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="3258955"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.279292" steps="39421"/></proof>
+ </goal>
+ <goal name="subscc_after_last_gray">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="322893"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="99417534"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="11254768"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="861646"/></proof>
+ </goal>
+ <goal name="wf_color_postcond_split" proved="true">
+ <proof prover="0"><result status="valid" time="0.964869" steps="3510"/></proof>
+ </goal>
+ <goal name="wf_color_sccs" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="39230"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="1978501"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.583329" steps="56922"/></proof>
+ </goal>
+ <goal name="wf_color_3_cases" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="43590"/></proof>
+ <proof prover="1"><result status="valid" time="0.174197" steps="262254"/></proof>
+ </goal>
+ <goal name="num_lmem" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="30668"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="25535925"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="5.061081" steps="382270"/></proof>
+ </goal>
+ <goal name="num_rank_strict" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="29633"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="3398290"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.454886" steps="59294"/></proof>
+ </goal>
+ <goal name="simplelist_x_prec_strict_y&#39;" proved="true">
+ <proof prover="0"><result status="valid" time="1.153178" steps="5226"/></proof>
+ </goal>
+ <goal name="split&#39;vc" expl="VC for split" proved="true">
+ <proof prover="0"><result status="timeout" time="10.000000" steps="58182"/></proof>
+ <proof prover="1"><result status="timeout" time="10.000000" steps="12385008"/></proof>
+ <proof prover="2" timelimit="10"><result status="valid" time="0.447368" steps="69328"/></proof>
+ </goal>
+ <goal name="add_stack_incr&#39;vc" expl="VC for add_stack_incr" proved="true">
+ <proof prover="0"><result status="valid" time="0.043809" steps="5"/></proof>
+ </goal>
+ <goal name="add_black&#39;vc" expl="VC for add_black" proved="true">
+ <proof prover="0"><result status="valid" time="0.047120" steps="1"/></proof>
+ </goal>
+ <goal name="set_infty&#39;vc" expl="VC for set_infty" proved="true">
+ <proof prover="0"><result status="valid" time="0.115653" steps="346"/></proof>
+ </goal>
+ <goal name="dfs1&#39;vc" expl="VC for dfs1">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="222761"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="36740096"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="6104185"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1527385"/></proof>
+ </goal>
+ <goal name="dfs&#39;vc" expl="VC for dfs">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="268637"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="23914149"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="6487877"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1246517"/></proof>
+ </goal>
+ <goal name="tarjan&#39;vc" expl="VC for tarjan">
+ <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="564758"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="38013989"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="11132152"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1265357"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

@@ -42,6 +42,7 @@ module SCCTarjan72
   use list.Elements as E
   use GraphSetSucc
   use map.Map
+  use map.Const
   use set.Fset
 
   
@@ -406,7 +407,7 @@ variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
 
 (* tarjan *)
 
-let tarjan () =
+let ghost tarjan () =
 returns {r -> forall cc. mem cc r <-> subset cc vertices /\ is_scc cc}
   let e = {black = empty; gray = empty; stack = Nil; sccs = empty; sn = 0; num = const (-1)} in
   let (_, e') = dfs vertices e in
