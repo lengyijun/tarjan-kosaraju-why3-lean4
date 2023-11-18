@@ -7,6 +7,8 @@
 <prover id="2" name="CVC4" version="1.8" timelimit="50" steplimit="0" memlimit="10000"/>
 <prover id="3" name="CVC5" version="1.0.8" timelimit="50" steplimit="0" memlimit="10000"/>
 <prover id="4" name="Eprover" version="2.0" timelimit="50" steplimit="0" memlimit="10000"/>
+<prover id="5" name="Coq" version="8.18.0" timelimit="0" steplimit="0" memlimit="0"/>
+<prover id="6" name="Alt-Ergo" version="2.4.0" alternative="FPA" timelimit="50" steplimit="0" memlimit="10000"/>
 <file format="whyml">
 <path name=".."/><path name="scc.mlw"/>
 <theory name="SCCTarjan72">
@@ -62,12 +64,14 @@
  <goal name="elts_app" proved="true">
  <proof prover="0"><result status="valid" time="0.045300" steps="220"/></proof>
  </goal>
- <goal name="list_simpl_r">
+ <goal name="list_simpl_r" proved="true">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="204943"/></proof>
- <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="12093573"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="17745018"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6363441"/></proof>
- <proof prover="3"><result status="timeout" time="50.000000" steps="1413711"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1655685"/></proof>
  <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <proof prover="5"><path name="scc_SCCTarjan72_list_simpl_r_1.v"/><result status="valid" time="0.287704"/></proof>
+ <proof prover="6"><result status="timeout" time="50.000000" steps="326008"/></proof>
  </goal>
  <goal name="snoc_app" proved="true">
  <proof prover="0"><result status="valid" time="0.043765" steps="208"/></proof>

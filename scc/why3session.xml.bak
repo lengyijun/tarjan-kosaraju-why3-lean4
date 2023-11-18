@@ -6,6 +6,9 @@
 <prover id="1" name="Z3" version="4.12.2" timelimit="10" steplimit="0" memlimit="10000"/>
 <prover id="2" name="CVC4" version="1.8" timelimit="50" steplimit="0" memlimit="10000"/>
 <prover id="3" name="CVC5" version="1.0.8" timelimit="50" steplimit="0" memlimit="10000"/>
+<prover id="4" name="Eprover" version="2.0" timelimit="50" steplimit="0" memlimit="10000"/>
+<prover id="5" name="Coq" version="8.18.0" timelimit="0" steplimit="0" memlimit="0"/>
+<prover id="6" name="Alt-Ergo" version="2.4.0" alternative="FPA" timelimit="50" steplimit="0" memlimit="10000"/>
 <file format="whyml">
 <path name=".."/><path name="scc.mlw"/>
 <theory name="SCCTarjan72">
@@ -63,9 +66,12 @@
  </goal>
  <goal name="list_simpl_r">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="204943"/></proof>
- <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="12093573"/></proof>
+ <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="17745018"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6363441"/></proof>
- <proof prover="3"><result status="timeout" time="50.000000" steps="1413711"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="1655685"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <proof prover="5" obsolete="true"><path name="scc_SCCTarjan72_list_simpl_r_1.v"/><result status="unknown" time="0.000000" steps="0"/></proof>
+ <proof prover="6"><result status="timeout" time="50.000000" steps="326008"/></proof>
  </goal>
  <goal name="snoc_app" proved="true">
  <proof prover="0"><result status="valid" time="0.043765" steps="208"/></proof>
@@ -102,6 +108,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="11979639"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="3268817"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1048273"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="precedes_append_right" proved="true">
  <proof prover="0"><result status="valid" time="1.003451" steps="4359"/></proof>
@@ -111,6 +118,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="12289228"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="4176995"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="678417"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="simplelist_tl" proved="true">
  <proof prover="0"><result status="timeout" time="10.000000" steps="38694"/></proof>
@@ -122,6 +130,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="71446516"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="4427130"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="720618"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="simplelist_app_disjoint" proved="true">
  <proof prover="0"><result status="valid" time="0.540987" steps="2752"/></proof>
@@ -131,6 +140,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="71844965"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="5527013"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1356295"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="precedes_antisym" proved="true">
  <proof prover="0"><result status="valid" time="0.518888" steps="4645"/></proof>
@@ -138,11 +148,12 @@
  <goal name="precedes_trans" proved="true">
  <proof prover="0"><result status="valid" time="0.186604" steps="1098"/></proof>
  </goal>
- <goal name="reachable_refl">
+ <goal name="reachable_refl" proved="true">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="295175"/></proof>
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="11486603"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="5453760"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="988879"/></proof>
+ <proof prover="4"><result status="valid" time="0.027508"/></proof>
  </goal>
  <goal name="reachable_trans" proved="true">
  <proof prover="0"><result status="timeout" time="10.000000" steps="54543"/></proof>
@@ -154,6 +165,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="8894700"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6602461"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="997588"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="same_scc_refl" proved="true">
  <proof prover="0"><result status="valid" time="0.050095" steps="11"/></proof>
@@ -177,6 +189,7 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="99417534"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="11254768"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="861646"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="wf_color_postcond_split" proved="true">
  <proof prover="0"><result status="valid" time="0.964869" steps="3510"/></proof>
@@ -222,18 +235,21 @@
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="36740096"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6104185"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1527385"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="dfs&#39;vc" expl="VC for dfs">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="268637"/></proof>
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="23914149"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6487877"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1246517"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
  <goal name="tarjan&#39;vc" expl="VC for tarjan">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="564758"/></proof>
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="38013989"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="11132152"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1265357"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
  </goal>
 </theory>
 </file>
