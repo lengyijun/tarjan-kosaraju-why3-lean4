@@ -212,12 +212,21 @@
  <proof prover="1"><result status="timeout" time="10.000000" steps="3853944"/></proof>
  <proof prover="2" timelimit="10"><result status="valid" time="0.162740" steps="20390"/></proof>
  </goal>
- <goal name="xpath_xedge">
+ <goal name="xpath_xedge" proved="true">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="464963"/></proof>
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="8894700"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="6602461"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="997588"/></proof>
  <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <transf name="induction_pr" proved="true" >
+  <goal name="xpath_xedge.0" proved="true">
+  <proof prover="7"><result status="valid" time="0.013770" steps="8"/></proof>
+  </goal>
+  <goal name="xpath_xedge.1" proved="true">
+  <proof prover="4"><result status="valid" time="0.062013"/></proof>
+  <proof prover="7"><undone/></proof>
+  </goal>
+ </transf>
  </goal>
  <goal name="same_scc_refl" proved="true">
  <proof prover="0"><result status="valid" time="0.050095" steps="11"/></proof>

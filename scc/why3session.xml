@@ -224,7 +224,7 @@
   </goal>
   <goal name="xpath_xedge.1" proved="true">
   <proof prover="4"><result status="valid" time="0.062013"/></proof>
-  <proof prover="7"><undone/></proof>
+  <proof prover="7"><result status="failure" time="0.000000"/></proof>
   </goal>
  </transf>
  </goal>
@@ -245,12 +245,38 @@
  <proof prover="1"><result status="timeout" time="10.000000" steps="3258955"/></proof>
  <proof prover="2" timelimit="10"><result status="valid" time="0.279292" steps="39421"/></proof>
  </goal>
- <goal name="subscc_after_last_gray">
+ <goal name="subscc_after_last_gray" proved="true">
  <proof prover="0" timelimit="50"><result status="timeout" time="50.000000" steps="322893"/></proof>
  <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="99417534"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="11254768"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="861646"/></proof>
  <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <transf name="split_goal_full" proved="true" >
+  <goal name="subscc_after_last_gray.0" proved="true">
+  <proof prover="7"><result status="valid" time="14.108562" steps="168607"/></proof>
+  </goal>
+  <goal name="subscc_after_last_gray.1" proved="true">
+  <proof prover="7"><result status="valid" time="0.042134" steps="99"/></proof>
+  </goal>
+  <goal name="subscc_after_last_gray.2" proved="true">
+  <proof prover="2"><result status="valid" time="21.989241" steps="2322090"/></proof>
+  <proof prover="7"><result status="timeout" time="50.000000" steps="433154"/></proof>
+  </goal>
+  <goal name="subscc_after_last_gray.3" proved="true">
+  <proof prover="7"><result status="valid" time="0.246369" steps="1790"/></proof>
+  </goal>
+  <goal name="subscc_after_last_gray.4" proved="true">
+  <proof prover="7"><result status="valid" time="0.250292" steps="2064"/></proof>
+  </goal>
+  <goal name="subscc_after_last_gray.5" proved="true">
+  <proof prover="7"><result status="timeout" time="50.000000" steps="331638"/></proof>
+  <transf name="inline_goal" proved="true" >
+   <goal name="subscc_after_last_gray.5.0" proved="true">
+   <proof prover="7"><result status="valid" time="10.318875" steps="88158"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
  </goal>
  <goal name="wf_color_postcond_split" proved="true">
  <proof prover="0"><result status="valid" time="0.964869" steps="3510"/></proof>
