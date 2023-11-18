@@ -42,8 +42,7 @@ module SCCTarjan72
   use list.Elements as E
   use GraphSetSucc
   use map.Map
-
-  clone set.SetImp with type elt = vertex
+  use set.Fset
 
   
 predicate lmem (x: 'a) (s: list 'a) = L.mem x s
@@ -330,7 +329,7 @@ variant {s}
         ((Cons y s1'), s2) 
   end
 
-let add_stack_incr (x : vertex) (e : env) : env =
+let ghost add_stack_incr (x : vertex) (e : env) : env =
 ensures {result.black = e.black /\ result.gray = add x e.gray
           /\ result.sccs = e.sccs /\ result.stack = Cons x e.stack
           /\ result.sn = e.sn + 1 /\ result.num = e.num[x <-e.sn]}
@@ -345,9 +344,10 @@ returns {r -> r.black = add x e.black /\ r.gray = remove x e.gray
  {black = add x e.black; gray = remove x e.gray; 
   stack = e.stack; sccs = e.sccs; sn = e.sn; num = e.num}
 
-let rec set_infty (s : list vertex)(f : map vertex int) =
+let rec ghost set_infty (s : list vertex)(f : map vertex int) =
 returns {f' -> forall x. lmem x s -> f'[x] = infty()}
 returns {f' -> forall x. not lmem x s -> f'[x] = f[x] }
+variant {s}
   match s with
   | Nil -> f
   | Cons x s' -> (set_infty s' f)[x <- infty()]
@@ -380,7 +380,7 @@ returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
     assert {is_scc (elements s2)};
     assert {inter e.gray (elements s2) == empty}; 
     (infty(), {black = add x e1.black; gray = e.gray;
-      stack = s3; sccs = add (elements s2) e1.sccs;
+      stack = s3; sccs = add (E.elements s2) e1.sccs;
       sn = e1.sn; num = set_infty s2 e1.num}) end
 
 (* dfs *)
