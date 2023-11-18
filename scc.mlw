@@ -365,6 +365,7 @@ returns {(_, e') -> mem x e'.black}
 returns {(n, e') -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty() \/ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
+variant {cardinal (diff vertices (union e.black e.gray)), 0}
 
   let n0 = e.sn in
   let (n1, e1) = dfs (successors x) (add_stack_incr x e) in
@@ -395,7 +396,7 @@ returns {(_, e') -> subset roots (union e'.black e'.gray)}
 returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
-
+variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
   if is_empty roots then (infty(), e) else
   let x = pick roots in
   let roots' = remove x roots in
