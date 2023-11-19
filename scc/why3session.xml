@@ -571,8 +571,8 @@
   </goal>
  </transf>
  </goal>
- <goal name="dfs&#39;vc" expl="VC for dfs">
- <transf name="split_goal_full" >
+ <goal name="dfs&#39;vc" expl="VC for dfs" proved="true">
+ <transf name="split_goal_full" proved="true" >
   <goal name="dfs&#39;vc.0" expl="variant decrease" proved="true">
   <proof prover="6"><result status="valid" time="0.022665" steps="4"/></proof>
   </goal>
@@ -600,52 +600,34 @@
   <goal name="dfs&#39;vc.8" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.038311" steps="3"/></proof>
   </goal>
-  <goal name="dfs&#39;vc.9" expl="variant decrease">
+  <goal name="dfs&#39;vc.9" expl="variant decrease" proved="true">
   <proof prover="6"><result status="timeout" time="50.000000" steps="169216"/></proof>
-  <transf name="split_goal_full" >
+  <transf name="introduce_premises" proved="true" >
    <goal name="dfs&#39;vc.9.0" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.039947" steps="37"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.1" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.058424" steps="32"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.2" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.035897" steps="36"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.3" expl="variant decrease">
-   <proof prover="1"><result status="timeout" time="50.000000" steps="14593524"/></proof>
-   <proof prover="2"><result status="timeout" time="50.000000" steps="11788214"/></proof>
-   <proof prover="3"><result status="timeout" time="50.000000" steps="1938728"/></proof>
-   <proof prover="4"><result status="timeout" time="50.000000"/></proof>
-   <proof prover="6"><result status="timeout" time="50.000000" steps="282053"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.4" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.041568" steps="36"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.5" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.036942" steps="45"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.6" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.039427" steps="36"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.7" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.040515" steps="31"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.8" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.038229" steps="36"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.9" expl="variant decrease">
-   <proof prover="1"><result status="timeout" time="50.000000" steps="16332565"/></proof>
-   <proof prover="2"><result status="timeout" time="50.000000" steps="12082593"/></proof>
-   <proof prover="3"><result status="timeout" time="50.000000" steps="1141041"/></proof>
-   <proof prover="4"><result status="timeout" time="50.000000"/></proof>
-   <proof prover="6"><result status="timeout" time="50.000000" steps="227691"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.10" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.036785" steps="36"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.9.11" expl="variant decrease" proved="true">
-   <proof prover="6"><result status="valid" time="0.043567" steps="45"/></proof>
+   <transf name="inline_goal" proved="true" >
+    <goal name="dfs&#39;vc.9.0.0" expl="variant decrease" proved="true">
+    <transf name="split_goal_full" proved="true" >
+     <goal name="dfs&#39;vc.9.0.0.0" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.042751" steps="47"/></proof>
+     </goal>
+     <goal name="dfs&#39;vc.9.0.0.1" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.053278" steps="46"/></proof>
+     </goal>
+     <goal name="dfs&#39;vc.9.0.0.2" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.039440" steps="46"/></proof>
+     </goal>
+     <goal name="dfs&#39;vc.9.0.0.3" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="47.076025" steps="320373"/></proof>
+     </goal>
+     <goal name="dfs&#39;vc.9.0.0.4" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.045924" steps="46"/></proof>
+     </goal>
+     <goal name="dfs&#39;vc.9.0.0.5" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.043722" steps="51"/></proof>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
    </goal>
   </transf>
   </goal>
