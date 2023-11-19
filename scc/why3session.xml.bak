@@ -162,11 +162,12 @@
  <proof prover="1" timelimit="10"><result status="timeout" time="10.000000" steps="31629919"/></proof>
  <proof prover="2" timelimit="10"><result status="valid" time="0.289767" steps="34645"/></proof>
  </goal>
- <goal name="simplelist_split_1">
+ <goal name="simplelist_split_1" proved="true">
  <proof prover="1"><result status="timeout" time="50.000000" steps="140154323"/></proof>
  <proof prover="2"><result status="timeout" time="50.000000" steps="10539379"/></proof>
  <proof prover="3"><result status="timeout" time="50.000000" steps="1842276"/></proof>
  <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <proof prover="5"><path name="scc_SCCTarjan72_simplelist_split_1_1.v"/><result status="valid" time="0.302195"/></proof>
  <proof prover="7"><result status="timeout" time="50.000000" steps="345374"/></proof>
  </goal>
  <goal name="simplelist_split">

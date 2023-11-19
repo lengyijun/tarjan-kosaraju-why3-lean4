@@ -170,13 +170,16 @@
  <proof prover="5"><path name="scc_SCCTarjan72_simplelist_split_1_1.v"/><result status="valid" time="0.302195"/></proof>
  <proof prover="7"><result status="timeout" time="50.000000" steps="345374"/></proof>
  </goal>
- <goal name="simplelist_split">
+ <goal name="num_occ_zero" proved="true">
+ <proof prover="7"><result status="valid" time="0.012998" steps="16"/></proof>
+ </goal>
+ <goal name="simplelist_split" proved="true">
  <proof prover="0" timelimit="50" obsolete="true"><result status="timeout" time="50.000000" steps="405113"/></proof>
- <proof prover="1" obsolete="true"><result status="timeout" time="50.000000" steps="71446516"/></proof>
- <proof prover="2" obsolete="true"><result status="timeout" time="50.000000" steps="4427130"/></proof>
- <proof prover="3" obsolete="true"><result status="timeout" time="50.000000" steps="720618"/></proof>
- <proof prover="4" obsolete="true"><result status="timeout" time="50.000000"/></proof>
- <proof prover="5" obsolete="true"><path name="scc_SCCTarjan72_simplelist_split_2.v"/><result status="unknown" time="0.000000" steps="0"/></proof>
+ <proof prover="1"><result status="timeout" time="50.000000" steps="113749395"/></proof>
+ <proof prover="2"><result status="timeout" time="50.000000" steps="12686408"/></proof>
+ <proof prover="3"><result status="timeout" time="50.000000" steps="2463703"/></proof>
+ <proof prover="4"><result status="timeout" time="50.000000"/></proof>
+ <proof prover="5"><path name="scc_SCCTarjan72_simplelist_split_2.v"/><result status="valid" time="0.387161"/></proof>
  </goal>
  <goal name="simplelist_app_disjoint">
  <proof prover="0" obsolete="true"><result status="valid" time="0.540987" steps="2752"/></proof>
@@ -194,10 +197,10 @@
    <proof prover="7" obsolete="true"><result status="valid" time="0.031711" steps="101"/></proof>
    </goal>
    <goal name="simplelist_length.0.1">
-   <proof prover="7" obsolete="true"><result status="valid" time="0.023377" steps="64"/></proof>
+   <proof prover="7" obsolete="true"><result status="valid" time="0.026403" steps="18"/></proof>
    </goal>
    <goal name="simplelist_length.0.2">
-   <proof prover="7" obsolete="true"><result status="valid" time="0.026403" steps="18"/></proof>
+   <proof prover="7" obsolete="true"><result status="valid" time="0.023377" steps="64"/></proof>
    </goal>
   </transf>
   </goal>
