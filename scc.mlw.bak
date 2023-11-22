@@ -171,16 +171,6 @@ predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
 lemma simplelist_tl:
   forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not lmem x l
 
-lemma simplelist_split_1: 
-  forall x: 'a, l1 [@induction] l2 l3 l4. l1 ++ Cons x l2 = l3 ++ Cons x l4 
-    -> not lmem x l1 
-    -> not lmem x l2
-    -> not lmem x l3 
-    -> not lmem x l4 
-    -> l1 = l3
-
-lemma num_occ_zero: forall x: 'a, l. num_occ x l = 0 <-> not lmem x l
-
 lemma simplelist_split: 
   forall x: 'a, l1 [@induction] l2 l3 [@induction] l4. simplelist (l1 ++ Cons x l2)
      -> l1 ++ Cons x l2 = l3 ++ Cons x l4 -> l1 = l3 /\ l2 = l4
@@ -370,7 +360,8 @@ requires {mem x vertices}
 requires {access_to e.gray x} 
 requires {not mem x (union e.black e.gray)} 
 requires {wf_env e} (* invariant I *)
-returns {(_, e') -> wf_env e' /\ subenv e e'} 
+returns {(_, e') -> wf_env e'}
+returns {(_, e') -> subenv e e'} 
 (* post-conditions *)
 returns {(_, e') -> mem x e'.black} 
 returns {(n, e') -> n <= e'.num[x]} 

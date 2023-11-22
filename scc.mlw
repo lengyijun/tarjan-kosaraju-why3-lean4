@@ -360,7 +360,8 @@ requires {mem x vertices}
 requires {access_to e.gray x} 
 requires {not mem x (union e.black e.gray)} 
 requires {wf_env e} (* invariant I *)
-returns {(_, e') -> wf_env e' /\ subenv e e'} 
+returns {(_, e') -> subenv e e'} 
+returns {(_, e') -> wf_env e'}
 (* post-conditions *)
 returns {(_, e') -> mem x e'.black} 
 returns {(n, e') -> n <= e'.num[x]} 
