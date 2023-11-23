@@ -410,6 +410,7 @@ variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
 
 let ghost tarjan () =
 returns {r -> forall cc. mem cc r <-> subset cc vertices /\ is_scc cc}
+returns {r -> set_of r = vertices}
   let e = {black = empty; gray = empty; stack = Nil; sccs = empty; sn = 0; num = const (-1)} in
   let (_, e') = dfs vertices e in
     assert {subset vertices e'.black};
