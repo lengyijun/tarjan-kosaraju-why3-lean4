@@ -255,12 +255,13 @@ predicate wf_num (e: env) =
 predicate no_black_to_white (black gray: fset vertex) =
   forall x x'. edge x x' -> mem x black -> mem x' (union black gray) 
 
-predicate wf_env (e: env) = let {stack = s; black = b; gray = g} = e in
+predicate wf_env (e: env) = let {stack = s; black = b; gray = g; sccs = ccs} = e in
   wf_color e /\ wf_num e /\
   no_black_to_white b g /\ simplelist s /\
   (forall x y. lmem x s -> lmem y s -> e.num[x] <= e.num [y] -> reachable x y) /\
   (forall y. lmem y s -> exists x. mem x g /\ e.num[x] <= e.num[y] /\ reachable y x) /\
-  (forall cc. mem cc e.sccs <-> subset cc b /\ is_scc cc)
+  (forall cc. mem cc e.sccs <-> subset cc b /\ is_scc cc) /\
+  (forall cc1, cc2. mem cc1 ccs -> mem cc2 ccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)
 
 predicate subenv (e e': env) =
   (exists s. e'.stack = s ++ e.stack /\ subset (E.elements s) e'.black) /\
@@ -360,8 +361,8 @@ requires {mem x vertices}
 requires {access_to e.gray x} 
 requires {not mem x (union e.black e.gray)} 
 requires {wf_env e} (* invariant I *)
-returns {(_, e') -> wf_env e'}
 returns {(_, e') -> subenv e e'} 
+returns {(_, e') -> wf_env e'}
 (* post-conditions *)
 returns {(_, e') -> mem x e'.black} 
 returns {(n, e') -> n <= e'.num[x]} 
@@ -382,6 +383,7 @@ variant {cardinal (diff vertices (union e.black e.gray)), 0}
     assert {forall y. in_same_scc y x -> lmem y s2};  
     assert {is_scc (E.elements s2)};
     assert {inter e.gray (E.elements s2) == empty}; 
+    assert {forall cc. mem cc e1.sccs, inter (E.elements s2) cc == empty};
     (infty(), {black = add x e1.black; gray = e.gray;
       stack = s3; sccs = add (E.elements s2) e1.sccs;
       sn = e1.sn; num = set_infty s2 e1.num}) end
@@ -410,6 +412,8 @@ variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
 
 let ghost tarjan () =
 returns {r -> forall cc. mem cc r <-> subset cc vertices /\ is_scc cc}
+returns {r -> set_of r = vertices}
+returns {r -> forall cc1, cc2. mem cc1 r -> mem cc2 r -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
   let e = {black = empty; gray = empty; stack = Nil; sccs = empty; sn = 0; num = const (-1)} in
   let (_, e') = dfs vertices e in
     assert {subset vertices e'.black};
