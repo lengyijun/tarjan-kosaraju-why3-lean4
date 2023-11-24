@@ -255,13 +255,12 @@ predicate wf_num (e: env) =
 predicate no_black_to_white (black gray: fset vertex) =
   forall x x'. edge x x' -> mem x black -> mem x' (union black gray) 
 
-predicate wf_env (e: env) = let {stack = s; black = b; gray = g; sccs = ccs} = e in
+predicate wf_env (e: env) = let {stack = s; black = b; gray = g} = e in
   wf_color e /\ wf_num e /\
   no_black_to_white b g /\ simplelist s /\
   (forall x y. lmem x s -> lmem y s -> e.num[x] <= e.num [y] -> reachable x y) /\
   (forall y. lmem y s -> exists x. mem x g /\ e.num[x] <= e.num[y] /\ reachable y x) /\
-  (forall cc. mem cc e.sccs <-> subset cc b /\ is_scc cc) /\
-  (forall cc1, cc2. mem cc1 ccs -> mem cc2 ccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)
+  (forall cc. mem cc e.sccs <-> subset cc b /\ is_scc cc)
 
 predicate subenv (e e': env) =
   (exists s. e'.stack = s ++ e.stack /\ subset (E.elements s) e'.black) /\
@@ -361,6 +360,7 @@ requires {mem x vertices}
 requires {access_to e.gray x} 
 requires {not mem x (union e.black e.gray)} 
 requires {wf_env e} (* invariant I *)
+requires {forall cc1, cc2. mem cc1 e.sccs -> mem cc2 e.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty}
 returns {(_, e') -> subenv e e'} 
 returns {(_, e') -> wf_env e'}
 (* post-conditions *)
@@ -368,6 +368,7 @@ returns {(_, e') -> mem x e'.black}
 returns {(n, e') -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty() \/ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
+returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
 variant {cardinal (diff vertices (union e.black e.gray)), 0}
 
   let n0 = e.sn in
@@ -394,12 +395,14 @@ with  ghost dfs roots e =
 requires {subset roots vertices} 
 requires {forall x. mem x roots -> access_to e.gray x} 
 requires {wf_env e} (* invariant I *)
+requires {forall cc1, cc2. mem cc1 e.sccs -> mem cc2 e.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty}
 returns {(_, e') -> wf_env e' /\ subenv e e'}
 (* post-conditions *)
 returns {(_, e') -> subset roots (union e'.black e'.gray)} 
 returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
+returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
 variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
   if is_empty roots then (infty(), e) else
   let x = pick roots in
