@@ -7,7 +7,6 @@
 <prover id="3" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="6" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
-<prover id="8" name="CVC5" version="1.0.5" timelimit="100" steplimit="0" memlimit="10000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="scc.mlw"/>
 <theory name="SCCTarjan72" proved="true">
@@ -510,10 +509,10 @@
     <goal name="dfs1&#39;vc.10.0.0" expl="assertion" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.10.0.0.0" expl="VC for dfs1" proved="true">
-     <proof prover="8"><result status="valid" time="0.729788" steps="61430"/></proof>
+     <proof prover="3"><result status="valid" time="0.507452" steps="63224"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.10.0.0.1" expl="VC for dfs1" proved="true">
-     <proof prover="8"><result status="valid" time="0.138540" steps="24567"/></proof>
+     <proof prover="3"><result status="valid" time="0.055625" steps="27900"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.10.0.0.2" expl="VC for dfs1" proved="true">
      <proof prover="6"><result status="valid" time="3.059318" steps="10737"/></proof>
@@ -671,7 +670,7 @@
         <proof prover="6"><result status="valid" time="4.807894" steps="37271"/></proof>
         </goal>
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.2" expl="postcondition" proved="true">
-        <proof prover="8"><result status="valid" time="15.125656" steps="396087"/></proof>
+        <proof prover="3"><result status="valid" time="9.592013" steps="424514"/></proof>
         </goal>
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.3" expl="postcondition" proved="true">
         <proof prover="6"><result status="valid" time="16.304071" steps="123906"/></proof>
