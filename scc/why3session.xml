@@ -3,12 +3,12 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
 <prover id="1" name="Z3" version="4.12.2" timelimit="100" steplimit="0" memlimit="10000"/>
-<prover id="2" name="CVC4" version="1.8" timelimit="50" steplimit="0" memlimit="10000"/>
-<prover id="3" name="CVC5" version="1.0.8" timelimit="50" steplimit="0" memlimit="10000"/>
-<prover id="4" name="Eprover" version="2.0" timelimit="50" steplimit="0" memlimit="10000"/>
-<prover id="6" name="Alt-Ergo" version="2.5.2" timelimit="50" steplimit="0" memlimit="10000"/>
-<prover id="7" name="Alt-Ergo" version="2.4.0" timelimit="50" steplimit="0" memlimit="10000"/>
-<prover id="8" name="CVC5" version="1.0.5" timelimit="50" steplimit="0" memlimit="10000"/>
+<prover id="2" name="CVC4" version="1.8" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="3" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="6" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="7" name="Alt-Ergo" version="2.4.0" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="8" name="CVC5" version="1.0.5" timelimit="100" steplimit="0" memlimit="10000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="scc.mlw"/>
 <theory name="SCCTarjan72" proved="true">
