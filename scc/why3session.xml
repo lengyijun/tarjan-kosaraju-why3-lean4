@@ -471,17 +471,14 @@
             <goal name="dfs1&#39;vc.9.0.1.0.0.1.0.0.1.1.0" expl="asserted formula">
             <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="30024441"/></proof>
             <proof prover="2"><result status="timeout" time="50.000000" steps="4969082"/></proof>
-            <proof prover="8"><result status="timeout" time="50.000000" steps="2324880"/></proof>
             </goal>
             <goal name="dfs1&#39;vc.9.0.1.0.0.1.0.0.1.1.1" expl="asserted formula" proved="true">
             <transf name="assert" proved="true" arg1="((o3.num)[y&#39;] &lt; (o3.num)[x])">
              <goal name="dfs1&#39;vc.9.0.1.0.0.1.0.0.1.1.1.0" expl="asserted formula" proved="true">
              <proof prover="6"><result status="valid" time="23.238146" steps="89306"/></proof>
-             <proof prover="8"><result status="valid" time="1.660364" steps="115975"/></proof>
              </goal>
              <goal name="dfs1&#39;vc.9.0.1.0.0.1.0.0.1.1.1.1" expl="asserted formula" proved="true">
              <proof prover="6"><result status="valid" time="9.251992" steps="34142"/></proof>
-             <proof prover="8"><result status="valid" time="3.975290" steps="231554"/></proof>
              </goal>
             </transf>
             </goal>
@@ -542,7 +539,6 @@
             <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.0" expl="asserted formula" proved="true">
             <proof prover="1" timelimit="50"><result status="timeout" time="50.000000" steps="37235924"/></proof>
             <proof prover="2"><result status="timeout" time="50.000000" steps="6127653"/></proof>
-            <proof prover="8"><result status="timeout" time="50.000000" steps="2531394"/></proof>
             <transf name="assert" proved="true" arg1="(in_same_scc y&#39; x)">
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.0.0" expl="asserted formula" proved="true">
              <proof prover="4" timelimit="100"><result status="valid" time="1.183499"/></proof>
@@ -558,11 +554,9 @@
             <transf name="assert" proved="true" arg1="((o3.num)[y&#39;] &lt; (o3.num)[x])">
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.1.0" expl="asserted formula" proved="true">
              <proof prover="6"><result status="valid" time="13.083237" steps="46216"/></proof>
-             <proof prover="8"><result status="valid" time="1.762035" steps="92647"/></proof>
              </goal>
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.1.1" expl="asserted formula" proved="true">
              <proof prover="6"><result status="valid" time="2.506183" steps="15760"/></proof>
-             <proof prover="8"><result status="valid" time="1.049048" steps="91887"/></proof>
              </goal>
             </transf>
             </goal>
@@ -863,7 +857,6 @@
        <proof prover="2" timelimit="100"><result status="timeout" time="100.000000" steps="4102968"/></proof>
        <proof prover="4" timelimit="100"><result status="valid" time="0.428684"/></proof>
        <proof prover="6" timelimit="100"><result status="timeout" time="100.000000" steps="742591"/></proof>
-       <proof prover="8" timelimit="100"><result status="timeout" time="100.000000" steps="2160566"/></proof>
        </goal>
       </transf>
       </goal>
