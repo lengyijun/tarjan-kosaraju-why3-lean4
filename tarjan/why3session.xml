@@ -8,7 +8,7 @@
 <prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="6" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
 <file format="whyml" proved="true">
-<path name=".."/><path name="scc.mlw"/>
+<path name=".."/><path name="tarjan.mlw"/>
 <theory name="SCCTarjan72" proved="true">
  <goal name="lmem_dec" proved="true">
  <proof prover="6"><result status="valid" time="0.021601" steps="1"/></proof>
