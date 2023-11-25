@@ -328,7 +328,7 @@
  <goal name="dfs1&#39;vc" expl="VC for dfs1" proved="true">
  <transf name="split_goal_full" proved="true" >
   <goal name="dfs1&#39;vc.0" expl="variant decrease" proved="true">
-  <proof prover="6"><result status="valid" time="0.609114" steps="2148"/></proof>
+  <proof prover="6"><result status="valid" time="0.302042" steps="2148"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.1" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.069262" steps="38"/></proof>
@@ -788,7 +788,7 @@
  <goal name="dfs&#39;vc" expl="VC for dfs" proved="true">
  <transf name="split_goal_full" proved="true" >
   <goal name="dfs&#39;vc.0" expl="variant decrease" proved="true">
-  <proof prover="6"><result status="valid" time="0.028830" steps="4"/></proof>
+  <proof prover="6"><result status="valid" time="0.028830" steps="1"/></proof>
   </goal>
   <goal name="dfs&#39;vc.1" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.039332" steps="45"/></proof>

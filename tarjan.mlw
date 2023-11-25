@@ -369,7 +369,7 @@ returns {(n, e') -> n <= e'.num[x]}
 returns {(n, e') -> n = infty() \/ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
 returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
-variant {cardinal (diff vertices (union e.black e.gray)), 0}
+variant {cardinal (diff vertices (union e.black e.gray))}
 
   let n0 = e.sn in
   let (n1, e1) = dfs (successors x) (add_stack_incr x e) in
@@ -403,7 +403,7 @@ returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]}
 returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
 returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
-variant {cardinal (diff vertices (union e.black e.gray)), 1, cardinal roots}
+variant {cardinal (diff vertices (union e.black e.gray)), cardinal roots}
   if is_empty roots then (infty(), e) else
   let x = pick roots in
   let roots' = remove x roots in
