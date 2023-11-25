@@ -1,0 +1,350 @@
+(** {1 Abstract Kosaraju 1978 Strongly Connected Components in Graph}
+
+The graph is represented by a pair ([vertices], [successor])
+{h
+<ul>
+<li> <code>vertices</code> : this constant is the set of graph vertices
+<li> <code>successor</code> : this function gives for each vertex the set of vertices directly joinable from it
+</ul>
+
+The algorithm makes two depth-first-search in the graph and its reversed companion. After stacking the vertices in the (post-)order of their visit, one finds the strongly connected components. 
+<br>
+Quasi fully automatic proof.
+}
+
+*)
+
+(** {3 Preamble module} *)
+
+module GraphSetSucc
+
+(** A graph is represented by a pair ([vertices], [successor])
+{h
+<ul>
+<li> <code>vertices</code> : this constant is the fset of graph vertices
+<li> <code>successor</code> : this function gives for each vertex the fset of vertices directly joinable from it
+</ul>
+*)
+
+ (* use export fset.Fset *)
+  use map.Map
+  use set.SetImp 
+  
+  type vertex
+
+  
+  val eq_vertex (x y: vertex) : bool
+    ensures { result <-> x = y }
+
+  constant vertices: fset vertex
+
+  function successors vertex : fset vertex
+
+  axiom successors_vertices:
+    forall x. mem x vertices -> subset (successors x) vertices
+
+  predicate edge (x y: vertex) = mem x vertices /\ mem y (successors x)
+
+  clone export graph.Path with type vertex = vertex, predicate edge = edge
+
+end
+
+module Kosaraju
+  use set.Fset
+
+  type vertex
+
+  clone export GraphSetSucc with type vertex = vertex 
+
+  predicate reachable (x z: vertex) =
+    exists l. path x l z
+
+  lemma reachable_trans:
+    forall x y z. reachable x y -> reachable y z -> reachable x z
+
+  predicate access_from (x: vertex) (s: fset vertex) =
+    forall y. mem y s -> reachable x y
+
+  predicate access_from_set (roots b: fset vertex) = forall z. mem z b -> exists x. mem x roots /\ reachable x z
+
+  predicate no_black_to_white (blacks grays: fset vertex) =
+    forall x x'. edge x x' -> mem x blacks -> mem x' (union blacks grays)
+
+  lemma access_from_successors:
+    forall x s. mem x vertices -> access_from_set (successors x) s -> access_from x s
+
+  lemma access_from_extension:
+    forall x s. access_from x s -> access_from x (add x s)
+
+  predicate wff_color (blacks grays: fset vertex) = 
+    inter blacks grays = empty /\ 
+    no_black_to_white blacks grays
+    
+end
+
+(** {3 Module SCCK} *)
+
+module SCCK
+  use int.Int
+  use list.List
+  use list.Length
+  use list.Append
+  use list.Mem as L
+  use list.NumOcc
+  use list.Elements as E
+  use list.HdTlNoOpt
+  use set.Fset
+
+
+  type vertex
+
+  clone import Kosaraju as G1 with type vertex = vertex
+  clone import Kosaraju as G2 with type vertex = vertex
+
+  axiom reverse_graph:  G1.vertices == G2.vertices /\  (forall x y. G1.edge x y <-> G2.edge y x)
+    
+(** {4 Ranks and Lists} *)
+
+  predicate lmem (x: 'a) (s: list 'a) = L.mem x s 
+  function max_int (): int = cardinal G1.vertices
+
+  function rank (x: 'a) (s: list 'a): int =
+    match s with
+    | Nil -> max_int()
+    | Cons y s' -> if x = y && not (lmem x s') then length s' else rank x s'
+    end
+
+  lemma rank_range:
+    forall x:'a, s [@induction]. lmem x s -> 0 <= rank x s < length s
+
+(* simple lists *)
+
+  predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
+
+  lemma simplelist_sub:
+    forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not lmem x l
+
+(** {4 Sets} *)
+
+  lemma inter_assoc:
+    forall s1 s2: fset 'a. inter s1 s2 == inter s2 s1
+
+  lemma inter_add:
+    forall s1 s2: fset 'a, x: 'a. not mem x s2 -> inter (add x s1) s2 == inter s1 s2
+
+  lemma inter_elt:   
+    forall s1 s2: fset 'a, x: 'a. inter s1 (add x s2) = empty -> not mem x s2 -> inter (add x s1) s2 = empty
+
+  lemma set_elt:
+    forall x: 'a, s1 s2 s3: fset 'a. not mem x s3 -> union (add x s1) (diff s2 s3) == union s1 (diff (add x s2) s3)
+
+  lemma elements_add:
+    forall x: 'a, l: list 'a. E.elements (Cons x l) == add x (E.elements l)
+
+  lemma simplelist_inter:
+    forall l1 [@induction] l2 [@induction]: list 'a. simplelist (l1 ++ l2) -> inter (E.elements l1) (E.elements l2) = empty
+
+  lemma length_eq_cardinal:
+    forall s [@induction]: list 'a. simplelist s -> length s = cardinal (E.elements s)
+
+  lemma elements_elt_exchange:
+    forall x y: 'a, l. E.elements (Cons x (Cons y l)) == E.elements (Cons y (Cons x l))
+
+  lemma elements_append_comm:
+    forall l1 l2: list 'a. E.elements (l1 ++ l2) == E.elements (l2 ++ l1)
+
+  lemma subset_inter_subset:
+    forall b b' cc: fset 'a. subset b b' -> subset cc b' -> subset cc b \/ inter cc (diff b' b) <> empty
+    
+(** {4 Strongly connected components paths} *)
+
+  predicate in_same_scc (x z: vertex)  =
+    G1.reachable x z /\ G1.reachable z x
+
+  predicate is_subscc (s: fset vertex) = 
+    forall x z. mem x s -> mem z s -> in_same_scc x z
+
+  predicate is_scc (s: fset vertex) =
+    is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
+
+  lemma same_scc_refl:
+    forall x. in_same_scc x x
+
+  lemma same_scc_sym: 
+    forall x z. in_same_scc x z -> in_same_scc z x
+
+  lemma same_scc_trans: 
+    forall x y z. 
+    in_same_scc x y -> in_same_scc y z -> in_same_scc x z
+
+  lemma cc_ext:
+    forall x y cc. is_subscc cc -> mem x cc -> in_same_scc x y -> is_subscc (add y cc)
+
+  lemma scc_max:
+    forall x y cc. is_scc cc -> mem x cc -> in_same_scc x y -> mem y cc
+
+  lemma disjoint_scc:
+    forall cc1 [@induction] cc2 [@induction]. inter cc1 cc2 <> empty -> is_scc cc1 -> is_scc cc2 -> cc1 == cc2
+
+(** {4 invariants definitions} *)
+
+  predicate reachable_before (x y: vertex) (s: list vertex) = 
+   exists l. G1.path x l y /\ (forall z. lmem z l -> lmem z s /\ rank z s <= rank y s) 
+
+  predicate reachable_before_rev (x y: vertex) (s: list vertex) = 
+   exists l. G2.path x l y /\ (forall z. lmem z l -> lmem z s /\ rank z s <= rank x s) /\ lmem y s /\ rank y s <= rank x s
+
+  predicate reachable_before_same_scc (s: list vertex) =
+   forall x y. lmem x s -> lmem y s -> reachable_before x y s -> in_same_scc x y
+
+  predicate no_edge_out_of (s3 s1: list vertex) = 
+    forall s2. s1 = s2 ++ s3 -> forall x y. lmem x s3 -> lmem y s2 -> not G1.edge x y
+
+  predicate path_in (l: list vertex) (s: list vertex) =
+   forall z. lmem z l -> lmem z s
+   
+  predicate no_path_out_of_in (s3 s1: list vertex) =
+    forall x y l s2. s1 = s2 ++ s3 -> lmem x s3 -> lmem y s2 -> G1.path x l y -> path_in l s1 -> false
+
+  predicate paths_in_set (cc: fset vertex) =
+    forall x l y. mem x cc -> mem y cc -> G2.path x l y -> forall z. lmem z l -> mem z cc
+
+  predicate wff_stack_G1 (blacks grays: fset vertex) (s: list vertex) =
+    G1.wff_color blacks grays /\ simplelist s /\ E.elements s == blacks
+    /\ subset (E.elements s) G1.vertices /\ reachable_before_same_scc s
+
+  predicate wff_stack_G2 (blacks grays: fset vertex) (s: list vertex) =
+    G2.wff_color blacks grays /\ simplelist s /\ subset (E.elements s) G2.vertices /\
+    reachable_before_same_scc s
+    
+(** {4 paths reversed, before, out} *)
+
+  lemma reverse_graph_reverse_path:
+    forall x l y. G1.path x l y -> exists l'. G2.path y l' x /\ E.elements (Cons y l) == E.elements (Cons x l')
+
+  lemma reverse_graph_reverse_path_rev:
+    forall x l y. G2.path x l y -> exists l'. G1.path y l' x /\ E.elements (Cons y l) == E.elements (Cons x l')
+
+  lemma reachable_before_shrink:
+    forall x y z s. reachable_before x y (Cons z s) -> lmem y s -> reachable_before x y s
+
+  lemma reachable_before_extension:
+    forall x y z s. lmem x s -> lmem y s -> reachable_before x y s -> reachable_before x y (Cons z s)
+
+  lemma no_edge_out_of_cons:
+    forall s1 s2 x. no_edge_out_of s1 s2 -> (forall z. lmem z s1 -> not G1.edge z x) -> no_edge_out_of s1 (Cons x s2)
+
+  lemma path_cross_sets:
+    forall x y s1 [@induction] s2 [@induction] l. simplelist (s1 ++ s2) -> lmem y s2 -> lmem x s1 -> G1.path y l x -> path_in l (s1 ++ s2) -> exists y' x'. lmem y' s2 /\ lmem x' s1 /\ G1.edge y' x'
+
+  lemma no_edge_out_of_no_path_out_of_in:
+    forall s1 s2. simplelist s2 -> no_edge_out_of s1 s2 -> no_path_out_of_in s1 s2 
+
+  lemma no_black_to_white_no_path:
+    forall b. G2.no_black_to_white b empty -> forall x y l. mem x b -> not mem y b -> G2.path x l y -> false
+
+  lemma no_black_to_white_in_the_middle:
+    forall b b'. G2.no_black_to_white b empty -> G2.no_black_to_white b' empty -> subset b b' -> paths_in_set (diff b' b)
+
+  lemma reachable_before_reverse:
+    forall x y cc. reachable_before_rev x y cc -> reachable_before y x cc
+
+  lemma paths_in_set_reachable_before:
+    forall x z cc s. paths_in_set cc -> simplelist (Cons x s) -> subset cc (E.elements (Cons x s)) ->
+    mem x cc -> mem z cc -> G2.reachable x z -> reachable_before_rev x z (Cons x s)
+
+  lemma paths_in_set_same_scc_in_set:
+    forall x y cc. paths_in_set cc -> in_same_scc x y -> mem x cc -> mem y cc
+
+  lemma wff_stack_white_extension:
+    forall b g b' g' s s'. wff_stack_G1 b g s -> wff_stack_G1 b' g' (s' ++ s) ->
+    subset b b' -> subset g g' -> simplelist (s' ++ s) -> forall x. lmem x s' -> not mem x (union b g)
+
+(** {4 dfs1} *)
+
+let rec ghost dfs1 roots blacks grays stack =
+requires {subset roots G1.vertices} (* R1 *)
+requires {subset grays G1.vertices} 
+(* invariants *)
+requires {wff_stack_G1 blacks grays stack} (* I1a *)
+returns{(b, s) -> wff_stack_G1 b grays s} (* I1b *)
+(* post conditions *)
+returns{(b, _) -> subset roots (union b grays)} (* E1 *)
+(* monotony *)
+returns {(_, s) -> exists s'. s = s' ++ stack /\ G1.access_from_set roots (E.elements s')} (* M1 *)  
+returns {(b, _) -> subset blacks b} (* M2 *)
+variant {cardinal G1.vertices - cardinal grays, cardinal roots }
+
+    if is_empty roots then (blacks, stack)
+    else
+      let x = pick roots in
+      let roots' = remove x roots in
+      let (b1, s1) = 
+        if mem x (union blacks grays) then (blacks, stack)
+        else let (b2, s2) = dfs1 (G1.successors x) blacks (add x grays) stack in
+          assert {not lmem x s2};
+          assert {exists s'. Cons x s2 = s' ++ stack /\ G1.access_from x (E.elements s')};
+          assert {no_edge_out_of stack (Cons x s2)}; 
+          assert {no_path_out_of_in stack (Cons x s2)};  
+          (add x b2, Cons x s2) in 
+      dfs1 roots' b1 grays s1
+
+(** {4 dfs2} *)
+
+let rec ghost dfs2 roots blacks grays =
+requires {subset roots G2.vertices} (* R1 *)
+requires {subset grays G2.vertices} 
+(* invariants *)
+requires {G2.wff_color blacks grays} (* I1a *)
+ensures {G2.wff_color result grays} (* I1b *)
+(* post conditions *)
+ensures {subset roots (union result grays)} (* E1 *)
+ensures {G2.access_from_set roots (diff result blacks)}
+(* monotony *)
+ensures {subset blacks result} (* M2 *)
+variant {cardinal G2.vertices - cardinal grays, cardinal roots }
+
+    if is_empty roots then blacks
+    else
+      let x = pick roots in
+      let roots' = remove x roots in
+      let b1 = 
+        if mem x (union blacks grays) then blacks
+        else add x (dfs2 (G2.successors x) blacks (add x grays)) in
+      dfs2 roots' b1 grays
+
+(** {4 iter2} *)
+
+let rec ghost iter2 stack blacks sccs = 
+requires {subset (diff G2.vertices blacks) (E.elements stack)}
+requires {wff_stack_G2 blacks empty stack} (* I1a *)
+requires {forall cc. mem cc sccs <-> is_scc cc /\ subset cc blacks} (* I2a *)
+returns {(b, _) -> wff_stack_G2 b empty Nil} (* I1b *)
+returns {(b, sccs_n) -> forall cc. mem cc sccs_n <-> is_scc cc /\ subset cc b} (* I2b *)
+variant {stack}
+
+    match stack with
+    | Nil -> (blacks, sccs)
+    | Cons x s ->
+      if mem x blacks then iter2 s blacks sccs
+      else
+        let b1 = dfs2 (add x empty) blacks empty in
+        let cc1 = diff b1 blacks in
+        assert {subset cc1 (E.elements stack)};
+        assert {forall y. mem y cc1 -> reachable_before y x stack};      
+        assert {is_subscc cc1 /\ mem x cc1};  
+        assert {forall y. in_same_scc y x -> mem y cc1};
+        assert {is_scc cc1};
+        iter2 s b1 (add cc1 sccs)
+    end
+
+(** {4 scc_main} *)
+
+let ghost scc_main () =
+returns {(_, sccs_n) -> forall cc. mem cc sccs_n <-> is_scc cc /\ subset cc G1.vertices}
+    let (_, s) = dfs1 G1.vertices empty empty Nil in
+    iter2 s empty empty
+
+end
+
+
