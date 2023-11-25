@@ -319,9 +319,11 @@ let rec ghost iter2 stack blacks sccs =
 requires {subset (diff G2.vertices blacks) (E.elements stack)}
 requires {wff_stack_G2 blacks empty stack} (* I1a *)
 requires {forall cc.  mem cc sccs <-> cc <> empty /\ is_scc cc /\ subset cc blacks} (* I2a *)
+requires {forall cc1, cc2. mem cc1 sccs -> mem cc2 sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
 returns {(b, _) -> wff_stack_G2 b empty Nil} (* I1b *)
 returns {(b, sccs_n) -> forall cc. mem cc sccs_n <-> cc <> empty /\ is_scc cc /\ subset cc b} (* I2b *)
 returns {(b, _) -> b == union (E.elements stack) blacks}
+returns {(_, sccs_n) -> forall cc1, cc2. mem cc1 sccs_n -> mem cc2 sccs_n -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
 variant {stack}
 
     match stack with
@@ -343,6 +345,7 @@ variant {stack}
 
 let ghost scc_main () =
 returns {(_, sccs_n) -> forall cc. mem cc sccs_n <-> cc <> empty /\ is_scc cc /\ subset cc G1.vertices}
+returns {(_, sccs_n) -> forall cc1, cc2. mem cc1 sccs_n -> mem cc2 sccs_n -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
     let (_, s) = dfs1 G1.vertices empty empty Nil in
     iter2 s empty empty
 
