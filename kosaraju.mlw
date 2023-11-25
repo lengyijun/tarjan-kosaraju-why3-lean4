@@ -54,7 +54,7 @@ module Kosaraju
 
   type vertex
 
-  clone export GraphSetSucc with type vertex = vertex 
+  clone export GraphSetSucc with type vertex = vertex, axiom successors_vertices
 
   predicate reachable (x z: vertex) =
     exists l. path x l z
@@ -98,8 +98,8 @@ module SCCK
 
   type vertex
 
-  clone import Kosaraju as G1 with type vertex = vertex
-  clone import Kosaraju as G2 with type vertex = vertex
+  clone import Kosaraju as G1 with type vertex = vertex, axiom successors_vertices
+  clone import Kosaraju as G2 with type vertex = vertex, axiom successors_vertices
 
   axiom reverse_graph:  G1.vertices == G2.vertices /\  (forall x y. G1.edge x y <-> G2.edge y x)
     
@@ -321,6 +321,7 @@ requires {wff_stack_G2 blacks empty stack} (* I1a *)
 requires {forall cc.  mem cc sccs <-> cc <> empty /\ is_scc cc /\ subset cc blacks} (* I2a *)
 returns {(b, _) -> wff_stack_G2 b empty Nil} (* I1b *)
 returns {(b, sccs_n) -> forall cc. mem cc sccs_n <-> cc <> empty /\ is_scc cc /\ subset cc b} (* I2b *)
+returns {(b, _) -> b == union (E.elements stack) blacks}
 variant {stack}
 
     match stack with

@@ -5,31 +5,17 @@
 <prover id="0" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="1" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="2" name="CVC4" version="1.8" timelimit="100" steplimit="0" memlimit="10000"/>
-<prover id="3" name="Z3" version="4.12.2" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
-<file format="whyml">
+<file format="whyml" proved="true">
 <path name=".."/><path name="kosaraju.mlw"/>
-<theory name="Kosaraju">
- <goal name="successors_vertices">
- <proof prover="0"><result status="timeout" time="100.000000" steps="1368327"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="321229"/></proof>
- <proof prover="2"><result status="timeout" time="100.000000" steps="20059186"/></proof>
- <proof prover="3"><result status="timeout" time="100.000000" steps="67531989"/></proof>
- <proof prover="4"><result status="timeout" time="100.000000"/></proof>
- </goal>
+<theory name="Kosaraju" proved="true">
  <goal name="reachable_trans" proved="true">
  <proof prover="0"><result status="valid" time="0.047760" steps="8631"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="244185"/></proof>
  </goal>
  <goal name="access_from_successors" proved="true">
  <proof prover="1"><result status="valid" time="9.098860" steps="14258"/></proof>
  </goal>
  <goal name="access_from_extension" proved="true">
- <proof prover="0"><result status="timeout" time="100.000000" steps="1982265"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="891984"/></proof>
- <proof prover="2"><result status="timeout" time="100.000000" steps="14171265"/></proof>
- <proof prover="3"><result status="timeout" time="100.000000" steps="59904767"/></proof>
- <proof prover="4"><result status="timeout" time="100.000000"/></proof>
  <transf name="introduce_premises" proved="true" >
   <goal name="access_from_extension.0" proved="true">
   <transf name="inline_goal" proved="true" >
@@ -41,7 +27,7 @@
  </transf>
  </goal>
 </theory>
-<theory name="SCCK">
+<theory name="SCCK" proved="true">
  <goal name="rank_range" proved="true">
  <transf name="induction_ty_lex" proved="true" >
   <goal name="rank_range.0" proved="true">
@@ -70,7 +56,6 @@
  </goal>
  <goal name="simplelist_sub" proved="true">
  <proof prover="0"><result status="valid" time="0.477090" steps="48688"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="180827"/></proof>
  </goal>
  <goal name="inter_assoc" proved="true">
  <proof prover="1"><result status="valid" time="0.033279" steps="22"/></proof>
@@ -88,11 +73,6 @@
  <proof prover="1"><result status="valid" time="0.037357" steps="26"/></proof>
  </goal>
  <goal name="simplelist_inter" proved="true">
- <proof prover="0"><result status="timeout" time="100.000000" steps="2091277"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="96897"/></proof>
- <proof prover="2"><result status="timeout" time="100.000000" steps="20089987"/></proof>
- <proof prover="3"><result status="timeout" time="100.000000" steps="7218303"/></proof>
- <proof prover="4"><result status="timeout" time="100.000000"/></proof>
  <transf name="induction_ty_lex" proved="true" >
   <goal name="simplelist_inter.0" proved="true">
   <transf name="split_goal_full" proved="true" >
@@ -162,14 +142,8 @@
  </goal>
  <goal name="scc_max" proved="true">
  <proof prover="0"><result status="valid" time="0.158516" steps="17776"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="226497"/></proof>
  </goal>
  <goal name="disjoint_scc" proved="true">
- <proof prover="0"><result status="timeout" time="100.000000" steps="3361364"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="202279"/></proof>
- <proof prover="2"><result status="timeout" time="100.000000" steps="11503374"/></proof>
- <proof prover="3"><result status="timeout" time="100.000000" steps="6152585"/></proof>
- <proof prover="4"><result status="timeout" time="100.000000"/></proof>
  <transf name="inline_goal" proved="true" >
   <goal name="disjoint_scc.0" proved="true">
   <transf name="split_goal_full" proved="true" >
@@ -211,7 +185,6 @@
  </goal>
  <goal name="no_edge_out_of_cons" proved="true">
  <proof prover="0"><result status="valid" time="0.139486" steps="20661"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="156322"/></proof>
  </goal>
  <goal name="path_cross_sets" proved="true">
  <transf name="induction_pr" proved="true" >
@@ -241,25 +214,17 @@
  </goal>
  <goal name="reachable_before_reverse" proved="true">
  <proof prover="0"><result status="valid" time="2.148872" steps="125199"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="220851"/></proof>
  </goal>
  <goal name="paths_in_set_reachable_before" proved="true">
  <proof prover="1"><result status="valid" time="0.535412" steps="1175"/></proof>
  </goal>
  <goal name="paths_in_set_same_scc_in_set" proved="true">
- <proof prover="0"><result status="timeout" time="100.000000" steps="566349"/></proof>
- <proof prover="1"><result status="timeout" time="100.000000" steps="200248"/></proof>
- <proof prover="2"><result status="timeout" time="100.000000" steps="10408283"/></proof>
- <proof prover="3"><result status="timeout" time="100.000000" steps="16260521"/></proof>
- <proof prover="4"><result status="timeout" time="100.000000"/></proof>
  <transf name="introduce_premises" proved="true" >
   <goal name="paths_in_set_same_scc_in_set.0" proved="true">
   <transf name="unfold" proved="true" arg1="paths_in_set" arg2="in" arg3="H2">
    <goal name="paths_in_set_same_scc_in_set.0.0" proved="true">
    <transf name="unfold" proved="true" arg1="in_same_scc" arg2="in" arg3="H1">
     <goal name="paths_in_set_same_scc_in_set.0.0.0" proved="true">
-    <proof prover="0"><undone/></proof>
-    <proof prover="1"><undone/></proof>
     <proof prover="2"><result status="valid" time="2.585475" steps="182156"/></proof>
     </goal>
    </transf>
@@ -573,7 +538,6 @@
   </goal>
   <goal name="iter2&#39;vc.15" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="5.621714" steps="235410"/></proof>
-  <proof prover="1"><result status="timeout" time="100.000000" steps="410599"/></proof>
   <proof prover="2"><result status="valid" time="6.086967" steps="299420"/></proof>
   </goal>
   <goal name="iter2&#39;vc.16" expl="postcondition" proved="true">
@@ -583,21 +547,30 @@
   <proof prover="1"><result status="valid" time="0.044373" steps="50"/></proof>
   </goal>
   <goal name="iter2&#39;vc.18" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.036116" steps="16"/></proof>
+  <proof prover="1"><result status="valid" time="0.065099" steps="273"/></proof>
   </goal>
   <goal name="iter2&#39;vc.19" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.031290" steps="80"/></proof>
+  <proof prover="1"><result status="valid" time="0.033080" steps="16"/></proof>
   </goal>
   <goal name="iter2&#39;vc.20" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.033080" steps="24"/></proof>
+  <proof prover="1"><result status="valid" time="0.048850" steps="90"/></proof>
   </goal>
   <goal name="iter2&#39;vc.21" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.048850" steps="138"/></proof>
+  <proof prover="1"><result status="valid" time="0.117838" steps="679"/></proof>
+  </goal>
+  <goal name="iter2&#39;vc.22" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.036116" steps="24"/></proof>
+  </goal>
+  <goal name="iter2&#39;vc.23" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.031290" steps="148"/></proof>
+  </goal>
+  <goal name="iter2&#39;vc.24" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.530680" steps="3482"/></proof>
   </goal>
  </transf>
  </goal>
- <goal name="scc_main&#39;vc" expl="VC for scc_main">
- <transf name="split_goal_full" >
+ <goal name="scc_main&#39;vc" expl="VC for scc_main" proved="true">
+ <transf name="split_goal_full" proved="true" >
   <goal name="scc_main&#39;vc.0" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="0.031421" steps="7"/></proof>
   </goal>
@@ -619,44 +592,37 @@
   <proof prover="2"><result status="valid" time="0.428596" steps="38325"/></proof>
   <proof prover="4"><result status="valid" time="0.111919"/></proof>
   </goal>
-  <goal name="scc_main&#39;vc.6" expl="postcondition">
-  <proof prover="0"><result status="timeout" time="100.000000" steps="251384"/></proof>
-  <proof prover="1"><result status="timeout" time="100.000000" steps="689000"/></proof>
-  <proof prover="2"><result status="timeout" time="100.000000" steps="7097836"/></proof>
-  <proof prover="4"><result status="timeout" time="100.000000"/></proof>
-  <transf name="introduce_premises" >
-   <goal name="scc_main&#39;vc.6.0" expl="postcondition">
-   <transf name="split_goal_full" >
-    <goal name="scc_main&#39;vc.6.0.0" expl="VC for scc_main">
+  <goal name="scc_main&#39;vc.6" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.215416" steps="31097"/></proof>
+  <proof prover="1"><result status="valid" time="0.073400" steps="426"/></proof>
+  <proof prover="2"><result status="valid" time="0.259490" steps="36944"/></proof>
+  <proof prover="4"><result status="valid" time="3.464954"/></proof>
+  <transf name="introduce_premises" proved="true" >
+   <goal name="scc_main&#39;vc.6.0" expl="postcondition" proved="true">
+   <transf name="assert" proved="true" arg1="(result = vertices1)">
+    <goal name="scc_main&#39;vc.6.0.0" expl="asserted formula" proved="true">
+    <proof prover="0"><result status="valid" time="0.178443" steps="26604"/></proof>
+    <proof prover="1"><result status="valid" time="0.056933" steps="183"/></proof>
+    <proof prover="2"><result status="valid" time="0.247315" steps="33910"/></proof>
     </goal>
-    <goal name="scc_main&#39;vc.6.0.1" expl="VC for scc_main" proved="true">
-    <proof prover="1"><result status="valid" time="0.072958" steps="21"/></proof>
-    </goal>
-    <goal name="scc_main&#39;vc.6.0.2" expl="VC for scc_main">
-    <proof prover="1"><result status="timeout" time="100.000000" steps="726428"/></proof>
-    </goal>
-    <goal name="scc_main&#39;vc.6.0.3" expl="VC for scc_main">
-    <proof prover="1"><result status="timeout" time="100.000000" steps="514115"/></proof>
+    <goal name="scc_main&#39;vc.6.0.1" expl="postcondition" proved="true">
+    <proof prover="1"><result status="valid" time="0.039443" steps="90"/></proof>
     </goal>
    </transf>
    </goal>
   </transf>
-  <transf name="split_goal_full" >
+  <transf name="split_goal_full" proved="true" >
    <goal name="scc_main&#39;vc.6.0" expl="postcondition" proved="true">
-   <proof prover="1"><result status="valid" time="0.034776" steps="24"/></proof>
+   <proof prover="1"><result status="valid" time="0.034776" steps="26"/></proof>
    </goal>
    <goal name="scc_main&#39;vc.6.1" expl="postcondition" proved="true">
-   <proof prover="1"><result status="valid" time="0.036859" steps="28"/></proof>
+   <proof prover="1"><result status="valid" time="0.036859" steps="30"/></proof>
    </goal>
-   <goal name="scc_main&#39;vc.6.2" expl="postcondition">
-   <proof prover="1"><result status="timeout" time="100.000000" steps="715286"/></proof>
-   <transf name="introduce_premises" >
-    <goal name="scc_main&#39;vc.6.2.0" expl="postcondition">
-    </goal>
-   </transf>
+   <goal name="scc_main&#39;vc.6.2" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.092805" steps="207"/></proof>
    </goal>
-   <goal name="scc_main&#39;vc.6.3" expl="postcondition">
-   <proof prover="1"><result status="timeout" time="100.000000" steps="475665"/></proof>
+   <goal name="scc_main&#39;vc.6.3" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.045768" steps="155"/></proof>
    </goal>
   </transf>
   </goal>
