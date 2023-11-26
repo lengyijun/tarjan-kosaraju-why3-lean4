@@ -96,12 +96,6 @@ module SCCK
 
 (** {4 Sets} *)
 
-  lemma inter_assoc:
-    forall s1 s2: fset 'a. inter s1 s2 == inter s2 s1
-
-  lemma inter_add:
-    forall s1 s2: fset 'a, x: 'a. not mem x s2 -> inter (add x s1) s2 == inter s1 s2
-
   lemma inter_elt:   
     forall s1 s2: fset 'a, x: 'a. inter s1 (add x s2) = empty -> not mem x s2 -> inter (add x s1) s2 = empty
 
