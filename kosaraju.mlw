@@ -16,45 +16,12 @@ Quasi fully automatic proof.
 
 (** {3 Preamble module} *)
 
-module GraphSetSucc
-
-(** A graph is represented by a pair ([vertices], [successor])
-{h
-<ul>
-<li> <code>vertices</code> : this constant is the fset of graph vertices
-<li> <code>successor</code> : this function gives for each vertex the fset of vertices directly joinable from it
-</ul>
-*)
-
- (* use export fset.Fset *)
-  use map.Map
-  use set.SetImp 
-  
-  type vertex
-
-  
-  val eq_vertex (x y: vertex) : bool
-    ensures { result <-> x = y }
-
-  constant vertices: fset vertex
-
-  function successors vertex : fset vertex
-
-  axiom successors_vertices:
-    forall x. mem x vertices -> subset (successors x) vertices
-
-  predicate edge (x y: vertex) = mem x vertices /\ mem y (successors x)
-
-  clone export graph.Path with type vertex = vertex, predicate edge = edge
-
-end
-
 module Kosaraju
   use set.Fset
 
   type vertex
 
-  clone export GraphSetSucc with type vertex = vertex, axiom successors_vertices
+  clone export init_graph.GraphSetSucc with type vertex = vertex, axiom successors_vertices
 
   predicate reachable (x z: vertex) =
     exists l. path x l z

@@ -14,3 +14,8 @@ with a little fix
 Why3 platform, version 1.6.0+git
 ```
 
+```
+why3 -L .  replay tarjan/
+why3 -L .  replay kosaraju/
+```
+
