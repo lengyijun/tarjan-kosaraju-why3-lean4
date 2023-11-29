@@ -14,7 +14,6 @@ module SCCTarjan72
 
   
 predicate lmem (x: 'a) (s: list 'a) = L.mem x s
-function infty (): int = cardinal vertices
 
 lemma lmem_dec:
   forall x: 'a, l: list 'a. lmem x l \/ not lmem x l
@@ -213,9 +212,9 @@ predicate wf_color (e: env) =
 
 predicate wf_num (e: env) =
   let {stack = s; black = b; gray = g; sccs = ccs; sn = n; num = f} = e in 
-  (forall x. -1 <= f[x] < n <= infty() \/ f[x] = infty())  /\
+  (forall x. -1 <= f[x] < n <= infty \/ f[x] = infty)  /\
   n = cardinal (union g b) /\
-  (forall x. f[x] = infty() <-> mem x (set_of ccs)) /\
+  (forall x. f[x] = infty <-> mem x (set_of ccs)) /\
   (forall x. f[x] = -1 <-> not mem x (union g b)) /\
   (forall x y. lmem x s -> lmem y s -> f[x] <= f[y] <-> precedes y x s) 
 
@@ -274,7 +273,7 @@ lemma wf_color_3_cases:
   forall x e. wf_color e -> mem x (set_of e.sccs) \/ mem x (E.elements e.stack) \/ not (mem x (union e.black e.gray))
 
 lemma num_lmem:
-  forall e x. wf_env e -> 0 <= e.num[x] < infty() <-> lmem x e.stack
+  forall e x. wf_env e -> 0 <= e.num[x] < infty <-> lmem x e.stack
 
 lemma num_rank_strict:
     forall e x y. wf_env e -> lmem x e.stack -> lmem y e.stack -> 
@@ -313,12 +312,12 @@ returns {r -> r.black = add x e.black /\ r.gray = remove x e.gray
   stack = e.stack; sccs = e.sccs; sn = e.sn; num = e.num}
 
 let rec ghost set_infty (s : list vertex)(f : map vertex int) =
-returns {f' -> forall x. lmem x s -> f'[x] = infty()}
+returns {f' -> forall x. lmem x s -> f'[x] = infty}
 returns {f' -> forall x. not lmem x s -> f'[x] = f[x] }
 variant {s}
   match s with
   | Nil -> f
-  | Cons x s' -> (set_infty s' f)[x <- infty()]
+  | Cons x s' -> (set_infty s' f)[x <- infty]
   end
 
 (* dfs1 *)
@@ -333,7 +332,7 @@ returns {(_, e') -> wf_env e'}
 (* post-conditions *)
 returns {(_, e') -> mem x e'.black} 
 returns {(n, e') -> n <= e'.num[x]} 
-returns {(n, e') -> n = infty() \/ num_of_reachable n x e'} 
+returns {(n, e') -> n = infty \/ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
 returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
 variant {cardinal (diff vertices (union e.black e.gray))}
@@ -344,7 +343,7 @@ variant {cardinal (diff vertices (union e.black e.gray))}
   assert {is_last x s2 /\ s3 = e.stack /\ subset (E.elements s2) (add x e1.black)};
   assert {is_subscc (E.elements s2)};
   if n1 < n0 then begin
-    assert {n1 <> infty()};
+    assert {n1 <> infty};
     assert {exists y. y <> x /\ mem y e1.gray /\ e1.num[y] < e1.num[x] /\ in_same_scc x y};
     (n1, add_black x e1) end
   else begin
@@ -352,7 +351,7 @@ variant {cardinal (diff vertices (union e.black e.gray))}
     assert {is_scc (E.elements s2)};
     assert {inter e.gray (E.elements s2) == empty}; 
     assert {forall cc. mem cc e1.sccs -> inter (E.elements s2) cc == empty};
-    (infty(), {black = add x e1.black; gray = e.gray;
+    (infty, {black = add x e1.black; gray = e.gray;
       stack = s3; sccs = add (E.elements s2) e1.sccs;
       sn = e1.sn; num = set_infty s2 e1.num}) end
 
@@ -367,11 +366,11 @@ returns {(_, e') -> wf_env e' /\ subenv e e'}
 (* post-conditions *)
 returns {(_, e') -> subset roots (union e'.black e'.gray)} 
 returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]} 
-returns {(n, e') -> n = infty() \/ exists x. mem x roots /\ num_of_reachable n x e'} 
+returns {(n, e') -> n = infty \/ exists x. mem x roots /\ num_of_reachable n x e'} 
 returns {(n, e') -> forall y. xedge_to e'.stack e.stack y -> n <= e'.num[y]}
 returns {(_, e') -> (forall cc1, cc2. mem cc1 e'.sccs -> mem cc2 e'.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty)}
 variant {cardinal (diff vertices (union e.black e.gray)), cardinal roots}
-  if is_empty roots then (infty(), e) else
+  if is_empty roots then (infty, e) else
   let x = pick roots in
   let roots' = remove x roots in
   let (n1, e1) =

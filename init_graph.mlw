@@ -19,6 +19,7 @@ module GraphSetSucc
     ensures { result <-> x = y }
 
   constant vertices: fset vertex
+  constant infty : int = cardinal vertices
 
   function successors vertex : fset vertex
 
