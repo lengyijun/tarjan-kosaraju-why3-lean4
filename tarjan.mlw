@@ -91,9 +91,6 @@ lemma elts_app:
 lemma list_simpl_r:  
   forall l1 [@induction] l2 [@induction] l [@induction] : list 'a. l1 ++ l = l2 ++ l -> l1 = l2
 
-lemma snoc_app:
-  forall l1 l2: list 'a, x: 'a. (l1 ++ (Cons x Nil)) ++ l2 = l1 ++ (Cons x l2)
-
 predicate is_last (x: 'a) (s: list 'a) =
   exists s'. s = s' ++ Cons x Nil  
 

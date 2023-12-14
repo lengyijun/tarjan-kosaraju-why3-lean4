@@ -105,111 +105,108 @@
   </goal>
  </transf>
  </goal>
- <goal name="snoc_app" proved="true">
- <proof prover="6"><result status="valid" time="0.043765" steps="208"/></proof>
- </goal>
  <goal name="precedes_mem" proved="true">
- <proof prover="6"><result status="valid" time="0.059349" steps="303"/></proof>
+ <proof prover="6"><result status="valid" time="0.059349" steps="271"/></proof>
  </goal>
  <goal name="head_precedes" proved="true">
- <proof prover="2"><result status="valid" time="0.213812" steps="23953"/></proof>
+ <proof prover="2"><result status="valid" time="0.213812" steps="23730"/></proof>
  </goal>
  <goal name="precedes_tail" proved="true">
- <proof prover="2"><result status="valid" time="2.763041" steps="274055"/></proof>
+ <proof prover="2"><result status="valid" time="2.108600" steps="245025"/></proof>
  </goal>
  <goal name="tail_not_precedes" proved="true">
  <proof prover="6"><result status="valid" time="0.047428" steps="42"/></proof>
  </goal>
  <goal name="split_list_precedes" proved="true">
- <proof prover="6"><result status="valid" time="9.762877" steps="44151"/></proof>
+ <proof prover="6"><result status="valid" time="1.807848" steps="11460"/></proof>
  </goal>
  <goal name="precedes_refl" proved="true">
- <proof prover="6"><result status="valid" time="0.069290" steps="173"/></proof>
+ <proof prover="6"><result status="valid" time="0.069290" steps="161"/></proof>
  </goal>
  <goal name="precedes_append_left" proved="true">
- <proof prover="6"><result status="valid" time="0.104163" steps="374"/></proof>
+ <proof prover="6"><result status="valid" time="0.104163" steps="350"/></proof>
  </goal>
  <goal name="precedes_append_left_iff" proved="true">
  <transf name="induction_ty_lex" proved="true" >
   <goal name="precedes_append_left_iff.0" proved="true">
   <transf name="split_goal_full" proved="true" >
    <goal name="precedes_append_left_iff.0.0" proved="true">
-   <proof prover="6"><result status="valid" time="0.036928" steps="15"/></proof>
+   <proof prover="6"><result status="valid" time="0.027145" steps="15"/></proof>
    </goal>
    <goal name="precedes_append_left_iff.0.1" proved="true">
-   <proof prover="6"><result status="valid" time="0.022789" steps="12"/></proof>
+   <proof prover="6"><result status="valid" time="0.036884" steps="12"/></proof>
    </goal>
    <goal name="precedes_append_left_iff.0.2" proved="true">
-   <proof prover="6"><result status="valid" time="0.036884" steps="71"/></proof>
+   <proof prover="6"><result status="valid" time="0.022789" steps="69"/></proof>
    </goal>
    <goal name="precedes_append_left_iff.0.3" proved="true">
-   <proof prover="6"><result status="valid" time="0.027145" steps="13"/></proof>
+   <proof prover="6"><result status="valid" time="0.036928" steps="13"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="precedes_append_right" proved="true">
- <proof prover="6"><result status="valid" time="0.711762" steps="4012"/></proof>
+ <proof prover="6"><result status="valid" time="0.424605" steps="2440"/></proof>
  </goal>
  <goal name="precedes_append_right_iff" proved="true">
  <transf name="induction_ty_lex" proved="true" >
   <goal name="precedes_append_right_iff.0" proved="true">
   <transf name="split_goal_full" proved="true" >
    <goal name="precedes_append_right_iff.0.0" proved="true">
-   <proof prover="6"><result status="valid" time="0.031512" steps="15"/></proof>
+   <proof prover="6"><result status="valid" time="0.023054" steps="15"/></proof>
    </goal>
    <goal name="precedes_append_right_iff.0.1" proved="true">
-   <proof prover="6"><result status="valid" time="0.017172" steps="12"/></proof>
+   <proof prover="6"><result status="valid" time="0.093247" steps="12"/></proof>
    </goal>
    <goal name="precedes_append_right_iff.0.2" proved="true">
-   <proof prover="6"><result status="valid" time="0.093247" steps="631"/></proof>
+   <proof prover="6"><result status="valid" time="0.017172" steps="628"/></proof>
    </goal>
    <goal name="precedes_append_right_iff.0.3" proved="true">
-   <proof prover="6"><result status="valid" time="0.023054" steps="14"/></proof>
+   <proof prover="6"><result status="valid" time="0.031512" steps="14"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="simplelist_tl" proved="true">
- <proof prover="2"><result status="valid" time="0.289767" steps="34645"/></proof>
+ <proof prover="2"><result status="valid" time="0.289767" steps="34358"/></proof>
  </goal>
  <goal name="simplelist_split" proved="true">
  <transf name="induction_ty_lex" proved="true" >
   <goal name="simplelist_split.0" proved="true">
-  <proof prover="6"><result status="valid" time="1.389390" steps="11025"/></proof>
+  <proof prover="6"><result status="valid" time="0.508375" steps="4152"/></proof>
   <transf name="split_goal_full" proved="true" >
    <goal name="simplelist_split.0.0" proved="true">
-   <proof prover="6"><result status="valid" time="0.030494" steps="1"/></proof>
+   <proof prover="6"><result status="valid" time="0.021526" steps="1"/></proof>
    </goal>
    <goal name="simplelist_split.0.1" proved="true">
-   <proof prover="6"><result status="valid" time="0.044628" steps="21"/></proof>
+   <proof prover="6"><result status="valid" time="0.041219" steps="21"/></proof>
    </goal>
    <goal name="simplelist_split.0.2" proved="true">
-   <proof prover="6"><result status="valid" time="0.701577" steps="6988"/></proof>
+   <proof prover="6"><result status="valid" time="0.336690" steps="3840"/></proof>
    </goal>
    <goal name="simplelist_split.0.3" proved="true">
-   <proof prover="6"><result status="valid" time="0.678127" steps="6922"/></proof>
+   <proof prover="6"><result status="valid" time="0.385439" steps="3991"/></proof>
    </goal>
    <goal name="simplelist_split.0.4" proved="true">
-   <proof prover="6"><result status="valid" time="0.538953" steps="5991"/></proof>
+   <proof prover="6"><result status="valid" time="0.169404" steps="1824"/></proof>
    </goal>
    <goal name="simplelist_split.0.5" proved="true">
-   <proof prover="6"><result status="valid" time="0.606588" steps="6107"/></proof>
+   <proof prover="6"><result status="valid" time="0.170907" steps="1905"/></proof>
    </goal>
    <goal name="simplelist_split.0.6" proved="true">
-   <proof prover="6"><result status="valid" time="0.041219" steps="305"/></proof>
+   <proof prover="6"><result status="valid" time="0.061371" steps="228"/></proof>
    </goal>
    <goal name="simplelist_split.0.7" proved="true">
-   <proof prover="6"><result status="valid" time="0.021526" steps="118"/></proof>
+   <proof prover="6"><result status="valid" time="0.037527" steps="97"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="simplelist_app_disjoint" proved="true">
- <proof prover="6"><result status="valid" time="0.681417" steps="2751"/></proof>
+ <proof prover="6"><result status="valid" time="0.681417" steps="2744"/></proof>
  </goal>
  <goal name="simplelist_length" proved="true">
  <transf name="induction_ty_lex" proved="true" >
@@ -219,36 +216,35 @@
    <proof prover="6"><result status="valid" time="0.046452" steps="80"/></proof>
    </goal>
    <goal name="simplelist_length.0.1" proved="true">
-   <proof prover="6"><result status="valid" time="0.044087" steps="14"/></proof>
+   <proof prover="6"><result status="valid" time="0.049239" steps="14"/></proof>
    </goal>
    <goal name="simplelist_length.0.2" proved="true">
-   <proof prover="6"><result status="valid" time="0.049239" steps="55"/></proof>
+   <proof prover="6"><result status="valid" time="0.044087" steps="55"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="precedes_antisym" proved="true">
- <proof prover="6"><result status="valid" time="0.678325" steps="4592"/></proof>
+ <proof prover="6"><result status="valid" time="0.390974" steps="3214"/></proof>
  </goal>
  <goal name="precedes_trans" proved="true">
- <proof prover="6"><result status="valid" time="0.291783" steps="1098"/></proof>
+ <proof prover="6"><result status="valid" time="0.291783" steps="995"/></proof>
  </goal>
  <goal name="reachable_refl" proved="true">
  <proof prover="4"><result status="valid" time="0.027508"/></proof>
  </goal>
  <goal name="reachable_trans" proved="true">
- <proof prover="2"><result status="valid" time="0.162740" steps="20390"/></proof>
+ <proof prover="2"><result status="valid" time="0.162740" steps="20300"/></proof>
  <proof prover="4"><result status="valid" time="0.335505"/></proof>
  </goal>
  <goal name="xpath_xedge" proved="true">
  <transf name="induction_pr" proved="true" >
   <goal name="xpath_xedge.0" proved="true">
-  <proof prover="4"><result status="valid" time="0.085952"/></proof>
-  <proof prover="6"><result status="valid" time="0.036213" steps="2"/></proof>
+  <proof prover="4"><result status="valid" time="0.062013"/></proof>
   </goal>
   <goal name="xpath_xedge.1" proved="true">
-  <proof prover="4"><result status="valid" time="0.062013"/></proof>
+  <proof prover="4"><result status="valid" time="0.085952"/></proof>
   </goal>
  </transf>
  </goal>
@@ -265,56 +261,56 @@
  <proof prover="6"><result status="valid" time="0.121124" steps="305"/></proof>
  </goal>
  <goal name="scc_max" proved="true">
- <proof prover="2"><result status="valid" time="0.279292" steps="39421"/></proof>
+ <proof prover="2"><result status="valid" time="0.279292" steps="39331"/></proof>
  <proof prover="4"><result status="valid" time="4.405305"/></proof>
  </goal>
  <goal name="subscc_after_last_gray" proved="true">
  <transf name="split_goal_full" proved="true" >
   <goal name="subscc_after_last_gray.0" proved="true">
-  <proof prover="6"><result status="valid" time="1.950992" steps="10771"/></proof>
+  <proof prover="6"><result status="valid" time="0.933292" steps="4936"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.1" proved="true">
-  <proof prover="6"><result status="valid" time="0.092744" steps="107"/></proof>
+  <proof prover="2" timelimit="100"><result status="valid" time="0.268898" steps="33173"/></proof>
+  <proof prover="6"><result status="valid" time="0.073938" steps="105"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.2" proved="true">
-  <proof prover="2" timelimit="100"><result status="valid" time="54.695463" steps="2320934"/></proof>
-  <proof prover="6"><result status="valid" time="12.632709" steps="41775"/></proof>
+  <proof prover="6"><result status="valid" time="4.708624" steps="18511"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.3" proved="true">
-  <proof prover="6"><result status="valid" time="0.295482" steps="2136"/></proof>
+  <proof prover="6"><result status="valid" time="0.295482" steps="1494"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.4" proved="true">
-  <proof prover="6"><result status="valid" time="0.431236" steps="2115"/></proof>
+  <proof prover="6"><result status="valid" time="0.243941" steps="1381"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.5" proved="true">
   <transf name="inline_goal" proved="true" >
    <goal name="subscc_after_last_gray.5.0" proved="true">
-   <proof prover="6"><result status="valid" time="18.446796" steps="73325"/></proof>
+   <proof prover="6"><result status="valid" time="15.326274" steps="40117"/></proof>
    </goal>
   </transf>
   </goal>
  </transf>
  </goal>
  <goal name="wf_color_postcond_split" proved="true">
- <proof prover="6"><result status="valid" time="0.704214" steps="3521"/></proof>
+ <proof prover="6"><result status="valid" time="0.704214" steps="3524"/></proof>
  </goal>
  <goal name="wf_color_sccs" proved="true">
- <proof prover="2" timelimit="100"><result status="valid" time="0.805887" steps="56922"/></proof>
+ <proof prover="2" timelimit="100"><result status="valid" time="0.572908" steps="56832"/></proof>
  </goal>
  <goal name="wf_color_3_cases" proved="true">
- <proof prover="1"><result status="valid" time="0.174197" steps="262228"/></proof>
+ <proof prover="1"><result status="valid" time="0.174197" steps="261847"/></proof>
  </goal>
  <goal name="num_lmem" proved="true">
- <proof prover="6"><result status="valid" time="15.862894" steps="48117"/></proof>
+ <proof prover="6"><result status="valid" time="6.946721" steps="22424"/></proof>
  </goal>
  <goal name="num_rank_strict" proved="true">
- <proof prover="6"><result status="valid" time="4.714297" steps="23283"/></proof>
+ <proof prover="6"><result status="valid" time="3.325761" steps="14748"/></proof>
  </goal>
  <goal name="simplelist_x_prec_strict_y&#39;" proved="true">
- <proof prover="6"><result status="valid" time="1.078794" steps="6024"/></proof>
+ <proof prover="6"><result status="valid" time="1.921174" steps="8263"/></proof>
  </goal>
  <goal name="split&#39;vc" expl="VC for split" proved="true">
- <proof prover="6"><result status="valid" time="22.330843" steps="48628"/></proof>
+ <proof prover="6"><result status="valid" time="18.550180" steps="43348"/></proof>
  </goal>
  <goal name="add_stack_incr&#39;vc" expl="VC for add_stack_incr" proved="true">
  <proof prover="6"><result status="valid" time="0.045483" steps="2"/></proof>
@@ -323,12 +319,12 @@
  <proof prover="6"><result status="valid" time="0.048298" steps="1"/></proof>
  </goal>
  <goal name="set_infty&#39;vc" expl="VC for set_infty" proved="true">
- <proof prover="6"><result status="valid" time="0.140401" steps="336"/></proof>
+ <proof prover="6"><result status="valid" time="0.140401" steps="335"/></proof>
  </goal>
  <goal name="dfs1&#39;vc" expl="VC for dfs1" proved="true">
  <transf name="split_goal_full" proved="true" >
   <goal name="dfs1&#39;vc.0" expl="variant decrease" proved="true">
-  <proof prover="6"><result status="valid" time="0.434815" steps="2148"/></proof>
+  <proof prover="6"><result status="valid" time="0.434815" steps="2147"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.1" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.069262" steps="38"/></proof>
@@ -347,30 +343,30 @@
     <goal name="dfs1&#39;vc.3.0.0" expl="precondition" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.3.0.0.0" expl="precondition" proved="true">
-     <proof prover="6"><result status="valid" time="1.578246" steps="6369"/></proof>
+     <proof prover="6"><result status="valid" time="1.311345" steps="6368"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.1" expl="precondition" proved="true">
      <transf name="remove" proved="true" arg1="Requires2">
       <goal name="dfs1&#39;vc.3.0.0.1.0" expl="precondition" proved="true">
-      <proof prover="6"><result status="valid" time="110.640342" steps="472821"/></proof>
+      <proof prover="6"><result status="valid" time="80.348330" steps="269383"/></proof>
       </goal>
      </transf>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.2" expl="precondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.384321" steps="1047"/></proof>
+     <proof prover="6"><result status="valid" time="0.227910" steps="1047"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.3" expl="precondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.393127" steps="1114"/></proof>
+     <proof prover="6"><result status="valid" time="0.236879" steps="1111"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.4" expl="precondition" proved="true">
-     <transf name="remove" proved="true" arg1="Requires2">
-      <goal name="dfs1&#39;vc.3.0.0.4.0" expl="precondition" proved="true">
-      <proof prover="6"><result status="valid" time="105.357478" steps="330876"/></proof>
-      </goal>
-     </transf>
+     <proof prover="3"><result status="valid" time="25.180502" steps="546849"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.5" expl="precondition" proved="true">
-     <proof prover="3"><result status="valid" time="1.809712" steps="102799"/></proof>
+     <transf name="remove" proved="true" arg1="Requires2">
+      <goal name="dfs1&#39;vc.3.0.0.5.0" expl="precondition" proved="true">
+      <proof prover="6"><result status="valid" time="17.241608" steps="42713"/></proof>
+      </goal>
+     </transf>
      </goal>
      <goal name="dfs1&#39;vc.3.0.0.6" expl="precondition" proved="true">
      <proof prover="6"><result status="valid" time="0.131078" steps="438"/></proof>
@@ -391,20 +387,20 @@
   <proof prover="6"><result status="valid" time="0.033133" steps="47"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.5" expl="assertion" proved="true">
-  <proof prover="6"><result status="valid" time="2.980136" steps="10813"/></proof>
+  <proof prover="6"><result status="valid" time="2.980136" steps="11971"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.6" expl="assertion" proved="true">
-  <proof prover="6"><result status="valid" time="4.546415" steps="13088"/></proof>
+  <proof prover="6"><result status="valid" time="2.895361" steps="6840"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.7" expl="assertion" proved="true">
-  <proof prover="6"><result status="valid" time="1.184174" steps="2820"/></proof>
+  <proof prover="6"><result status="valid" time="1.184174" steps="2462"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.8" expl="assertion" proved="true">
   <transf name="introduce_premises" proved="true" >
    <goal name="dfs1&#39;vc.8.0" expl="assertion" proved="true">
    <transf name="inline_goal" proved="true" >
     <goal name="dfs1&#39;vc.8.0.0" expl="assertion" proved="true">
-    <proof prover="3"><result status="valid" time="13.961300" steps="270711"/></proof>
+    <proof prover="3"><result status="valid" time="13.961300" steps="267948"/></proof>
     </goal>
    </transf>
    </goal>
@@ -420,14 +416,14 @@
     <goal name="dfs1&#39;vc.9.0.1" expl="assertion" proved="true">
     <transf name="destruct" proved="true" arg1="h">
      <goal name="dfs1&#39;vc.9.0.1.0" expl="assertion" proved="true">
-     <proof prover="6"><result status="valid" time="0.021093" steps="42"/></proof>
+     <proof prover="6"><result status="valid" time="0.030152" steps="42"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.9.0.1.1" expl="assertion" proved="true">
      <transf name="assert" proved="true" arg1="false">
       <goal name="dfs1&#39;vc.9.0.1.1.0" expl="asserted formula" proved="true">
       <transf name="assert" proved="true" arg1="(exists x&#39;:vertex, y&#39;:vertex. mem x&#39; (elements o1) /\ not mem y&#39; (elements o1) /\ edge x&#39; y&#39; /\ reachable x x&#39; /\ reachable y&#39; y)">
        <goal name="dfs1&#39;vc.9.0.1.1.0.0" expl="asserted formula" proved="true">
-       <proof prover="6"><result status="valid" time="12.391039" steps="41466"/></proof>
+       <proof prover="6"><result status="valid" time="2.809855" steps="16209"/></proof>
        </goal>
        <goal name="dfs1&#39;vc.9.0.1.1.0.1" expl="asserted formula" proved="true">
        <transf name="destruct" proved="true" arg1="h1">
@@ -436,14 +432,14 @@
          <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0" expl="asserted formula" proved="true">
          <transf name="assert" proved="true" arg1="(wf_color o3)">
           <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.0" expl="asserted formula" proved="true">
-          <proof prover="6"><result status="valid" time="0.065128" steps="263"/></proof>
+          <proof prover="6"><result status="valid" time="0.065707" steps="260"/></proof>
           </goal>
           <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1" expl="asserted formula" proved="true">
           <transf name="assert" proved="true" arg1="(mem y&#39; (set_of (o3.sccs)) \/ mem y&#39; (elements (o3.stack)) \/ not mem y&#39; (union (o3.black) (o3.gray) ))">
            <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.0" expl="asserted formula" proved="true">
            <transf name="apply" proved="true" arg1="wf_color_3_cases">
             <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.0.0" expl="apply premises" proved="true">
-            <proof prover="6"><result status="valid" time="0.033745" steps="54"/></proof>
+            <proof prover="6"><result status="valid" time="0.027979" steps="54"/></proof>
             </goal>
            </transf>
            </goal>
@@ -452,30 +448,30 @@
             <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.0" expl="asserted formula" proved="true">
             <transf name="assert" proved="true" arg1="(in_same_scc y&#39; x)">
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.0.0" expl="asserted formula" proved="true">
-             <proof prover="4"><result status="valid" time="2.951038"/></proof>
+             <proof prover="4"><result status="valid" time="1.558996"/></proof>
              </goal>
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.0.1" expl="asserted formula" proved="true">
-             <proof prover="3"><result status="valid" time="14.099543" steps="298875"/></proof>
+             <proof prover="3"><result status="valid" time="6.548701" steps="300525"/></proof>
              </goal>
             </transf>
             </goal>
             <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.1" expl="asserted formula" proved="true">
             <transf name="assert" proved="true" arg1="((o3.num)[y&#39;] &lt; (o3.num)[x])">
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.1.0" expl="asserted formula" proved="true">
-             <proof prover="6"><result status="valid" time="20.223853" steps="46186"/></proof>
+             <proof prover="6"><result status="valid" time="6.626789" steps="43363"/></proof>
              </goal>
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.1.1" expl="asserted formula" proved="true">
-             <proof prover="6"><result status="valid" time="5.028159" steps="15756"/></proof>
+             <proof prover="6"><result status="valid" time="7.761743" steps="51850"/></proof>
              </goal>
             </transf>
             </goal>
             <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.2" expl="asserted formula" proved="true">
             <transf name="assert" proved="true" arg1="(in_same_scc y&#39; x)">
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.2.0" expl="asserted formula" proved="true">
-             <proof prover="4"><result status="valid" time="2.984019"/></proof>
+             <proof prover="4"><result status="valid" time="1.416843"/></proof>
              </goal>
              <goal name="dfs1&#39;vc.9.0.1.1.0.1.0.0.1.1.2.1" expl="asserted formula" proved="true">
-             <proof prover="3"><result status="valid" time="1.427154" steps="80454"/></proof>
+             <proof prover="3"><result status="valid" time="0.942184" steps="80232"/></proof>
              </goal>
             </transf>
             </goal>
@@ -492,7 +488,7 @@
       </transf>
       </goal>
       <goal name="dfs1&#39;vc.9.0.1.1.1" expl="assertion" proved="true">
-      <proof prover="6"><result status="valid" time="0.034781" steps="42"/></proof>
+      <proof prover="6"><result status="valid" time="0.033173" steps="42"/></proof>
       </goal>
      </transf>
      </goal>
@@ -509,13 +505,13 @@
     <goal name="dfs1&#39;vc.10.0.0" expl="assertion" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.10.0.0.0" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="1.291470" steps="63224"/></proof>
+     <proof prover="3"><result status="valid" time="0.981378" steps="62401"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.10.0.0.1" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="0.055625" steps="27900"/></proof>
+     <proof prover="3"><result status="valid" time="0.055625" steps="27776"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.10.0.0.2" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="4.227395" steps="10721"/></proof>
+     <proof prover="6"><result status="valid" time="4.227395" steps="8652"/></proof>
      </goal>
     </transf>
     </goal>
@@ -524,10 +520,10 @@
   </transf>
   </goal>
   <goal name="dfs1&#39;vc.11" expl="assertion" proved="true">
-  <proof prover="6"><result status="valid" time="40.346853" steps="188172"/></proof>
+  <proof prover="6"><result status="valid" time="18.462383" steps="64877"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.12" expl="assertion" proved="true">
-  <proof prover="3"><result status="valid" time="13.140349" steps="304751"/></proof>
+  <proof prover="3"><result status="valid" time="14.787549" steps="337706"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.13" expl="postcondition" proved="true">
   <transf name="introduce_premises" proved="true" >
@@ -536,19 +532,24 @@
     <goal name="dfs1&#39;vc.13.0.0" expl="postcondition" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.13.0.0.0" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="0.088745" steps="100"/></proof>
+     <proof prover="3"><result status="valid" time="0.170134" steps="31719"/></proof>
+     <proof prover="6"><result status="valid" time="0.068328" steps="100"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.13.0.0.1" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="0.568857" steps="1334"/></proof>
+     <proof prover="3"><result status="valid" time="0.764442" steps="63410"/></proof>
+     <proof prover="6"><result status="valid" time="0.476271" steps="1327"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.13.0.0.2" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="0.094267" steps="104"/></proof>
+     <proof prover="3"><result status="valid" time="0.262418" steps="32195"/></proof>
+     <proof prover="6"><result status="valid" time="0.103619" steps="104"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.13.0.0.3" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="1.229959" steps="3926"/></proof>
+     <proof prover="3"><result status="valid" time="1.276908" steps="78601"/></proof>
+     <proof prover="6"><result status="valid" time="1.527980" steps="3902"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.13.0.0.4" expl="VC for dfs1" proved="true">
-     <proof prover="6"><result status="valid" time="5.984408" steps="14891"/></proof>
+     <proof prover="3"><result status="valid" time="0.388361" steps="42722"/></proof>
+     <proof prover="6"><result status="valid" time="4.042281" steps="12923"/></proof>
      </goal>
     </transf>
     </goal>
@@ -563,40 +564,101 @@
     <goal name="dfs1&#39;vc.14.0.0" expl="postcondition" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.14.0.0.0" expl="postcondition" proved="true">
-     <proof prover="2" timelimit="100"><result status="valid" time="53.111501" steps="3394337"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.14.0.0.1" expl="postcondition" proved="true">
-     <proof prover="3"><result status="valid" time="65.214757" steps="1138316"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.14.0.0.2" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="5.205400" steps="18499"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.14.0.0.3" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.185452" steps="464"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.14.0.0.4" expl="postcondition" proved="true">
-     <proof prover="3"><result status="valid" time="1.066126" steps="74681"/></proof>
-     <proof prover="6"><result status="valid" time="1.000627" steps="3179"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.14.0.0.5" expl="postcondition" proved="true">
-     <transf name="remove" proved="true" arg1="H22">
-      <goal name="dfs1&#39;vc.14.0.0.5.0" expl="postcondition" proved="true">
-      <transf name="remove" proved="true" arg1="Requires">
-       <goal name="dfs1&#39;vc.14.0.0.5.0.0" expl="postcondition" proved="true">
-       <proof prover="6"><result status="valid" time="54.779392" steps="187285"/></proof>
+     <transf name="introduce_premises" proved="true" >
+      <goal name="dfs1&#39;vc.14.0.0.0.0" expl="postcondition" proved="true">
+      <transf name="inline_goal" proved="true" >
+       <goal name="dfs1&#39;vc.14.0.0.0.0.0" expl="postcondition" proved="true">
+       <transf name="split_goal_full" proved="true" >
+        <goal name="dfs1&#39;vc.14.0.0.0.0.0.0" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="3.488370" steps="8198"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.0.0.0.1" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="12.043528" steps="41602"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.0.0.0.2" expl="postcondition" proved="true">
+        <proof prover="3"><result status="valid" time="2.182410" steps="88356"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.0.0.0.3" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="13.163131" steps="34593"/></proof>
+        </goal>
+       </transf>
        </goal>
       </transf>
       </goal>
      </transf>
      </goal>
+     <goal name="dfs1&#39;vc.14.0.0.1" expl="postcondition" proved="true">
+     <transf name="introduce_premises" proved="true" >
+      <goal name="dfs1&#39;vc.14.0.0.1.0" expl="postcondition" proved="true">
+      <transf name="inline_goal" proved="true" >
+       <goal name="dfs1&#39;vc.14.0.0.1.0.0" expl="postcondition" proved="true">
+       <transf name="split_goal_full" proved="true" >
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.0" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="13.314873" steps="35419"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.1" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="18.580699" steps="48679"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.2" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="14.240115" steps="37190"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.3" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="3.540858" steps="9674"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.4" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="12.050329" steps="35074"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.5" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="13.197008" steps="37163"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.6" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="12.841364" steps="38695"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.7" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="13.176131" steps="39773"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.8" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="30.873532" steps="82902"/></proof>
+        </goal>
+        <goal name="dfs1&#39;vc.14.0.0.1.0.0.9" expl="postcondition" proved="true">
+        <proof prover="6"><result status="valid" time="0.405739" steps="813"/></proof>
+        </goal>
+       </transf>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+     <goal name="dfs1&#39;vc.14.0.0.2" expl="postcondition" proved="true">
+     <proof prover="6"><result status="valid" time="7.100522" steps="16264"/></proof>
+     </goal>
+     <goal name="dfs1&#39;vc.14.0.0.3" expl="postcondition" proved="true">
+     <proof prover="6"><result status="valid" time="0.161314" steps="459"/></proof>
+     </goal>
+     <goal name="dfs1&#39;vc.14.0.0.4" expl="postcondition" proved="true">
+     <transf name="remove" proved="true" arg1="Requires">
+      <goal name="dfs1&#39;vc.14.0.0.4.0" expl="postcondition" proved="true">
+      <proof prover="6"><result status="valid" time="1.165447" steps="3174"/></proof>
+      <transf name="remove" proved="true" arg1="H34">
+       <goal name="dfs1&#39;vc.14.0.0.4.0.0" expl="postcondition" proved="true">
+       <proof prover="6"><result status="valid" time="1.359117" steps="3166"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+     <goal name="dfs1&#39;vc.14.0.0.5" expl="postcondition" proved="true">
+     <proof prover="6"><result status="valid" time="57.127416" steps="177128"/></proof>
+     </goal>
      <goal name="dfs1&#39;vc.14.0.0.6" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="18.149819" steps="70476"/></proof>
+     <proof prover="6"><result status="valid" time="10.513216" steps="34808"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.14.0.0.7" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.727924" steps="1850"/></proof>
+     <proof prover="6"><result status="valid" time="0.564551" steps="1844"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.14.0.0.8" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="50.804526" steps="241992"/></proof>
+     <proof prover="3"><result status="valid" time="11.959474" steps="478709"/></proof>
+     <proof prover="6"><result status="valid" time="13.400941" steps="123166"/></proof>
      </goal>
     </transf>
     </goal>
@@ -605,19 +667,19 @@
   </transf>
   </goal>
   <goal name="dfs1&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.060359" steps="110"/></proof>
+  <proof prover="6"><result status="valid" time="0.140246" steps="110"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.374336" steps="3307"/></proof>
+  <proof prover="6"><result status="valid" time="0.869164" steps="3294"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.17" expl="postcondition" proved="true">
-  <proof prover="3"><result status="valid" time="15.385522" steps="284427"/></proof>
+  <proof prover="2" timelimit="100"><result status="valid" time="15.548058" steps="357710"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.18" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="24.247248" steps="59998"/></proof>
+  <proof prover="6"><result status="valid" time="48.380296" steps="175353"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.19" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.117364" steps="123"/></proof>
+  <proof prover="6"><result status="valid" time="0.125177" steps="123"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.20" expl="postcondition" proved="true">
   <transf name="introduce_premises" proved="true" >
@@ -626,24 +688,19 @@
     <goal name="dfs1&#39;vc.20.0.0" expl="postcondition" proved="true">
     <transf name="split_goal_full" proved="true" >
      <goal name="dfs1&#39;vc.20.0.0.0" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="0.338987" steps="37310"/></proof>
-     <proof prover="6"><result status="valid" time="1.008687" steps="2872"/></proof>
+     <proof prover="6"><result status="valid" time="1.076316" steps="2795"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.20.0.0.1" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="0.764442" steps="56855"/></proof>
-     <proof prover="6"><result status="valid" time="0.476271" steps="1370"/></proof>
+     <proof prover="6"><result status="valid" time="0.568857" steps="1363"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.20.0.0.2" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="0.782890" steps="58313"/></proof>
-     <proof prover="6"><result status="valid" time="0.483731" steps="1340"/></proof>
+     <proof prover="6"><result status="valid" time="0.531202" steps="1333"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.20.0.0.3" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="1.276908" steps="71654"/></proof>
-     <proof prover="6"><result status="valid" time="16.146373" steps="41974"/></proof>
+     <proof prover="6"><result status="valid" time="11.954343" steps="31098"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.20.0.0.4" expl="VC for dfs1" proved="true">
-     <proof prover="3"><result status="valid" time="0.388361" steps="36543"/></proof>
-     <proof prover="6"><result status="valid" time="0.067033" steps="182"/></proof>
+     <proof prover="6"><result status="valid" time="0.115196" steps="182"/></proof>
      </goal>
     </transf>
     </goal>
@@ -662,18 +719,20 @@
       <goal name="dfs1&#39;vc.21.0.0.0.0" expl="postcondition" proved="true">
       <transf name="inline_goal" proved="true" >
        <goal name="dfs1&#39;vc.21.0.0.0.0.0" expl="postcondition" proved="true">
-       <transf name="split_goal_full" proved="true" >
+       <transf name="split_all_full" proved="true" >
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.0" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="1.669611" steps="4302"/></proof>
+        <proof prover="6"><result status="valid" time="0.707031" steps="4230"/></proof>
         </goal>
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.1" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="12.043528" steps="44030"/></proof>
+        <proof prover="3"><result status="valid" time="1.140734" steps="96571"/></proof>
+        <proof prover="6"><result status="valid" time="4.536470" steps="29065"/></proof>
         </goal>
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.2" expl="postcondition" proved="true">
-        <proof prover="3"><result status="valid" time="25.573115" steps="424471"/></proof>
+        <proof prover="3"><result status="valid" time="8.748624" steps="341426"/></proof>
         </goal>
         <goal name="dfs1&#39;vc.21.0.0.0.0.0.3" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="42.675069" steps="146877"/></proof>
+        <proof prover="3"><result status="valid" time="0.839509" steps="83253"/></proof>
+        <proof prover="6"><result status="valid" time="7.147486" steps="46312"/></proof>
         </goal>
        </transf>
        </goal>
@@ -682,85 +741,37 @@
      </transf>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.1" expl="postcondition" proved="true">
-     <transf name="introduce_premises" proved="true" >
-      <goal name="dfs1&#39;vc.21.0.0.1.0" expl="postcondition" proved="true">
-      <transf name="inline_goal" proved="true" >
-       <goal name="dfs1&#39;vc.21.0.0.1.0.0" expl="postcondition" proved="true">
-       <transf name="split_goal_full" proved="true" >
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.0" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="6.745344" steps="20712"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.1" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="7.115193" steps="21243"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.2" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="6.317457" steps="21125"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.3" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="1.872733" steps="4639"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.4" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="8.770118" steps="27262"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.5" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="7.160393" steps="21459"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.6" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="8.508461" steps="22394"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.7" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="5.606310" steps="22916"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.8" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="24.031726" steps="72609"/></proof>
-        </goal>
-        <goal name="dfs1&#39;vc.21.0.0.1.0.0.9" expl="postcondition" proved="true">
-        <proof prover="6"><result status="valid" time="0.661517" steps="1759"/></proof>
-        </goal>
-       </transf>
-       </goal>
-      </transf>
-      </goal>
-     </transf>
+     <proof prover="6"><result status="valid" time="42.920313" steps="245725"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.2" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="3.660535" steps="9678"/></proof>
+     <proof prover="6"><result status="valid" time="3.348995" steps="8640"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.3" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.161314" steps="422"/></proof>
+     <proof prover="6"><result status="valid" time="0.185452" steps="417"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.4" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.947604" steps="2637"/></proof>
+     <transf name="remove" proved="true" arg1="H22">
+      <goal name="dfs1&#39;vc.21.0.0.4.0" expl="postcondition" proved="true">
+      <transf name="remove" proved="true" arg1="Requires">
+       <goal name="dfs1&#39;vc.21.0.0.4.0.0" expl="postcondition" proved="true">
+       <proof prover="6"><result status="valid" time="0.624758" steps="2619"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.5" expl="postcondition" proved="true">
-     <transf name="remove" proved="true" arg1="Requires">
-      <goal name="dfs1&#39;vc.21.0.0.5.0" expl="postcondition" proved="true">
-      <proof prover="6"><result status="valid" time="67.842440" steps="312071"/></proof>
-      <transf name="remove" proved="true" arg1="H34">
-       <goal name="dfs1&#39;vc.21.0.0.5.0.0" expl="postcondition" proved="true">
-       <proof prover="6"><result status="valid" time="39.459272" steps="210323"/></proof>
-       </goal>
-      </transf>
-      </goal>
-     </transf>
+     <proof prover="3"><result status="valid" time="6.263602" steps="182353"/></proof>
+     <proof prover="6"><result status="valid" time="53.557346" steps="172031"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.6" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="5.920009" steps="18247"/></proof>
+     <proof prover="6"><result status="valid" time="4.919536" steps="13167"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.7" expl="postcondition" proved="true">
-     <proof prover="6"><result status="valid" time="0.564551" steps="1520"/></proof>
+     <proof prover="6"><result status="valid" time="0.538458" steps="1512"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.21.0.0.8" expl="postcondition" proved="true">
-     <proof prover="4"><result status="valid" time="0.676154"/></proof>
-     <transf name="remove" proved="true" arg1="H39">
-      <goal name="dfs1&#39;vc.21.0.0.8.0" expl="postcondition" proved="true">
-      <transf name="remove" proved="true" arg1="Requires">
-       <goal name="dfs1&#39;vc.21.0.0.8.0.0" expl="postcondition" proved="true">
-       <proof prover="4"><result status="valid" time="0.649143"/></proof>
-       </goal>
-      </transf>
-      </goal>
-     </transf>
+     <proof prover="4"><result status="valid" time="0.343446"/></proof>
      </goal>
     </transf>
     </goal>
@@ -769,19 +780,19 @@
   </transf>
   </goal>
   <goal name="dfs1&#39;vc.22" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.140246" steps="305"/></proof>
+  <proof prover="6"><result status="valid" time="0.060359" steps="303"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.23" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.142234" steps="3360"/></proof>
+  <proof prover="6"><result status="valid" time="1.222552" steps="3092"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.24" expl="postcondition" proved="true">
-  <proof prover="2" timelimit="100"><result status="valid" time="0.264381" steps="37831"/></proof>
+  <proof prover="3"><result status="valid" time="0.125072" steps="28521"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.25" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="9.909472" steps="36318"/></proof>
+  <proof prover="6"><result status="valid" time="8.082430" steps="29571"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.26" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="3.422178" steps="8398"/></proof>
+  <proof prover="6"><result status="valid" time="3.076063" steps="7424"/></proof>
   </goal>
  </transf>
  </goal>
@@ -803,50 +814,31 @@
   <proof prover="6"><result status="valid" time="0.029356" steps="3"/></proof>
   </goal>
   <goal name="dfs&#39;vc.5" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.031210" steps="31"/></proof>
+  <proof prover="6"><result status="valid" time="0.025009" steps="31"/></proof>
   </goal>
   <goal name="dfs&#39;vc.6" expl="variant decrease" proved="true">
-  <proof prover="6"><result status="valid" time="0.042344" steps="39"/></proof>
-  </goal>
-  <goal name="dfs&#39;vc.7" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.034917" steps="21"/></proof>
-  </goal>
-  <goal name="dfs&#39;vc.8" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.032926" steps="25"/></proof>
-  </goal>
-  <goal name="dfs&#39;vc.9" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.030701" steps="3"/></proof>
-  </goal>
-  <goal name="dfs&#39;vc.10" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.025009" steps="29"/></proof>
-  </goal>
-  <goal name="dfs&#39;vc.11" expl="variant decrease" proved="true">
   <transf name="introduce_premises" proved="true" >
-   <goal name="dfs&#39;vc.11.0" expl="variant decrease" proved="true">
+   <goal name="dfs&#39;vc.6.0" expl="variant decrease" proved="true">
    <transf name="inline_goal" proved="true" >
-    <goal name="dfs&#39;vc.11.0.0" expl="variant decrease" proved="true">
+    <goal name="dfs&#39;vc.6.0.0" expl="variant decrease" proved="true">
     <transf name="split_goal_full" proved="true" >
-     <goal name="dfs&#39;vc.11.0.0.0" expl="variant decrease" proved="true">
-     <proof prover="6"><result status="valid" time="0.044134" steps="47"/></proof>
+     <goal name="dfs&#39;vc.6.0.0.0" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.044134" steps="26"/></proof>
      </goal>
-     <goal name="dfs&#39;vc.11.0.0.1" expl="variant decrease" proved="true">
-     <proof prover="6"><result status="valid" time="0.040809" steps="46"/></proof>
+     <goal name="dfs&#39;vc.6.0.0.1" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.040809" steps="48"/></proof>
      </goal>
-     <goal name="dfs&#39;vc.11.0.0.2" expl="variant decrease" proved="true">
-     <proof prover="6"><result status="valid" time="0.040808" steps="46"/></proof>
+     <goal name="dfs&#39;vc.6.0.0.2" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.040808" steps="50"/></proof>
      </goal>
-     <goal name="dfs&#39;vc.11.0.0.3" expl="variant decrease" proved="true">
-     <transf name="remove" proved="true" arg1="H">
-      <goal name="dfs&#39;vc.11.0.0.3.0" expl="variant decrease" proved="true">
-      <proof prover="6"><result status="valid" time="81.825490" steps="301208"/></proof>
-      </goal>
-     </transf>
+     <goal name="dfs&#39;vc.6.0.0.3" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.023170" steps="29"/></proof>
      </goal>
-     <goal name="dfs&#39;vc.11.0.0.4" expl="variant decrease" proved="true">
-     <proof prover="6"><result status="valid" time="0.067640" steps="46"/></proof>
+     <goal name="dfs&#39;vc.6.0.0.4" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.067640" steps="50"/></proof>
      </goal>
-     <goal name="dfs&#39;vc.11.0.0.5" expl="variant decrease" proved="true">
-     <proof prover="6"><result status="valid" time="0.070484" steps="51"/></proof>
+     <goal name="dfs&#39;vc.6.0.0.5" expl="variant decrease" proved="true">
+     <proof prover="6"><result status="valid" time="0.070484" steps="54"/></proof>
      </goal>
     </transf>
     </goal>
@@ -854,35 +846,57 @@
    </goal>
   </transf>
   </goal>
+  <goal name="dfs&#39;vc.7" expl="precondition" proved="true">
+  <proof prover="6"><result status="valid" time="0.069464" steps="21"/></proof>
+  </goal>
+  <goal name="dfs&#39;vc.8" expl="precondition" proved="true">
+  <proof prover="6"><result status="valid" time="0.057061" steps="25"/></proof>
+  </goal>
+  <goal name="dfs&#39;vc.9" expl="precondition" proved="true">
+  <proof prover="6"><result status="valid" time="0.027239" steps="3"/></proof>
+  </goal>
+  <goal name="dfs&#39;vc.10" expl="precondition" proved="true">
+  <proof prover="6"><result status="valid" time="0.031210" steps="29"/></proof>
+  </goal>
+  <goal name="dfs&#39;vc.11" expl="variant decrease" proved="true">
+  <proof prover="6"><result status="valid" time="86.581363" steps="290712"/></proof>
+  </goal>
   <goal name="dfs&#39;vc.12" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.069464" steps="34"/></proof>
+  <proof prover="6"><result status="valid" time="0.034917" steps="34"/></proof>
   </goal>
   <goal name="dfs&#39;vc.13" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.057061" steps="145"/></proof>
+  <proof prover="6"><result status="valid" time="0.032926" steps="145"/></proof>
   </goal>
   <goal name="dfs&#39;vc.14" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.027239" steps="14"/></proof>
+  <proof prover="6"><result status="valid" time="0.030701" steps="14"/></proof>
   </goal>
   <goal name="dfs&#39;vc.15" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.032167" steps="44"/></proof>
   </goal>
   <goal name="dfs&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="3.241372" steps="9932"/></proof>
+  <transf name="split_goal_right" proved="true" >
+   <goal name="dfs&#39;vc.16.0" expl="VC for dfs" proved="true">
+   <proof prover="6"><result status="valid" time="0.019711" steps="3"/></proof>
+   </goal>
+   <goal name="dfs&#39;vc.16.1" expl="VC for dfs" proved="true">
+   <proof prover="6"><result status="valid" time="1.476698" steps="9927"/></proof>
+   </goal>
+  </transf>
   </goal>
   <goal name="dfs&#39;vc.17" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.040565" steps="56"/></proof>
+  <proof prover="6"><result status="valid" time="0.089370" steps="56"/></proof>
   </goal>
   <goal name="dfs&#39;vc.18" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.050092" steps="75"/></proof>
+  <proof prover="6"><result status="valid" time="0.091711" steps="74"/></proof>
   </goal>
   <goal name="dfs&#39;vc.19" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.060558" steps="1"/></proof>
+  <proof prover="6"><result status="valid" time="0.054141" steps="1"/></proof>
   </goal>
   <goal name="dfs&#39;vc.20" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.378849" steps="8078"/></proof>
+  <proof prover="6"><result status="valid" time="1.352876" steps="7627"/></proof>
   </goal>
   <goal name="dfs&#39;vc.21" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.041304" steps="31"/></proof>
+  <proof prover="6"><result status="valid" time="0.028925" steps="31"/></proof>
   </goal>
   <goal name="dfs&#39;vc.22" expl="postcondition" proved="true">
   <transf name="introduce_premises" proved="true" >
@@ -903,52 +917,37 @@
   </transf>
   </goal>
   <goal name="dfs&#39;vc.23" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="9.434537" steps="32883"/></proof>
+  <proof prover="6"><result status="valid" time="9.434537" steps="32910"/></proof>
   </goal>
   <goal name="dfs&#39;vc.24" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="17.399484" steps="63945"/></proof>
+  <proof prover="6"><result status="valid" time="18.668273" steps="64732"/></proof>
   </goal>
   <goal name="dfs&#39;vc.25" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="6.775041" steps="21827"/></proof>
+  <proof prover="6"><result status="valid" time="6.775041" steps="21781"/></proof>
   </goal>
   <goal name="dfs&#39;vc.26" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.041896" steps="129"/></proof>
+  <proof prover="6"><result status="valid" time="0.092126" steps="129"/></proof>
   </goal>
   <goal name="dfs&#39;vc.27" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.031915" steps="51"/></proof>
   </goal>
   <goal name="dfs&#39;vc.28" expl="postcondition" proved="true">
-  <transf name="split_goal_right" proved="true" >
-   <goal name="dfs&#39;vc.28.0" expl="VC for dfs" proved="true">
-   <proof prover="6"><result status="valid" time="0.019711" steps="34"/></proof>
-   </goal>
-   <goal name="dfs&#39;vc.28.1" expl="VC for dfs" proved="true">
-   <transf name="introduce_premises" proved="true" >
-    <goal name="dfs&#39;vc.28.1.0" expl="VC for dfs" proved="true">
-    <transf name="remove" proved="true" arg1="H5">
-     <goal name="dfs&#39;vc.28.1.0.0" expl="VC for dfs" proved="true">
-     <proof prover="6"><result status="valid" time="11.725520" steps="27997"/></proof>
-     </goal>
-    </transf>
-    </goal>
-   </transf>
-   </goal>
-  </transf>
+  <proof prover="6"><result status="valid" time="24.080212" steps="58171"/></proof>
   </goal>
   <goal name="dfs&#39;vc.29" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.368026" steps="857"/></proof>
+  <proof prover="6"><result status="valid" time="0.335139" steps="857"/></proof>
   </goal>
   <goal name="dfs&#39;vc.30" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="33.809356" steps="144273"/></proof>
+  <proof prover="6"><result status="valid" time="32.726284" steps="87952"/></proof>
   </goal>
   <goal name="dfs&#39;vc.31" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="2.355634" steps="6104"/></proof>
+  <proof prover="6"><result status="valid" time="1.499532" steps="6103"/></proof>
   </goal>
   <goal name="dfs&#39;vc.32" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="31.726077" steps="135916"/></proof>
+  <proof prover="6"><result status="valid" time="31.847882" steps="108120"/></proof>
   </goal>
   <goal name="dfs&#39;vc.33" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="0.028925" steps="68"/></proof>
+  <proof prover="6"><result status="valid" time="0.041304" steps="68"/></proof>
   </goal>
  </transf>
  </goal>
@@ -961,7 +960,7 @@
   <proof prover="6"><result status="valid" time="0.076324" steps="91"/></proof>
   </goal>
   <goal name="tarjan&#39;vc.2" expl="precondition" proved="true">
-  <proof prover="6"><result status="valid" time="1.004111" steps="3022"/></proof>
+  <proof prover="6"><result status="valid" time="0.628937" steps="3020"/></proof>
   </goal>
   <goal name="tarjan&#39;vc.3" expl="precondition" proved="true">
   <proof prover="6"><result status="valid" time="0.050000" steps="228"/></proof>
@@ -970,10 +969,10 @@
   <proof prover="6"><result status="valid" time="0.149290" steps="555"/></proof>
   </goal>
   <goal name="tarjan&#39;vc.5" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="10.504854" steps="72296"/></proof>
+  <proof prover="6"><result status="valid" time="13.454692" steps="72221"/></proof>
   </goal>
   <goal name="tarjan&#39;vc.6" expl="postcondition" proved="true">
-  <proof prover="6"><result status="valid" time="28.593994" steps="198661"/></proof>
+  <proof prover="6"><result status="valid" time="38.296390" steps="198176"/></proof>
   </goal>
   <goal name="tarjan&#39;vc.7" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.048866" steps="32"/></proof>
