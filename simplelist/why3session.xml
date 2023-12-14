@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
+<prover id="1" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
+<file format="whyml" proved="true">
+<path name=".."/><path name="simplelist.mlw"/>
+<theory name="Simplelist" proved="true">
+ <goal name="simplelist_tl" proved="true">
+ <proof prover="0"><result status="valid" time="0.349580" steps="35777"/></proof>
+ </goal>
+ <goal name="simplelist_split" proved="true">
+ <transf name="induction_ty_lex" proved="true" >
+  <goal name="simplelist_split.0" proved="true">
+  <proof prover="1"><result status="valid" time="0.304088" steps="2908"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="simplelist_app_disjoint" proved="true">
+ <proof prover="1"><result status="valid" time="1.332079" steps="6992"/></proof>
+ </goal>
+ <goal name="simplelist_length" proved="true">
+ <transf name="induction_ty_lex" proved="true" >
+  <goal name="simplelist_length.0" proved="true">
+  <proof prover="1"><result status="valid" time="0.017054" steps="108"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+</file>
+</why3session>

@@ -61,7 +61,7 @@ module SCCK
   use list.Elements as E
   use list.HdTlNoOpt
   use set.Fset
-
+  use simplelist.Simplelist
 
   type vertex
 
@@ -84,13 +84,6 @@ module SCCK
   lemma rank_range:
     forall x:'a, s [@induction]. lmem x s -> 0 <= rank x s < length s
 
-(* simple lists *)
-
-  predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
-
-  lemma simplelist_sub:
-    forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not lmem x l
-
 (** {4 Sets} *)
 
   lemma inter_elt:   
@@ -101,12 +94,6 @@ module SCCK
 
   lemma elements_add:
     forall x: 'a, l: list 'a. E.elements (Cons x l) == add x (E.elements l)
-
-  lemma simplelist_inter:
-    forall l1 [@induction] l2 [@induction]: list 'a. simplelist (l1 ++ l2) -> inter (E.elements l1) (E.elements l2) = empty
-
-  lemma length_eq_cardinal:
-    forall s [@induction]: list 'a. simplelist s -> length s = cardinal (E.elements s)
 
   lemma elements_elt_exchange:
     forall x y: 'a, l. E.elements (Cons x (Cons y l)) == E.elements (Cons y (Cons x l))

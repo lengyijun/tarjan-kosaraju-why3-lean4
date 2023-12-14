@@ -1,0 +1,26 @@
+module Simplelist
+  use int.Int
+  use list.List
+  use list.NumOcc
+  use list.Mem as L
+  use list.Append
+  use list.Elements as E
+  use list.Length
+  use set.Fset
+  
+predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
+
+lemma simplelist_tl:
+  forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not L.mem x l
+
+lemma simplelist_split: 
+  forall x: 'a, l1 [@induction] l2 l3 [@induction] l4. simplelist (l1 ++ Cons x l2)
+     -> l1 ++ Cons x l2 = l3 ++ Cons x l4 -> l1 = l3 /\ l2 = l4
+
+lemma simplelist_app_disjoint:
+  forall l1 l2: list 'a. simplelist (l1 ++ l2) -> inter (E.elements l1) (E.elements l2) = empty
+
+lemma simplelist_length:
+  forall s [@induction]: list 'a. simplelist s -> length s = cardinal (E.elements s)
+
+end

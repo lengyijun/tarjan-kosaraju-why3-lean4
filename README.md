@@ -11,10 +11,12 @@ with a little fix
 ## why3 version
 ```
 ❯ why3 --version
-Why3 platform, version 1.6.0+git
+Why3 platform, version 1.7.0+git
 ```
 
 ```
+why3 -L .  replay init_graph/
+why3 -L .  replay simplelist/
 why3 -L .  replay tarjan/
 why3 -L .  replay kosaraju/
 ```

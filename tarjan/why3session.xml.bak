@@ -879,15 +879,7 @@
    <proof prover="6"><result status="valid" time="0.019711" steps="3"/></proof>
    </goal>
    <goal name="dfs&#39;vc.16.1" expl="VC for dfs" proved="true">
-   <transf name="introduce_premises" proved="true" >
-    <goal name="dfs&#39;vc.16.1.0" expl="VC for dfs" proved="true">
-    <transf name="remove" proved="true" arg1="H5">
-     <goal name="dfs&#39;vc.16.1.0.0" expl="VC for dfs" proved="true">
-     <proof prover="6"><result status="valid" time="4.177391" steps="10289"/></proof>
-     </goal>
-    </transf>
-    </goal>
-   </transf>
+   <proof prover="6"><result status="valid" time="1.476698" steps="9927"/></proof>
    </goal>
   </transf>
   </goal>

@@ -11,6 +11,7 @@ module SCCTarjan72
   use map.Map
   use map.Const
   use set.Fset
+  use simplelist.Simplelist
 
   
 predicate lmem (x: 'a) (s: list 'a) = L.mem x s
@@ -126,23 +127,6 @@ lemma precedes_append_right:
 
 lemma precedes_append_right_iff:
   forall x y, s1 s2: list 'a. not lmem y s2 -> precedes x y (s1 ++ s2) <-> precedes x y s1
-
-(* simple lists *)
-
-predicate simplelist (l: list 'a) = forall x. num_occ x l <= 1
-
-lemma simplelist_tl:
-  forall x: 'a, l. simplelist (Cons x l) -> simplelist l /\ not lmem x l
-
-lemma simplelist_split: 
-  forall x: 'a, l1 [@induction] l2 l3 [@induction] l4. simplelist (l1 ++ Cons x l2)
-     -> l1 ++ Cons x l2 = l3 ++ Cons x l4 -> l1 = l3 /\ l2 = l4
-
-lemma simplelist_app_disjoint:
-  forall l1 l2: list 'a. simplelist (l1 ++ l2) -> inter (E.elements l1) (E.elements l2) = empty
-
-lemma simplelist_length:
-  forall s: list 'a. simplelist s -> length s = cardinal (E.elements s)
 
 lemma precedes_antisym:
   forall x y, s: list 'a. simplelist s
