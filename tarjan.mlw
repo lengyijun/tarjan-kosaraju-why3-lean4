@@ -157,9 +157,6 @@ lemma precedes_trans:
 
 (* Paths *)
 
-predicate reachable (x y: vertex) =
-  exists l. path x l y
-
 lemma reachable_refl:
   forall x. reachable x x
 

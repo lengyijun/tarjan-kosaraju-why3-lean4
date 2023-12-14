@@ -30,4 +30,7 @@ module GraphSetSucc
 
   clone export graph.Path with type vertex = vertex, predicate edge = edge
 
+  predicate reachable (x z: vertex) =
+    exists l. path x l z
+
 end

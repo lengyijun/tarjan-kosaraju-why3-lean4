@@ -23,9 +23,6 @@ module Kosaraju
 
   clone export init_graph.GraphSetSucc with type vertex = vertex, axiom successors_vertices
 
-  predicate reachable (x z: vertex) =
-    exists l. path x l z
-
   lemma reachable_em:
     forall x y. reachable x y \/ not reachable x y
 
