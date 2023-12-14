@@ -509,7 +509,6 @@
   </goal>
   <goal name="iter2&#39;vc.16" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="2.667601" steps="202333"/></proof>
-  <proof prover="4"><undone/></proof>
   </goal>
   <goal name="iter2&#39;vc.17" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="0.165917" steps="322"/></proof>

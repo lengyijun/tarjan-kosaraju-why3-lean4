@@ -138,12 +138,6 @@ lemma precedes_trans:
 
 (* Paths *)
 
-lemma reachable_refl:
-  forall x. reachable x x
-
-lemma reachable_trans:
-  forall x y z. reachable x y -> reachable y z -> reachable x z
-
 lemma xpath_xedge:
   forall x y l s. mem x s -> not mem y s -> path x l y ->
   exists x' y'. mem x' s /\ not mem y' s /\ edge x' y' /\ reachable x x' /\ reachable y' y

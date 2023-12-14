@@ -2,7 +2,20 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
-<file format="whyml">
+<prover id="0" name="CVC5" version="1.0.8" timelimit="120" steplimit="0" memlimit="10000"/>
+<prover id="1" name="Alt-Ergo" version="2.5.2" timelimit="120" steplimit="0" memlimit="10000"/>
+<file format="whyml" proved="true">
 <path name=".."/><path name="init_graph.mlw"/>
+<theory name="GraphSetSucc" proved="true">
+ <goal name="reachable_refl" proved="true">
+ <proof prover="1"><result status="valid" time="0.023293" steps="15"/></proof>
+ </goal>
+ <goal name="reachable_trans" proved="true">
+ <proof prover="0"><result status="valid" time="0.053770" steps="8644"/></proof>
+ </goal>
+ <goal name="reachable_em" proved="true">
+ <proof prover="1"><result status="valid" time="0.020333" steps="1"/></proof>
+ </goal>
+</theory>
 </file>
 </why3session>

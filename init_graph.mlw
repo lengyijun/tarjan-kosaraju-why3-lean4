@@ -33,4 +33,13 @@ module GraphSetSucc
   predicate reachable (x z: vertex) =
     exists l. path x l z
 
+  lemma reachable_refl:
+    forall x. reachable x x
+
+  lemma reachable_trans:
+    forall x y z. reachable x y -> reachable y z -> reachable x z
+
+  lemma reachable_em:
+    forall x y. reachable x y \/ not reachable x y
+
 end
