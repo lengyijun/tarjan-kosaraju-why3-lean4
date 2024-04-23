@@ -243,18 +243,6 @@
      <goal name="dfs1&#39;vc.0.12.0.1" expl="VC for dfs1" proved="true">
      <proof prover="1"><result status="valid" time="0.033424" steps="61"/></proof>
      </goal>
-     <goal name="dfs1&#39;vc.0.0.0.3" expl="variant decrease">
-     <proof prover="1"><result status="valid" time="0.044952" steps="29"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.0.0.0.0" expl="variant decrease">
-     <proof prover="1"><result status="valid" time="0.037046" steps="26"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.0.0.0.5" expl="variant decrease">
-     <proof prover="1"><result status="valid" time="0.040879" steps="29"/></proof>
-     </goal>
-     <goal name="dfs1&#39;vc.0.0.0.2" expl="variant decrease">
-     <proof prover="1"><result status="valid" time="0.026268" steps="24"/></proof>
-     </goal>
     </transf>
     </goal>
    </transf>
@@ -448,7 +436,6 @@
   </goal>
   <goal name="iter2&#39;vc.3" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="0.120459" steps="23273"/></proof>
-  <proof prover="2"><result status="valid" time="0.165813" steps="29554"/></proof>
   </goal>
   <goal name="iter2&#39;vc.4" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="0.063430" steps="36"/></proof>
@@ -466,7 +453,6 @@
   <proof prover="1"><result status="valid" time="0.036353" steps="28"/></proof>
   </goal>
   <goal name="iter2&#39;vc.9" expl="assertion" proved="true">
-  <proof prover="2"><result status="valid" time="2.306627" steps="114558"/></proof>
   </goal>
   <goal name="iter2&#39;vc.10" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.397731" steps="2031"/></proof>
@@ -565,7 +551,6 @@
   <goal name="scc_main&#39;vc.5" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="0.310284" steps="31520"/></proof>
   <proof prover="1"><result status="valid" time="0.050806" steps="297"/></proof>
-  <proof prover="2"><result status="valid" time="0.203676" steps="38554"/></proof>
   <proof prover="4"><result status="valid" time="0.111919"/></proof>
   </goal>
   <goal name="scc_main&#39;vc.6" expl="precondition" proved="true">
@@ -577,7 +562,6 @@
   <goal name="scc_main&#39;vc.8" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.215416" steps="26811"/></proof>
   <proof prover="1"><result status="valid" time="0.198098" steps="560"/></proof>
-  <proof prover="2"><result status="valid" time="0.259490" steps="33773"/></proof>
   <proof prover="4"><result status="valid" time="0.085321"/></proof>
   <transf name="introduce_premises" proved="true" >
    <goal name="scc_main&#39;vc.8.0" expl="postcondition" proved="true">
@@ -585,7 +569,6 @@
     <goal name="scc_main&#39;vc.8.0.0" expl="asserted formula" proved="true">
     <proof prover="0"><result status="valid" time="0.300962" steps="26673"/></proof>
     <proof prover="1"><result status="valid" time="0.056933" steps="200"/></proof>
-    <proof prover="2"><result status="valid" time="0.382351" steps="34425"/></proof>
     </goal>
     <goal name="scc_main&#39;vc.8.0.1" expl="postcondition" proved="true">
     <proof prover="1"><result status="valid" time="0.039443" steps="96"/></proof>

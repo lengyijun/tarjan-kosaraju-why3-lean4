@@ -4,7 +4,6 @@
 <why3session shape_version="6">
 <prover id="0" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="1" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
-<prover id="2" name="CVC4" version="1.8" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="kosaraju.mlw"/>
@@ -436,7 +435,6 @@
   </goal>
   <goal name="iter2&#39;vc.3" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="0.120459" steps="23273"/></proof>
-  <proof prover="2"><result status="valid" time="0.165813" steps="29554"/></proof>
   </goal>
   <goal name="iter2&#39;vc.4" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="0.063430" steps="36"/></proof>
@@ -454,7 +452,7 @@
   <proof prover="1"><result status="valid" time="0.036353" steps="28"/></proof>
   </goal>
   <goal name="iter2&#39;vc.9" expl="assertion" proved="true">
-  <proof prover="2"><result status="valid" time="2.306627" steps="114558"/></proof>
+  <proof prover="1" timelimit="120"><result status="valid" time="45.859416" steps="237123"/></proof>
   </goal>
   <goal name="iter2&#39;vc.10" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.397731" steps="2031"/></proof>
@@ -553,7 +551,6 @@
   <goal name="scc_main&#39;vc.5" expl="precondition" proved="true">
   <proof prover="0"><result status="valid" time="0.310284" steps="31520"/></proof>
   <proof prover="1"><result status="valid" time="0.050806" steps="297"/></proof>
-  <proof prover="2"><result status="valid" time="0.203676" steps="38554"/></proof>
   <proof prover="4"><result status="valid" time="0.111919"/></proof>
   </goal>
   <goal name="scc_main&#39;vc.6" expl="precondition" proved="true">
@@ -565,7 +562,6 @@
   <goal name="scc_main&#39;vc.8" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.215416" steps="26811"/></proof>
   <proof prover="1"><result status="valid" time="0.198098" steps="560"/></proof>
-  <proof prover="2"><result status="valid" time="0.259490" steps="33773"/></proof>
   <proof prover="4"><result status="valid" time="0.085321"/></proof>
   <transf name="introduce_premises" proved="true" >
    <goal name="scc_main&#39;vc.8.0" expl="postcondition" proved="true">
@@ -573,7 +569,6 @@
     <goal name="scc_main&#39;vc.8.0.0" expl="asserted formula" proved="true">
     <proof prover="0"><result status="valid" time="0.300962" steps="26673"/></proof>
     <proof prover="1"><result status="valid" time="0.056933" steps="200"/></proof>
-    <proof prover="2"><result status="valid" time="0.382351" steps="34425"/></proof>
     </goal>
     <goal name="scc_main&#39;vc.8.0.1" expl="postcondition" proved="true">
     <proof prover="1"><result status="valid" time="0.039443" steps="96"/></proof>
