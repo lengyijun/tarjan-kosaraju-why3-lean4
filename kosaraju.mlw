@@ -278,8 +278,9 @@ variant {stack}
         let b1 = dfs2 (add x empty) blacks empty in
         let cc1 = diff b1 blacks in
         assert {subset cc1 (E.elements stack)};
+        assert {mem x cc1};
         assert {forall y. mem y cc1 -> reachable_before y x stack};      
-        assert {is_subscc cc1 /\ mem x cc1};  
+        assert {is_subscc cc1};
         assert {forall y. in_same_scc y x -> mem y cc1};
         assert {is_scc cc1};
         iter2 s b1 (Cons cc1 sccs)

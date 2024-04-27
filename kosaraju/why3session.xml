@@ -455,78 +455,81 @@
   <proof prover="1" timelimit="120"><result status="valid" time="45.859416" steps="237123"/></proof>
   </goal>
   <goal name="iter2&#39;vc.10" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="0.397731" steps="2031"/></proof>
+  <proof prover="1"><result status="valid" time="0.250052" steps="1280"/></proof>
   </goal>
   <goal name="iter2&#39;vc.11" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="1.797277" steps="7181"/></proof>
+  <proof prover="1"><result status="valid" time="0.397731" steps="1791"/></proof>
   </goal>
   <goal name="iter2&#39;vc.12" expl="assertion" proved="true">
-  <proof prover="1"><result status="valid" time="1.880388" steps="7086"/></proof>
+  <proof prover="1" timelimit="120"><result status="valid" time="0.733601" steps="4375"/></proof>
   </goal>
   <goal name="iter2&#39;vc.13" expl="assertion" proved="true">
+  <proof prover="1"><result status="valid" time="1.479569" steps="7086"/></proof>
+  </goal>
+  <goal name="iter2&#39;vc.14" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.777013" steps="3373"/></proof>
   </goal>
-  <goal name="iter2&#39;vc.14" expl="variant decrease" proved="true">
+  <goal name="iter2&#39;vc.15" expl="variant decrease" proved="true">
   <proof prover="1"><result status="valid" time="0.064372" steps="247"/></proof>
   </goal>
-  <goal name="iter2&#39;vc.15" expl="precondition" proved="true">
+  <goal name="iter2&#39;vc.16" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="32.844912" steps="134129"/></proof>
   </goal>
-  <goal name="iter2&#39;vc.16" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="3.354071" steps="14644"/></proof>
-  </goal>
   <goal name="iter2&#39;vc.17" expl="precondition" proved="true">
-  <proof prover="0"><result status="valid" time="4.223007" steps="201085"/></proof>
+  <proof prover="1"><result status="valid" time="2.812118" steps="14645"/></proof>
   </goal>
   <goal name="iter2&#39;vc.18" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.165917" steps="323"/></proof>
+  <proof prover="0"><result status="valid" time="3.525173" steps="201085"/></proof>
   </goal>
   <goal name="iter2&#39;vc.19" expl="precondition" proved="true">
-  <proof prover="1" timelimit="120"><result status="valid" time="3.781585" steps="17829"/></proof>
+  <proof prover="1"><result status="valid" time="0.165917" steps="323"/></proof>
   </goal>
-  <goal name="iter2&#39;vc.20" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.056174" steps="4"/></proof>
+  <goal name="iter2&#39;vc.20" expl="precondition" proved="true">
+  <proof prover="1" timelimit="120"><result status="valid" time="3.781585" steps="17821"/></proof>
   </goal>
   <goal name="iter2&#39;vc.21" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.048850" steps="54"/></proof>
+  <proof prover="1"><result status="valid" time="0.056174" steps="4"/></proof>
   </goal>
   <goal name="iter2&#39;vc.22" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.133498" steps="275"/></proof>
+  <proof prover="1"><result status="valid" time="0.048850" steps="54"/></proof>
   </goal>
   <goal name="iter2&#39;vc.23" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.036892" steps="28"/></proof>
+  <proof prover="1"><result status="valid" time="0.133498" steps="275"/></proof>
   </goal>
   <goal name="iter2&#39;vc.24" expl="postcondition" proved="true">
-  <proof prover="1" timelimit="120"><result status="valid" time="0.028287" steps="26"/></proof>
+  <proof prover="1"><result status="valid" time="0.036892" steps="28"/></proof>
   </goal>
   <goal name="iter2&#39;vc.25" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.036116" steps="20"/></proof>
+  <proof prover="1" timelimit="120"><result status="valid" time="0.028287" steps="26"/></proof>
   </goal>
   <goal name="iter2&#39;vc.26" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.031290" steps="104"/></proof>
+  <proof prover="1"><result status="valid" time="0.036116" steps="20"/></proof>
   </goal>
   <goal name="iter2&#39;vc.27" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.275374" steps="770"/></proof>
+  <proof prover="1"><result status="valid" time="0.031290" steps="104"/></proof>
   </goal>
   <goal name="iter2&#39;vc.28" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.030578" steps="46"/></proof>
+  <proof prover="1"><result status="valid" time="0.275374" steps="770"/></proof>
   </goal>
   <goal name="iter2&#39;vc.29" expl="postcondition" proved="true">
-  <proof prover="1" timelimit="120"><result status="valid" time="0.384548" steps="2230"/></proof>
+  <proof prover="1"><result status="valid" time="0.030578" steps="46"/></proof>
   </goal>
   <goal name="iter2&#39;vc.30" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.033080" steps="28"/></proof>
+  <proof prover="1" timelimit="120"><result status="valid" time="0.384548" steps="2230"/></proof>
   </goal>
   <goal name="iter2&#39;vc.31" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.044373" steps="156"/></proof>
+  <proof prover="1"><result status="valid" time="0.033080" steps="28"/></proof>
   </goal>
   <goal name="iter2&#39;vc.32" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.808295" steps="3411"/></proof>
+  <proof prover="1"><result status="valid" time="0.044373" steps="156"/></proof>
   </goal>
   <goal name="iter2&#39;vc.33" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.043570" steps="70"/></proof>
+  <proof prover="1"><result status="valid" time="0.808295" steps="3411"/></proof>
   </goal>
   <goal name="iter2&#39;vc.34" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.043570" steps="70"/></proof>
+  </goal>
+  <goal name="iter2&#39;vc.35" expl="postcondition" proved="true">
   <proof prover="1" timelimit="120"><result status="valid" time="0.772986" steps="4409"/></proof>
   </goal>
  </transf>
