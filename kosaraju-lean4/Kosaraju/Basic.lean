@@ -1,0 +1,72 @@
+import Kosaraju.DirectedGraph
+import Kosaraju.Dfs1
+import Kosaraju.Grail
+
+structure Trajectory (Graph Node : Type*)
+                     [DirectedGraph Node Graph]
+                     [BEq Node] [LawfulBEq Node] [DecidableEq Node]
+                     (graph: Graph)
+where
+  sccs_o  : List (Finset Node)
+  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ DirectedGraph.all_nodes graph
+  p₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs_o → cc₂ ∈ sccs_o → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
+  p₅ : ∀ v, v ∈ DirectedGraph.all_nodes graph -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
+
+def kosaraju [DirectedGraph Node Graph]
+             [BEq Node] [LawfulBEq Node] [DecidableEq Node]
+             (graph: Graph) : Trajectory Graph Node graph :=
+have h₃ := by
+  simp [wff_stack_G1, wff_color, no_black_to_white]
+  tauto
+let ⟨(stack: List Node), p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.all_nodes graph) [] [] (by tauto) (by tauto) h₃
+
+have a₁ := by
+  rw [DirectedGraph.same_nodes]
+  simp_all
+
+have a₂ := by
+  simp [wff_stack_G2, wff_stack_G1, wff_color, no_black_to_white] at *
+  rw [DirectedGraph.same_nodes]
+  simp_all
+  obtain ⟨_, _, p₃⟩ := p₃
+  intro x y hx hy h
+  rw [DirectedGraph.transpose_transpose] at *
+  apply p₃ <;> assumption
+
+let ⟨blacks_o, sccs_o, p₁, p₂, p₃, p₄, p₅, _⟩ := iter2 (DirectedGraph.transpose Node graph) stack [] [] a₁ a₂ (by simp_all) (by tauto) (by tauto)
+
+have p₇ := by
+  intros cc
+  rw [p₂]
+  constructor
+  all_goals intros h
+  all_goals apply And.intro
+  any_goals apply And.intro
+  any_goals rw [<- is_scc_transpose] at *
+  any_goals tauto
+  any_goals simp_all
+  . simp [is_scc] at h
+    obtain ⟨_, ⟨h, _⟩, _⟩ := h
+    intros x x_in_cc
+    specialize h x x x_in_cc x_in_cc
+    obtain ⟨h, _⟩ := h
+    have := reachable_valid _ _ _ h
+    tauto
+  . intros x x_in_cc
+    apply a₁
+    rw [DirectedGraph.same_nodes]
+    obtain ⟨_, _, h⟩ := h
+    apply h
+    assumption
+
+{
+  sccs_o  := sccs_o
+  p₂ := p₇
+  p₄ := p₄
+  p₅ := by intros v h
+           apply p₅
+           simp_all
+           rename_i q
+           apply q
+           assumption
+}
