@@ -179,50 +179,6 @@ def reachable_before [DirectedGraph V Graph]
   \/
   (x = y /\ x ∈ s)
 
--- both ends in s
-def reachable_before_rev [DirectedGraph Node Graph]
-                         [BEq Node] [LawfulBEq Node]
-                         (g : Graph)
-                         (x y: Node) (s: List Node) : Prop :=
-  let v : List Node := DirectedGraph.all_nodes g
-  let max_int : Nat := v.length
-  (∃ l, path g x l y /\
-       let yl := List.cons y l
-       (List.cons x yl) ⊆ s /\
-       (∀ z, z ∈ yl -> rank z s max_int <= rank x s max_int))
-  \/
-  (x = y /\ x ∈ s)
-
-theorem reachable_before_reverse [DirectedGraph Node Graph]
-                                 [BEq Node] [LawfulBEq Node]
-                                 (g : Graph) :
-∀ (x y: Node) cc, reachable_before_rev g x y cc -> reachable_before (DirectedGraph.transpose Node g) y x cc := by
-simp [reachable_before, reachable_before_rev]
-intros x y cc h₁
-cases h₁ with
-| inl h₁ =>
-  obtain ⟨lxy, h₁, ⟨_, h₄, h₅⟩, ⟨h₆, h₇⟩⟩:= h₁
-  left
-  use (List.reverse lxy)
-  constructor
-  any_goals constructor
-  any_goals constructor
-  . apply reverse_path
-    assumption
-  . tauto
-  . simp [Subset, List.Subset]
-    apply h₅
-  . rw [DirectedGraph.same_nodes]
-    assumption
-  . rw [DirectedGraph.same_nodes]
-    simp_all
-| inr h₁ =>
-  obtain ⟨_, h₁⟩:= h₁
-  subst y
-  right
-  tauto
-
-
 
 def reachable_before_same_scc [DirectedGraph V Graph]
                               [BEq V] [LawfulBEq V]
@@ -439,66 +395,6 @@ cases g₁ <;> cases g₂ <;> constructor <;> try assumption
   apply no_black_to_white_no_path g b' h₂ l₁ x z h₄ <;> assumption
 . exfalso
   apply no_black_to_white_no_path g b' h₂ l₁ x z h₄ <;> assumption
-
-theorem paths_in_set_reachable_before [DirectedGraph Node Graph]
-                                      [BEq Node] [LawfulBEq Node]
-                                      (g : Graph) :
-  ∀ (x z: Node) cc s,
-    paths_in_set g cc ->
-    simplelist (List.cons x s) ->
-    cc ⊆ (List.cons x s) ->
-    x ∈ cc ->
-    z ∈ cc ->
-    reachable g x z ->
-    reachable_before_rev g x z (List.cons x s) := by
-simp [paths_in_set, reachable, reachable_before_rev]
-intros x z cc s h₁ h₂ h₃ h₄ h₅ h₆
-cases h₆ with
-| inl h₆ =>
-  obtain ⟨lxz, h₆⟩ := h₆
-  left
-  use lxz
-  constructor <;> try constructor
-  . assumption
-  . constructor
-    . specialize h₃ h₅
-      simp_all
-    . specialize h₁ x lxz z h₄ h₅ h₆
-      simp [Subset, List.Subset] at *
-      simp_all
-  . constructor
-    . simp [rank]
-      split <;> split <;> simp_all
-      . rename_i h₁ h₂
-        obtain ⟨h₁, h₃⟩ := h₁
-        subst x
-        tauto
-      . rw [simplelist_tl] at h₂
-        tauto
-      . have h₇ : z ∈ List.cons x s := by apply h₃; assumption
-        cases h₇ <;> try tauto
-        obtain v : List Node := DirectedGraph.all_nodes g
-        have : rank z s (List.length v) < List.length s := by apply rank_range; assumption
-        omega
-    . intros a h₇
-      simp [rank]
-      split <;> split <;> simp_all
-      . rename_i h₁ h₂
-        obtain ⟨h₁, h₃⟩ := h₁
-        subst x
-        tauto
-      . rw [simplelist_tl] at h₂
-        tauto
-      . specialize h₁ x lxz z h₄ h₅ h₆ h₇
-        specialize h₃ h₁
-        cases h₃ <;> try tauto
-        obtain v : List Node := DirectedGraph.all_nodes g
-        have : rank a s (List.length v) < List.length s := by apply rank_range; assumption
-        omega
-| inr h₆ => obtain ⟨_, _⟩ := h₆
-            subst z
-            right
-            rfl
 
 
 theorem wff_stack_white_extension [DirectedGraph V Graph]
