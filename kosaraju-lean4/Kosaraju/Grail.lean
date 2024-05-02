@@ -9,14 +9,14 @@ open Finset List
 
 set_option maxHeartbeats 0
 
-structure Pillar [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
-                 [DecidableEq Node]
+structure Pillar [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
+                 [DecidableEq V]
                  (graph: Graph)
-                 (stack blacks_i: List Node)
-                 (sccs_i : List (Finset Node))
+                 (stack blacks_i: List V)
+                 (sccs_i : List (Finset V))
 where
-  blacks_o : List Node
-  sccs_o   : List (Finset Node)
+  blacks_o : List V
+  sccs_o   : List (Finset V)
   p₁ : wff_stack_G2 graph blacks_o List.nil List.nil
   p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc -> x ∈ blacks_o
   p₃ : ∀ x, x ∈ blacks_o ↔ x ∈ stack \/ x ∈ blacks_i
@@ -24,12 +24,12 @@ where
   p₅ : ∀ v, v ∈ stack -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
   p₆ : sccs_i ⊆ sccs_o
 
-def iter2 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
-          [DecidableEq Node]
+def iter2 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
+          [DecidableEq V]
          (graph: Graph)
-         (stack blacks: List Node)
-         (sccs : List (Finset Node))
-         (a₁ : let v : List Node := DirectedGraph.all_nodes graph
+         (stack blacks: List V)
+         (sccs : List (Finset V))
+         (a₁ : let v : List V := DirectedGraph.all_nodes graph
                v.filter (fun x => !blacks.contains x) ⊆ stack)
          (a₂ : wff_stack_G2 graph blacks List.nil stack)
          (a₃ : ∀ cc, cc ∈ sccs ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ blacks)
@@ -130,7 +130,7 @@ def iter2 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
         specialize h₂ b c
         simp_all
 
-    have assert₃: ∀ y, y ∈ cc₁ -> reachable_before (DirectedGraph.transpose Node graph) y x (x :: stack) := by
+    have assert₃: ∀ y, y ∈ cc₁ -> reachable_before (DirectedGraph.transpose V graph) y x (x :: stack) := by
       intros y h₃
       obtain ⟨s', _, h₄⟩ := monotony
       subst b₁
@@ -179,7 +179,7 @@ def iter2 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
                     split <;> split <;> try tauto
                     all_goals simp_all
                     rename_i h₁ h₂
-                    obtain v : List Node := DirectedGraph.all_nodes (DirectedGraph.transpose Node graph)
+                    obtain v : List V := DirectedGraph.all_nodes (DirectedGraph.transpose V graph)
                     have : rank z stack (List.length v) < List.length stack := by
                       apply rank_range; try assumption
                       have ⟨h₃, h₄⟩ := M

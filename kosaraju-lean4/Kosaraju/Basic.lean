@@ -2,23 +2,23 @@ import Kosaraju.DirectedGraph
 import Kosaraju.Dfs1
 import Kosaraju.Grail
 
-structure Trajectory (Graph Node : Type*)
-                     [DirectedGraph Node Graph]
-                     [BEq Node] [LawfulBEq Node] [DecidableEq Node]
+structure Trajectory (Graph V : Type*)
+                     [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
                      (graph: Graph)
 where
-  sccs_o  : List (Finset Node)
+  sccs_o  : List (Finset V)
   p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ DirectedGraph.all_nodes graph
   p₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs_o → cc₂ ∈ sccs_o → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
   p₅ : ∀ v, v ∈ DirectedGraph.all_nodes graph -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
 
-def kosaraju [DirectedGraph Node Graph]
-             [BEq Node] [LawfulBEq Node] [DecidableEq Node]
-             (graph: Graph) : Trajectory Graph Node graph :=
+def kosaraju [DirectedGraph V Graph]
+             [BEq V] [LawfulBEq V] [DecidableEq V]
+             (graph: Graph) : Trajectory Graph V graph :=
 have h₃ := by
   simp [wff_stack_G1, wff_color, no_black_to_white]
   tauto
-let ⟨(stack: List Node), p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.all_nodes graph) [] [] (by tauto) (by tauto) h₃
+let ⟨(stack: List V), p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.all_nodes graph) [] [] (by tauto) (by tauto) h₃
 
 have a₁ := by
   rw [DirectedGraph.same_nodes]
@@ -33,7 +33,7 @@ have a₂ := by
   rw [DirectedGraph.transpose_transpose] at *
   apply p₃ <;> assumption
 
-let ⟨blacks_o, sccs_o, p₁, p₂, p₃, p₄, p₅, _⟩ := iter2 (DirectedGraph.transpose Node graph) stack [] [] a₁ a₂ (by simp_all) (by tauto) (by tauto)
+let ⟨blacks_o, sccs_o, p₁, p₂, p₃, p₄, p₅, _⟩ := iter2 (DirectedGraph.transpose V graph) stack [] [] a₁ a₂ (by simp_all) (by tauto) (by tauto)
 
 have p₇ := by
   intros cc

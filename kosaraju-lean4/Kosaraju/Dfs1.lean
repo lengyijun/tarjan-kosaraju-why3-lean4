@@ -5,18 +5,18 @@ open Rank
 
 set_option maxHeartbeats 500000
 
-structure Brigade [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
+structure Brigade [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                   (graph: Graph)
-                  (roots black_stack grays : List Node)
+                  (roots black_stack grays : List V)
 where
-  stack : List Node
+  stack : List V
   p₁ : wff_stack_G1 graph stack grays
   p₂ : roots ⊆ stack ++ grays
   monotony: ∃ s', stack = s' ++ black_stack /\ access_from_set graph roots s'
 
-def dfs1 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
+def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
          (graph: Graph)
-         (roots black_stack grays : List Node)
+         (roots black_stack grays : List V)
          (h₁: roots ⊆ DirectedGraph.all_nodes graph)
          (h₂: grays ⊆ DirectedGraph.all_nodes graph)
          (h₃: wff_stack_G1 graph black_stack grays)
@@ -72,7 +72,7 @@ def dfs1 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
                       . rw [simplelist_tl]
                         tauto
                   . tauto
-    let v : List Node := (DirectedGraph.all_nodes graph)
+    let v : List V := (DirectedGraph.all_nodes graph)
     let termination_proof: grays.length < v.length := by
       apply simplelist_size_2
       . tauto
@@ -164,7 +164,7 @@ def dfs1 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
            simp [rank] at h₇
            split at h₇ <;> split at h₇ <;> simp_all; try tauto
            revert h₇
-           obtain v : List Node := DirectedGraph.all_nodes graph
+           obtain v : List V := DirectedGraph.all_nodes graph
            have : rank y stack (List.length v) < List.length stack := by apply rank_range; assumption
            omega
          . rename_i h
@@ -252,5 +252,5 @@ def dfs1 [DirectedGraph Node Graph] [BEq Node] [LawfulBEq Node]
                                                   subst a
                                                   tauto
     }
-termination_by let v : List Node := DirectedGraph.all_nodes graph
+termination_by let v : List V := DirectedGraph.all_nodes graph
                (v.length - grays.length, roots)

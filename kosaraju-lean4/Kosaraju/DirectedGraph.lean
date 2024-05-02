@@ -7,18 +7,19 @@ import Kosaraju.ListHelper
 
 open Rank
 
-class DirectedGraph (Node : Type u)(Graph : Type v) where
-  all_nodes : Graph -> List Node
-  edge      : Graph -> Node -> Node -> Prop
-  succ      : Graph -> Node -> List Node
+-- finite directed graph
+class DirectedGraph (V : Type u)(Graph : Type v) where
+  all_nodes : Graph -> List V
+  edge      : Graph -> V -> V -> Prop
+  succ      : Graph -> V -> List V
   transpose : Graph -> Graph
   edge_succ : ∀ g a b, b ∈ succ g a <-> edge g a b
-  valid_edge : ∀ (g: Graph) (a b: Node), edge g a b -> a ∈ all_nodes g /\ b ∈ all_nodes g
+  valid_edge : ∀ (g: Graph) (a b: V), edge g a b -> a ∈ all_nodes g /\ b ∈ all_nodes g
   transpose_transpose : ∀ g, (g |> transpose |> transpose) = g
   same_nodes : ∀ g, (g |> transpose |> all_nodes) = (g |> all_nodes)
   reverse_edge :∀ g a b, edge g a b <-> edge (g |> transpose) b a
 
-theorem succ_valid [DirectedGraph Node Graph] (g : Graph) (a: Node) : a ∈ DirectedGraph.all_nodes g -> DirectedGraph.succ g a ⊆ DirectedGraph.all_nodes g := by
+theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V) : a ∈ DirectedGraph.all_nodes g -> DirectedGraph.succ g a ⊆ DirectedGraph.all_nodes g := by
 intro _ b h
 rw [DirectedGraph.edge_succ] at *
 have : a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g := by
@@ -26,68 +27,66 @@ have : a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g := by
   assumption
 tauto
 
-inductive path [DirectedGraph Node Graph] : Graph -> Node -> List Node -> Node -> Prop
-  | edge: ∀ (g: Graph) (a b: Node), DirectedGraph.edge g a b -> path g a List.nil b
-  | cons: ∀ (g: Graph) (a b c: Node) (l: List Node), DirectedGraph.edge g a b -> path g b l c -> path g a (List.cons b l) c
+inductive path [DirectedGraph V Graph] : Graph -> V -> List V -> V -> Prop
+  | edge: ∀ (g: Graph) (a b: V), DirectedGraph.edge g a b -> path g a List.nil b
+  | cons: ∀ (g: Graph) (a b c: V) (l: List V), DirectedGraph.edge g a b -> path g b l c -> path g a (List.cons b l) c
 
-theorem path_trans [DirectedGraph Node Graph] (g : Graph) (a b c: Node) (lab lbc: List Node) :
+theorem path_trans [DirectedGraph V Graph] (g : Graph) (a b c: V) (lab lbc: List V) :
         path g a lab b -> path g b lbc c -> path g a (lab ++ List.cons b lbc) c := by
-        intro h₂
-        induction h₂
-        . simp; intros; constructor <;> assumption
-        . intros; simp_all; constructor <;> assumption
+intro h
+induction h
+. simp; intros; constructor <;> assumption
+. intros; simp_all; constructor <;> assumption
 
-theorem path_decomposition [DirectedGraph Node Graph] (g : Graph) (a b c: Node) (lab lbc: List Node) :
+theorem path_decomposition [DirectedGraph V Graph] (g : Graph) (a b c: V) (lab lbc: List V) :
   path g a (lab ++ List.cons b lbc) c -> path g a lab b /\ path g b lbc c := by
 revert a b c lbc
-induction lab <;> simp_all <;> intros a b c lbc h₁ <;> cases h₁
+induction lab <;> simp_all <;> intros a b c lbc h <;> cases h
 . tauto
 . rename_i x xs induction_step h₂ h₃
   specialize induction_step x b c lbc h₃
   tauto
 
-theorem reverse_path [DirectedGraph Node Graph] (g : Graph) (a b : Node) (l : List Node) :
-        path g a l b -> path (DirectedGraph.transpose Node g) b l.reverse a :=  by
-        intro h₂
-        induction h₂ <;> simp
-        . constructor; rw [<- DirectedGraph.reverse_edge]; assumption
-        . apply path_trans
-          . assumption
-          . constructor; rw [<- DirectedGraph.reverse_edge]; assumption
+theorem reverse_path [DirectedGraph V Graph] (g : Graph) (a b : V) (l : List V) :
+        path g a l b -> path (DirectedGraph.transpose V g) b l.reverse a :=  by
+intro h
+induction h <;> simp
+. constructor; rw [<- DirectedGraph.reverse_edge]; assumption
+. apply path_trans
+  . assumption
+  . constructor; rw [<- DirectedGraph.reverse_edge]; assumption
 
-theorem path_valid [DirectedGraph Node Graph] (g : Graph) (a b: Node)(l : List Node):
+theorem path_valid [DirectedGraph V Graph] (g : Graph) (a b: V)(l : List V):
         path g a l b ->
         a ∈ DirectedGraph.all_nodes g /\
         b ∈ DirectedGraph.all_nodes g /\
         l ⊆ DirectedGraph.all_nodes g
 := by
 intros h
-induction h
-. simp_all
-  apply DirectedGraph.valid_edge
+induction h <;> simp_all
+. apply DirectedGraph.valid_edge
   assumption
-. simp_all
-  rename_i a b _ _ h _ _
+. rename_i a b _ _ h _ _
   have : a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g := by
     apply DirectedGraph.valid_edge
     assumption
   tauto
 
-def reachable [DirectedGraph Node Graph]
-              [BEq Node] [LawfulBEq Node]
+def reachable [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V]
               (g : Graph)
-              (a b : Node)
+              (a b : V)
                 : Prop := (∃ l, path g a l b)
                           \/
                           (
-                            let v : List Node := DirectedGraph.all_nodes g
+                            let v : List V := DirectedGraph.all_nodes g
                             a = b /\ a ∈ v
                           )
 
-theorem reachable_trans [DirectedGraph Node Graph]
-                        [BEq Node] [LawfulBEq Node]
+theorem reachable_trans [DirectedGraph V Graph]
+                        [BEq V] [LawfulBEq V]
                         (g : Graph)
-                        (x y z : Node) :
+                        (x y z : V) :
 reachable g x y -> reachable g y z -> reachable g x z := by
 simp [reachable]
 intros xy yz
@@ -103,9 +102,9 @@ all_goals rename_i h g
   subst z
   assumption
 
-theorem reachable_valid [DirectedGraph Node Graph]
-                        [BEq Node] [LawfulBEq Node]
-                        (g : Graph) (a b: Node):
+theorem reachable_valid [DirectedGraph V Graph]
+                        [BEq V] [LawfulBEq V]
+                        (g : Graph) (a b: V):
 reachable g a b -> a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g
 := by
 intros h
@@ -117,16 +116,16 @@ cases h with
            subst a
            tauto
 
-def in_same_scc [DirectedGraph Node Graph]
-                [BEq Node] [LawfulBEq Node]
+def in_same_scc [DirectedGraph V Graph]
+                [BEq V] [LawfulBEq V]
                 (g : Graph)
-                (a b : Node)
+                (a b : V)
                 : Prop := reachable g a b /\ reachable g b a
 
-theorem same_scc_trans [DirectedGraph Node Graph]
-                       [BEq Node] [LawfulBEq Node]
+theorem same_scc_trans [DirectedGraph V Graph]
+                       [BEq V] [LawfulBEq V]
                        (g : Graph)
-                       (x y z : Node) :
+                       (x y z : V) :
 in_same_scc g x y -> in_same_scc g y z -> in_same_scc g x z := by
 simp [in_same_scc]
 intros
@@ -134,44 +133,44 @@ constructor
 all_goals apply reachable_trans
 all_goals assumption
 
-def is_subscc [DirectedGraph Node Graph]
-              [BEq Node] [LawfulBEq Node]
+def is_subscc [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V]
               (g : Graph)
-              (s : Finset Node) : Prop :=
+              (s : Finset V) : Prop :=
     ∀ x y, x ∈ s -> y ∈ s -> in_same_scc g x y
 
-def is_scc [DirectedGraph Node Graph]
-           [BEq Node] [LawfulBEq Node]
+def is_scc [DirectedGraph V Graph]
+           [BEq V] [LawfulBEq V]
            (g : Graph)
-           (s : Finset Node) : Prop :=
+           (s : Finset V) : Prop :=
     is_subscc g s /\ (∀ s', s ⊆ s' -> is_subscc g s' -> s' ⊆ s)
 
-def no_black_to_white [DirectedGraph Node Graph]
-                      [BEq Node] [LawfulBEq Node]
+def no_black_to_white [DirectedGraph V Graph]
+                      [BEq V] [LawfulBEq V]
                       (g : Graph)
-                      (blacks grays: List Node) : Prop :=
+                      (blacks grays: List V) : Prop :=
     ∀ a b, DirectedGraph.edge g a b -> a ∈ blacks -> b ∈ blacks \/ b ∈ grays
 
-def access_from_set [DirectedGraph Node Graph]
-                    [BEq Node] [LawfulBEq Node]
+def access_from_set [DirectedGraph V Graph]
+                    [BEq V] [LawfulBEq V]
                     (g : Graph)
-                    (roots b: List Node) : Prop :=
+                    (roots b: List V) : Prop :=
 ∀ z, z ∈ b -> ∃ x, x ∈ roots /\ reachable g x z
 
-def wff_color [DirectedGraph Node Graph]
-              [BEq Node] [LawfulBEq Node]
+def wff_color [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V]
               (g : Graph)
-              (blacks grays: List Node) : Prop :=
+              (blacks grays: List V) : Prop :=
               (∀ x, x ∈ blacks -> x ∈ grays -> False) /\
               no_black_to_white g blacks grays /\
               simplelist blacks /\
               simplelist grays
 
-def reachable_before [DirectedGraph Node Graph]
-                     [BEq Node] [LawfulBEq Node]
+def reachable_before [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V]
                      (g : Graph)
-                     (x y: Node) (s: List Node) : Prop :=
-  let v : List Node := DirectedGraph.all_nodes g
+                     (x y: V) (s: List V) : Prop :=
+  let v : List V := DirectedGraph.all_nodes g
   let max_int : Nat := v.length
   (∃ l, path g x l y /\
        let xl := List.cons x l
@@ -181,51 +180,51 @@ def reachable_before [DirectedGraph Node Graph]
   (x = y /\ x ∈ s)
 
 
-def reachable_before_same_scc [DirectedGraph Node Graph]
-                              [BEq Node] [LawfulBEq Node]
+def reachable_before_same_scc [DirectedGraph V Graph]
+                              [BEq V] [LawfulBEq V]
                               (g : Graph)
-                              (s: List Node) : Prop :=
+                              (s: List V) : Prop :=
    ∀ x y, x ∈ s -> y ∈ s -> reachable_before g x y s -> in_same_scc g x y
 
-def no_edge_out_of [DirectedGraph Node Graph]
-                   [BEq Node] [LawfulBEq Node]
+def no_edge_out_of [DirectedGraph V Graph]
+                   [BEq V] [LawfulBEq V]
                    (g : Graph)
-                   (s3 s1: List Node) : Prop :=
+                   (s3 s1: List V) : Prop :=
     ∀ s2, s1 = s2 ++ s3 -> ∀ x y, x ∈ s3 -> y ∈ s2 -> DirectedGraph.edge g x y -> False
 
-def no_path_out_of_in [DirectedGraph Node Graph]
-                      [BEq Node] [LawfulBEq Node]
+def no_path_out_of_in [DirectedGraph V Graph]
+                      [BEq V] [LawfulBEq V]
                       (g : Graph)
-                      (s3 s1: List Node) : Prop :=
+                      (s3 s1: List V) : Prop :=
     ∀ x y l s2, s1 = s2 ++ s3 -> x ∈ s3 -> y ∈ s2 -> path g x l y -> l ⊆ s1 -> False
 
-def paths_in_set [DirectedGraph Node Graph]
-                 [BEq Node] [LawfulBEq Node]
+def paths_in_set [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V]
                  (g : Graph)
-                 (cc: List Node) : Prop :=
+                 (cc: List V) : Prop :=
     ∀ x l y, x ∈ cc -> y ∈ cc -> path g x l y -> l ⊆ cc
 
-def wff_stack_G1 [DirectedGraph Node Graph]
-                 [BEq Node] [LawfulBEq Node]
+def wff_stack_G1 [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V]
                  (g : Graph)
-                 (blacks grays: List Node) :=
+                 (blacks grays: List V) :=
     wff_color g blacks grays
     /\ blacks ⊆ (DirectedGraph.all_nodes g)
     /\ reachable_before_same_scc g blacks
 
-def wff_stack_G2 [DirectedGraph Node Graph]
-                 [BEq Node] [LawfulBEq Node]
+def wff_stack_G2 [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V]
                  (g : Graph)
-                 (blacks grays s: List Node) :=
+                 (blacks grays s: List V) :=
     wff_color g blacks grays
     /\ simplelist s
     /\ s ⊆ DirectedGraph.all_nodes g
-    /\ reachable_before_same_scc (DirectedGraph.transpose Node g) s
+    /\ reachable_before_same_scc (DirectedGraph.transpose V g) s
 
-theorem reachable_before_shrink [DirectedGraph Node Graph]
-                                [BEq Node] [LawfulBEq Node]
+theorem reachable_before_shrink [DirectedGraph V Graph]
+                                [BEq V] [LawfulBEq V]
                                 (g : Graph) :
-∀ (x y z: Node) s, reachable_before g x y (List.cons z s) -> y ∈ s -> reachable_before g x y s := by
+∀ (x y z: V) s, reachable_before g x y (List.cons z s) -> y ∈ s -> reachable_before g x y s := by
   simp [reachable_before, rank]
   intros x y z s h₁ h₂
   cases h₁ with
@@ -238,7 +237,7 @@ theorem reachable_before_shrink [DirectedGraph Node Graph]
       obtain ⟨h₆, _⟩ := h₆
       subst z
       revert h₄
-      obtain v : List Node := DirectedGraph.all_nodes g
+      obtain v : List V := DirectedGraph.all_nodes g
       have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
       omega
     . constructor
@@ -253,7 +252,7 @@ theorem reachable_before_shrink [DirectedGraph Node Graph]
           . specialize h₅ z h₉
             split at h₅ <;> simp_all
             revert h₅
-            obtain v : List Node := DirectedGraph.all_nodes g
+            obtain v : List V := DirectedGraph.all_nodes g
             have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
             omega
         . assumption
@@ -261,7 +260,7 @@ theorem reachable_before_shrink [DirectedGraph Node Graph]
         specialize h₅ a h₇
         split at h₅ <;> simp_all
         revert h₅
-        obtain v : List Node := DirectedGraph.all_nodes g
+        obtain v : List V := DirectedGraph.all_nodes g
         have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
         omega
   | inr h₁ => obtain ⟨_, h₁⟩ := h₁
@@ -269,10 +268,10 @@ theorem reachable_before_shrink [DirectedGraph Node Graph]
               tauto
 
 
-theorem reachable_before_extension [DirectedGraph Node Graph]
-                                   [BEq Node] [LawfulBEq Node]
+theorem reachable_before_extension [DirectedGraph V Graph]
+                                   [BEq V] [LawfulBEq V]
                                    (g : Graph) :
-  ∀ (x y z: Node) s, x ∈ s -> y ∈ s -> reachable_before g x y s -> reachable_before g x y (List.cons z s) := by
+  ∀ (x y z: V) s, x ∈ s -> y ∈ s -> reachable_before g x y s -> reachable_before g x y (List.cons z s) := by
   intros x y z s _ h₂
   simp [reachable_before, rank]
   intros h₁
@@ -297,10 +296,10 @@ theorem reachable_before_extension [DirectedGraph Node Graph]
               subst y
               tauto
 
-theorem no_edge_out_of_cons [DirectedGraph Node Graph]
-                            [BEq Node] [LawfulBEq Node]
+theorem no_edge_out_of_cons [DirectedGraph V Graph]
+                            [BEq V] [LawfulBEq V]
                             (g : Graph) :
-    ∀ s1 s2 (x : Node), no_edge_out_of g s1 s2 ->
+    ∀ s1 s2 (x : V), no_edge_out_of g s1 s2 ->
                         (∀ z, z ∈ s1 -> DirectedGraph.edge g z x -> False) ->
                         no_edge_out_of g s1 (List.cons x s2) := by
     simp [no_edge_out_of]
@@ -311,16 +310,16 @@ theorem no_edge_out_of_cons [DirectedGraph Node Graph]
                     have := h₁ a b h₄
                     cases h₅ <;> simp_all
 
-theorem path_cross_sets [DirectedGraph Node Graph]
-                        [BEq Node] [LawfulBEq Node]
+theorem path_cross_sets [DirectedGraph V Graph]
+                        [BEq V] [LawfulBEq V]
                         (g : Graph) :
-   ∀ l (x y : Node) s1 s2 ,
+   ∀ l (x y : V) s1 s2 ,
    -- simplelist (s1 ++ s2) ->
    y ∈ s2 ->
    x ∈ s1 ->
    path g y l x ->
    l ⊆ (s1 ++ s2) ->
-   ∃ (y' x' : Node), y' ∈ s2 /\ x' ∈ s1 /\ DirectedGraph.edge g y' x' := by
+   ∃ (y' x' : V), y' ∈ s2 /\ x' ∈ s1 /\ DirectedGraph.edge g y' x' := by
    intro l
    induction l <;> intros x y s1 s2 h₁ h₂ h₃ h₄ <;> cases h₃
    . use y
@@ -338,10 +337,10 @@ theorem path_cross_sets [DirectedGraph Node Graph]
          apply h₄
          simp_all
 
-theorem no_edge_out_of_no_path_out_of_in [DirectedGraph Node Graph]
-                                        [BEq Node] [LawfulBEq Node]
+theorem no_edge_out_of_no_path_out_of_in [DirectedGraph V Graph]
+                                        [BEq V] [LawfulBEq V]
                                         (g : Graph) :
-    ∀ (s1 s2 : List Node),
+    ∀ (s1 s2 : List V),
    --  simplelist s2 ->
     no_edge_out_of g s1 s2 -> no_path_out_of_in g s1 s2 := by
 simp [no_edge_out_of, no_path_out_of_in]
@@ -354,10 +353,10 @@ obtain ⟨x, y, h₂, h₃, h₄⟩ := h₇
 apply h₁ x y h₂ h₃ h₄
 
 
-theorem no_black_to_white_no_path [DirectedGraph Node Graph]
-                                [BEq Node] [LawfulBEq Node]
+theorem no_black_to_white_no_path [DirectedGraph V Graph]
+                                [BEq V] [LawfulBEq V]
                                 (g : Graph) :
-∀ (b : List Node),
+∀ (b : List V),
 no_black_to_white g b List.nil ->
 ∀ l x y, x ∈ b -> ¬ y ∈ b -> path g x l y -> False := by
 simp [no_black_to_white]
@@ -368,10 +367,10 @@ induction l <;> intros x y h₂ h₃ h₄ <;> cases h₄
   have h₆ : z ∈ b \/ ¬ z ∈ b := by tauto
   cases h₆ <;> tauto
 
-theorem no_black_to_white_in_the_middle [DirectedGraph Node Graph]
-                                        [BEq Node] [LawfulBEq Node]
+theorem no_black_to_white_in_the_middle [DirectedGraph V Graph]
+                                        [BEq V] [LawfulBEq V]
                                         (g : Graph) :
-∀ (b b' : List Node), no_black_to_white g b  List.nil ->
+∀ (b b' : List V), no_black_to_white g b  List.nil ->
                       no_black_to_white g b' List.nil ->
                       b ⊆ b' ->
                       paths_in_set g (List.filter (fun x => !b.contains x) b') := by
@@ -398,10 +397,10 @@ cases g₁ <;> cases g₂ <;> constructor <;> try assumption
   apply no_black_to_white_no_path g b' h₂ l₁ x z h₄ <;> assumption
 
 
-theorem wff_stack_white_extension [DirectedGraph Node Graph]
-                                  [BEq Node] [LawfulBEq Node]
+theorem wff_stack_white_extension [DirectedGraph V Graph]
+                                  [BEq V] [LawfulBEq V]
                                   (g : Graph) :
-∀ grey grey' (s s': List Node),
+∀ grey grey' (s s': List V),
   wff_stack_G1 g s grey ->
   wff_stack_G1 g (s' ++ s) grey'  ->
   grey ⊆ grey' ->
@@ -418,11 +417,11 @@ cases g₄ with
             . simp_all
             . apply g₁ g₄
 
-theorem reachable_transpose [DirectedGraph Node Graph]
-                              [BEq Node] [LawfulBEq Node]
+theorem reachable_transpose [DirectedGraph V Graph]
+                              [BEq V] [LawfulBEq V]
                               (g : Graph)
-                              (a b : Node) :
-reachable (DirectedGraph.transpose Node g) a b <-> reachable g b a := by
+                              (a b : V) :
+reachable (DirectedGraph.transpose V g) a b <-> reachable g b a := by
 simp [reachable]
 rw [DirectedGraph.same_nodes]
 constructor <;> intros h
@@ -448,20 +447,20 @@ any_goals simp_all
   tauto
 
 
-theorem in_same_scc_transpose [DirectedGraph Node Graph]
-                              [BEq Node] [LawfulBEq Node]
+theorem in_same_scc_transpose [DirectedGraph V Graph]
+                              [BEq V] [LawfulBEq V]
                               (g : Graph)
-                              (a b : Node) :
-in_same_scc (DirectedGraph.transpose Node g) a b <-> in_same_scc g a b := by
+                              (a b : V) :
+in_same_scc (DirectedGraph.transpose V g) a b <-> in_same_scc g a b := by
 simp [in_same_scc]
 repeat rw [reachable_transpose]
 tauto
 
-theorem is_subscc_transpose [DirectedGraph Node Graph]
-                            [BEq Node] [LawfulBEq Node]
+theorem is_subscc_transpose [DirectedGraph V Graph]
+                            [BEq V] [LawfulBEq V]
                             (g : Graph)
-                            (cc : Finset Node) :
-is_subscc g cc <-> is_subscc (DirectedGraph.transpose Node g) cc := by
+                            (cc : Finset V) :
+is_subscc g cc <-> is_subscc (DirectedGraph.transpose V g) cc := by
 simp [is_subscc]
 constructor
 all_goals intros h x y
@@ -469,11 +468,11 @@ all_goals specialize h x y
 all_goals rw [in_same_scc_transpose] at *
 all_goals tauto
 
-private theorem is_scc_transpose_inner [DirectedGraph Node Graph]
-                                       [BEq Node] [LawfulBEq Node]
+private theorem is_scc_transpose_inner [DirectedGraph V Graph]
+                                       [BEq V] [LawfulBEq V]
                                        (g : Graph)
-                                       (cc : Finset Node) :
-is_scc g cc -> is_scc (DirectedGraph.transpose Node g) cc := by
+                                       (cc : Finset V) :
+is_scc g cc -> is_scc (DirectedGraph.transpose V g) cc := by
 simp [is_scc]
 intros
 rw [<- is_subscc_transpose]
@@ -482,11 +481,11 @@ intros
 rw [<- is_subscc_transpose] at *
 tauto
 
-theorem is_scc_transpose [DirectedGraph Node Graph]
-                          [BEq Node] [LawfulBEq Node]
+theorem is_scc_transpose [DirectedGraph V Graph]
+                          [BEq V] [LawfulBEq V]
                           (g : Graph)
-                          (cc : Finset Node) :
-is_scc g cc <-> is_scc (DirectedGraph.transpose Node g) cc := by
+                          (cc : Finset V) :
+is_scc g cc <-> is_scc (DirectedGraph.transpose V g) cc := by
 constructor
 . exact is_scc_transpose_inner g cc
 . intros h
@@ -494,10 +493,10 @@ constructor
   rw [DirectedGraph.transpose_transpose] at h
   assumption
 
-theorem scc_max [DirectedGraph Node Graph]
-                [BEq Node] [LawfulBEq Node] [DecidableEq Node]
+theorem scc_max [DirectedGraph V Graph]
+                [BEq V] [LawfulBEq V] [DecidableEq V]
                 (g : Graph) :
-∀ (x y : Node) (cc : Finset Node), is_scc g cc -> x ∈ cc -> in_same_scc g x y -> y ∈ cc := by
+∀ (x y : V) (cc : Finset V), is_scc g cc -> x ∈ cc -> in_same_scc g x y -> y ∈ cc := by
 intros x y cc h₁ h₃ h₄
 simp [is_scc] at *
 obtain ⟨h₁, h₂⟩ := h₁
@@ -527,11 +526,11 @@ have : is_subscc g (insert y cc) := by
 
 apply h₂ (insert y cc) <;> simp_all
 
-theorem disjoint_scc [DirectedGraph Node Graph]
-                     [BEq Node] [LawfulBEq Node] [DecidableEq Node]
+theorem disjoint_scc [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
                      (g : Graph)
-                     (cc1 cc2 : Finset Node) :
-Nonempty (cc1 ∩ cc2 : Finset Node) ->
+                     (cc1 cc2 : Finset V) :
+Nonempty (cc1 ∩ cc2 : Finset V) ->
 is_scc g cc1 ->
 is_scc g cc2 ->
 cc1 = cc2 := by
