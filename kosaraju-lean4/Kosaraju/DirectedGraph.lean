@@ -1,11 +1,14 @@
 import Std.Data.List.Basic
 import Std.Data.List.Lemmas
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Set.Finite
 import Mathlib.Tactic.Use
 import Mathlib.Tactic.Tauto
 import Kosaraju.ListHelper
 
 open Rank
+open Finset
+open Finset List
 
 -- finite directed graph
 class DirectedGraph (V : Type u)(Graph : Type v) where
@@ -18,6 +21,38 @@ class DirectedGraph (V : Type u)(Graph : Type v) where
   transpose_transpose : ∀ g, (g |> transpose |> transpose) = g
   same_nodes : ∀ g, (g |> transpose |> all_nodes) = (g |> all_nodes)
   reverse_edge :∀ g a b, edge g a b <-> edge (g |> transpose) b a
+
+/-- `G.neighborSet v` is the set of vertices adjacent to `v` in `G`. -/
+def neighborSet [DirectedGraph V Graph] (g : Graph) (v : V) : Set V := {w | DirectedGraph.edge g v w}
+
+
+theorem neighborSet_valid [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (g : Graph) (a: V) :
+ (neighborSet g a) ⊆ ((toFinset ((DirectedGraph.all_nodes g) : List V)) : Set V) := by
+simp [neighborSet]
+intros b h
+have := DirectedGraph.valid_edge g _ _ h
+tauto
+
+theorem neighborSet_Finite [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (g : Graph) (a: V) :
+  Finite (neighborSet g a) := by
+have h : Finite ((toFinset ((DirectedGraph.all_nodes g) : List V)) : Set V) := by
+  rw [coe_toFinset]
+  apply List.finite_toSet
+apply @Set.Finite.subset
+. exact h
+. apply neighborSet_valid
+
+noncomputable def neighborFinset [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (g : Graph) (v : V) : Finset V :=
+let s := neighborSet g v
+have h : Finite s := by apply neighborSet_Finite g v
+Set.Finite.toFinset h
+
+noncomputable def neighborList [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (g : Graph) (v : V) : List V :=
+let s := neighborSet g v
+have h : Finite s := by apply neighborSet_Finite g v
+let y := Set.Finite.toFinset h
+y.toList
+
 
 theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V) : a ∈ DirectedGraph.all_nodes g -> DirectedGraph.succ g a ⊆ DirectedGraph.all_nodes g := by
 intro _ b h
