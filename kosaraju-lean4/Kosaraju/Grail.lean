@@ -1,9 +1,9 @@
 import Kosaraju.Dfs2
 import Kosaraju.DirectedGraph
+import ListHelper.Rank
 import Mathlib.Data.Finset.Basic
 import Std.Data.List.Lemmas
 
-open Rank
 open Finset
 open Finset List
 

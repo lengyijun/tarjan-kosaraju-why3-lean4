@@ -1,8 +1,7 @@
 import Kosaraju.DirectedGraph
+import ListHelper.Rank
 import Mathlib.Tactic.Tauto
 import Std.Data.List.Lemmas
-
-open Rank
 
 structure Funnel [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                   (graph: Graph)

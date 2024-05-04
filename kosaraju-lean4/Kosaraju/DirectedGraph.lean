@@ -3,9 +3,8 @@ import Std.Data.List.Lemmas
 import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic.Use
 import Mathlib.Tactic.Tauto
-import Kosaraju.ListHelper
-
-open Rank
+import ListHelper.Rank
+import ListHelper.Simplelist
 
 -- finite directed graph
 class DirectedGraph (V : Type u)(Graph : Type v) where

@@ -1,7 +1,6 @@
 import Kosaraju.DirectedGraph
+import ListHelper.Rank
 import Std.Data.List.Lemmas
-
-open Rank
 
 set_option maxHeartbeats 500000
 
