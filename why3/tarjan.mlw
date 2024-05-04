@@ -180,9 +180,6 @@ predicate wf_num (e: env) =
   (forall x. f[x] = -1 <-> not mem x (union g b)) /\
   (forall x y. lmem x s -> lmem y s -> f[x] <= f[y] <-> precedes y x s) 
 
-predicate no_black_to_white (black gray: fset vertex) =
-  forall x x'. edge x x' -> mem x black -> mem x' (union black gray) 
-
 predicate wf_env (e: env) = let {stack = s; black = b; gray = g} = e in
   wf_color e /\ wf_num e /\
   no_black_to_white b g /\ simplelist s /\
@@ -195,9 +192,6 @@ predicate subenv (e e': env) =
   subset e.black e'.black /\ subset e.sccs e'.sccs /\
   (forall x. lmem x e.stack -> e.num[x] = e'.num[x]) /\
   e.gray == e'.gray
-
-predicate access_from (x: vertex) (s: fset vertex) =
-  forall y. mem y s -> reachable x y
 
 predicate access_to (s: fset vertex) (y: vertex) =
   forall x. mem x s -> reachable x y

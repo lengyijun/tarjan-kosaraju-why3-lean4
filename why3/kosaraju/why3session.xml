@@ -91,7 +91,7 @@
    <proof prover="4"><result status="valid" time="4.406615"/></proof>
    </goal>
    <goal name="disjoint_scc.0.1" proved="true">
-   <proof prover="4"><result status="valid" time="4.575280"/></proof>
+   <proof prover="4"><result status="valid" time="3.965259"/></proof>
    </goal>
   </transf>
   </goal>
@@ -132,7 +132,7 @@
   <proof prover="1"><result status="valid" time="0.242774" steps="1603"/></proof>
   </goal>
   <goal name="path_cross_sets.1" proved="true">
-  <proof prover="4"><result status="valid" time="0.925910"/></proof>
+  <proof prover="4"><result status="valid" time="1.155653"/></proof>
   </goal>
  </transf>
  </goal>
@@ -274,7 +274,7 @@
      <proof prover="1"><result status="valid" time="0.195683" steps="961"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.0.15.0.4" expl="VC for dfs1" proved="true">
-     <proof prover="1"><result status="valid" time="41.664136" steps="199406"/></proof>
+     <proof prover="1"><result status="valid" time="41.664136" steps="199407"/></proof>
      </goal>
     </transf>
     </goal>
@@ -320,7 +320,7 @@
       <proof prover="1"><result status="valid" time="0.039597" steps="67"/></proof>
       </goal>
       <goal name="dfs1&#39;vc.0.26.0.0.1" proved="true">
-      <proof prover="1"><result status="valid" time="16.504910" steps="69748"/></proof>
+      <proof prover="1"><result status="valid" time="16.504910" steps="69742"/></proof>
       </goal>
      </transf>
      </goal>
@@ -420,7 +420,7 @@
   <proof prover="1"><result status="valid" time="0.092457" steps="370"/></proof>
   </goal>
   <goal name="iter2&#39;vc.2" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="1.051397" steps="4193"/></proof>
+  <proof prover="1"><result status="valid" time="0.829802" steps="4193"/></proof>
   </goal>
   <goal name="iter2&#39;vc.3" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="0.144577" steps="90"/></proof>
@@ -441,7 +441,7 @@
   <proof prover="1"><result status="valid" time="0.036353" steps="28"/></proof>
   </goal>
   <goal name="iter2&#39;vc.9" expl="assertion" proved="true">
-  <proof prover="1" timelimit="120"><result status="valid" time="43.205250" steps="226487"/></proof>
+  <proof prover="1" timelimit="120"><result status="valid" time="43.205250" steps="226461"/></proof>
   </goal>
   <goal name="iter2&#39;vc.10" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.409835" steps="1280"/></proof>
@@ -462,7 +462,7 @@
   <proof prover="1"><result status="valid" time="0.064372" steps="247"/></proof>
   </goal>
   <goal name="iter2&#39;vc.16" expl="precondition" proved="true">
-  <proof prover="1"><result status="valid" time="30.632950" steps="119109"/></proof>
+  <proof prover="1"><result status="valid" time="30.632950" steps="119110"/></proof>
   </goal>
   <goal name="iter2&#39;vc.17" expl="precondition" proved="true">
   <proof prover="1"><result status="valid" time="3.613515" steps="14586"/></proof>

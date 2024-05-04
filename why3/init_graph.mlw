@@ -50,4 +50,11 @@ module GraphSetSucc
 
   predicate is_scc (s: fset vertex) =
     is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
+
+  predicate no_black_to_white (blacks grays: fset vertex) =
+    forall x x'. edge x x' -> mem x blacks -> mem x' (union blacks grays)
+
+  predicate access_from (x: vertex) (s: fset vertex) =
+    forall y. mem y s -> reachable x y
+
 end

@@ -591,17 +591,6 @@
   </goal>
  </transf>
  </goal>
- <goal name="scc_exists">
- <transf name="introduce_premises" >
-  <goal name="scc_exists.0">
-  <transf name="exists" arg1="(filter vertices1 (fun p -&gt; in_same_scc p x))">
-   <goal name="scc_exists.0.0">
-   <proof prover="1"><result status="timeout" time="100.000000" steps="345222"/></proof>
-   </goal>
-  </transf>
-  </goal>
- </transf>
- </goal>
 </theory>
 </file>
 </why3session>
