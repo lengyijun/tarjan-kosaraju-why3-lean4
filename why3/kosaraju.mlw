@@ -23,13 +23,7 @@ module Kosaraju
 
   clone export init_graph.GraphSetSucc with type vertex = vertex, axiom successors_vertices
 
-  predicate access_from (x: vertex) (s: fset vertex) =
-    forall y. mem y s -> reachable x y
-
   predicate access_from_set (roots b: fset vertex) = forall z. mem z b -> exists x. mem x roots /\ reachable x z
-
-  predicate no_black_to_white (blacks grays: fset vertex) =
-    forall x x'. edge x x' -> mem x blacks -> mem x' (union blacks grays)
 
   lemma access_from_successors:
     forall x s. mem x vertices -> access_from_set (successors x) s -> access_from x s
