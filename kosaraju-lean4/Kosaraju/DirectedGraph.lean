@@ -146,8 +146,9 @@ def is_scc [DirectedGraph V Graph]
 
 def no_black_to_white [DirectedGraph V Graph]
                       [BEq V] [LawfulBEq V]
+                      [Membership V Lv]
                       (g : Graph)
-                      (blacks grays: List V) : Prop :=
+                      (blacks grays: Lv) : Prop :=
     ∀ a b, DirectedGraph.edge g a b -> a ∈ blacks -> b ∈ blacks \/ b ∈ grays
 
 def access_from_set [DirectedGraph V Graph]
