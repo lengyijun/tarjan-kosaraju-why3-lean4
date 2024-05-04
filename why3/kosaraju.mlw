@@ -100,36 +100,29 @@ module SCCK
     
 (** {4 Strongly connected components paths} *)
 
-  predicate in_same_scc (x z: vertex)  =
-    G1.reachable x z /\ G1.reachable z x
-
-  predicate is_subscc (s: fset vertex) = 
-    forall x z. mem x s -> mem z s -> in_same_scc x z
-
-  predicate is_scc (s: fset vertex) =
-    is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
-
   lemma same_scc_refl:
-    forall x. in_same_scc x x
+    forall x. G1.in_same_scc x x
 
   lemma same_scc_sym: 
-    forall x z. in_same_scc x z -> in_same_scc z x
+    forall x z. G1.in_same_scc x z -> G1.in_same_scc z x
 
   lemma same_scc_trans: 
     forall x y z. 
-    in_same_scc x y -> in_same_scc y z -> in_same_scc x z
+    G1.in_same_scc x y -> G1.in_same_scc y z -> G1.in_same_scc x z
 
   lemma cc_ext:
-    forall x y cc. is_subscc cc -> mem x cc -> in_same_scc x y -> is_subscc (add y cc)
+    forall x y cc. G1.is_subscc cc -> mem x cc -> G1.in_same_scc x y -> G1.is_subscc (add y cc)
 
   lemma scc_max:
-    forall x y cc. is_scc cc -> mem x cc -> in_same_scc x y -> mem y cc
-
-  lemma scc_exists:
-    forall x. mem x G1.vertices -> exists scc. is_scc scc /\ mem x scc
+    forall x y cc. G1.is_scc cc -> mem x cc -> G1.in_same_scc x y -> mem y cc
 
   lemma disjoint_scc:
-    forall cc1 [@induction] cc2 [@induction]. inter cc1 cc2 <> empty -> is_scc cc1 -> is_scc cc2 -> cc1 == cc2
+    forall cc1 [@induction] cc2 [@induction]. inter cc1 cc2 <> empty -> G1.is_scc cc1 -> G1.is_scc cc2 -> cc1 == cc2
+
+(*
+  lemma scc_exists:
+    forall x. mem x G1.vertices -> exists scc. G1.is_scc scc /\ mem x scc
+*)
 
 (** {4 invariants definitions} *)
 
@@ -140,7 +133,7 @@ module SCCK
    exists l. G2.path x l y /\ (forall z. lmem z l -> lmem z s /\ rank z s <= rank x s) /\ lmem y s /\ rank y s <= rank x s
 
   predicate reachable_before_same_scc (s: list vertex) =
-   forall x y. lmem x s -> lmem y s -> reachable_before x y s -> in_same_scc x y
+   forall x y. lmem x s -> lmem y s -> reachable_before x y s -> G1.in_same_scc x y
 
   predicate no_edge_out_of (s3 s1: list vertex) = 
     forall s2. s1 = s2 ++ s3 -> forall x y. lmem x s3 -> lmem y s2 -> not G1.edge x y
@@ -260,11 +253,11 @@ variant {cardinal G2.vertices - cardinal grays, cardinal roots }
 let rec ghost iter2 stack blacks sccs = 
 requires {subset (diff G2.vertices blacks) (E.elements stack)}
 requires {wff_stack_G2 blacks empty stack} (* I1a *)
-requires {forall cc.  lmem cc sccs <-> cc <> empty /\ is_scc cc /\ subset cc blacks} (* I2a *)
+requires {forall cc.  lmem cc sccs <-> cc <> empty /\ G1.is_scc cc /\ subset cc blacks} (* I2a *)
 requires {forall cc1, cc2. lmem cc1 sccs -> lmem cc2 sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
 requires {forall v. mem v blacks -> exists cc. mem v cc /\ lmem cc sccs }
 returns {(b, _) -> wff_stack_G2 b empty Nil} (* I1b *)
-returns {(b, sccs_n) -> forall cc. lmem cc sccs_n <-> cc <> empty /\ is_scc cc /\ subset cc b} (* I2b *)
+returns {(b, sccs_n) -> forall cc. lmem cc sccs_n <-> cc <> empty /\ G1.is_scc cc /\ subset cc b} (* I2b *)
 returns {(b, _) -> b == union (E.elements stack) blacks}
 returns {(_, sccs_n) -> forall cc1, cc2. lmem cc1 sccs_n -> lmem cc2 sccs_n -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
 returns {(_, sccs_n) -> forall v. lmem v stack -> exists cc. mem v cc /\ lmem cc sccs_n }
@@ -280,16 +273,16 @@ variant {stack}
         assert {subset cc1 (E.elements stack)};
         assert {mem x cc1};
         assert {forall y. mem y cc1 -> reachable_before y x stack};      
-        assert {is_subscc cc1};
-        assert {forall y. in_same_scc y x -> mem y cc1};
-        assert {is_scc cc1};
+        assert {G1.is_subscc cc1};
+        assert {forall y. G1.in_same_scc y x -> mem y cc1};
+        assert {G1.is_scc cc1};
         iter2 s b1 (Cons cc1 sccs)
     end
 
 (** {4 scc_main} *)
 
 let ghost scc_main () =
-returns {(_, sccs_n) -> forall cc. lmem cc sccs_n <-> cc <> empty /\ is_scc cc /\ subset cc G1.vertices}
+returns {(_, sccs_n) -> forall cc. lmem cc sccs_n <-> cc <> empty /\ G1.is_scc cc /\ subset cc G1.vertices}
 returns {(_, sccs_n) -> forall cc1, cc2. lmem cc1 sccs_n -> lmem cc2 sccs_n -> cc1 = cc2 \/ (inter cc1 cc2) = empty }
 returns {(_, sccs_n) -> forall v. mem v G1.vertices -> exists cc. mem v cc /\ lmem cc sccs_n }
     let (_, s) = dfs1 G1.vertices empty empty Nil in
