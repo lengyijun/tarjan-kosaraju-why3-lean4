@@ -144,15 +144,6 @@ lemma xpath_xedge:
 
 (* Strongly connected components *)
 
-predicate in_same_scc (x y: vertex)  =
-  reachable x y /\ reachable y x
-
-predicate is_subscc (s: fset vertex) = 
-  forall x y. mem x s -> mem y s -> in_same_scc x y
-
-predicate is_scc (s: fset vertex) = not is_empty s /\
-  is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
-    
 lemma same_scc_refl:
   forall x. in_same_scc x x
 

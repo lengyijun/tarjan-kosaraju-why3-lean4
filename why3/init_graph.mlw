@@ -42,4 +42,12 @@ module GraphSetSucc
   lemma reachable_em:
     forall x y. reachable x y \/ not reachable x y
 
+  predicate in_same_scc (x z: vertex)  =
+    reachable x z /\ reachable z x
+
+  predicate is_subscc (s: fset vertex) = 
+    forall x z. mem x s -> mem z s -> in_same_scc x z
+
+  predicate is_scc (s: fset vertex) =
+    is_subscc s /\ (forall s'. subset s s' -> is_subscc s' -> s == s')
 end
