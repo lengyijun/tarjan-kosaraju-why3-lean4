@@ -5,7 +5,6 @@ module SCCTarjan72
   use list.Length
   use list.Append
   use list.Mem as L
-  use list.NumOcc
   use list.Elements as E
   use init_graph.GraphSetSucc
   use map.Map
