@@ -29,7 +29,7 @@ def iter2 [DirectedGraph V Graph]
          (graph: Graph)
          (stack blacks: List V)
          (sccs : List (Finset V))
-         (a₁ : let v : List V := DirectedGraph.all_nodes graph
+         (a₁ : let v : List V := DirectedGraph.vertices graph
                v.filter (fun x => !blacks.contains x) ⊆ stack)
          (a₂ : wff_stack_G2 graph blacks List.nil stack)
          (a₃ : ∀ cc, cc ∈ sccs ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ blacks)
@@ -100,7 +100,7 @@ def iter2 [DirectedGraph V Graph]
       simp_all
       specialize h₄ y (by tauto)
       simp_all
-      have : x ∈ DirectedGraph.all_nodes graph /\ y ∈ DirectedGraph.all_nodes graph := by
+      have : x ∈ DirectedGraph.vertices graph /\ y ∈ DirectedGraph.vertices graph := by
         apply reachable_valid
         assumption
       tauto
@@ -108,7 +108,7 @@ def iter2 [DirectedGraph V Graph]
       rw [mem_toFinset, List.mem_filter] at *
       simp_all
 
-    have em : ∀ y, y ∈ DirectedGraph.all_nodes graph ->
+    have em : ∀ y, y ∈ DirectedGraph.vertices graph ->
                    y ∈ blacks \/ y ∈ (x :: stack) := by
       intros y h
       have g: y ∈ blacks \/ ¬ y ∈ blacks := by tauto
@@ -179,7 +179,7 @@ def iter2 [DirectedGraph V Graph]
                     split <;> split <;> try tauto
                     all_goals simp_all
                     rename_i h₁ h₂
-                    obtain v : List V := DirectedGraph.all_nodes (DirectedGraph.transpose V graph)
+                    obtain v : List V := DirectedGraph.vertices (DirectedGraph.transpose V graph)
                     have : rank z stack (List.length v) < List.length stack := by
                       apply rank_range; try assumption
                       have ⟨h₃, h₄⟩ := M

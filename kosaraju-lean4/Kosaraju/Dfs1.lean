@@ -17,8 +17,8 @@ where
 def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
          (graph: Graph)
          (roots black_stack grays : List V)
-         (h₁: roots ⊆ DirectedGraph.all_nodes graph)
-         (h₂: grays ⊆ DirectedGraph.all_nodes graph)
+         (h₁: roots ⊆ DirectedGraph.vertices graph)
+         (h₂: grays ⊆ DirectedGraph.vertices graph)
          (h₃: wff_stack_G1 graph black_stack grays)
          : Brigade graph roots black_stack grays := match roots with
 | List.nil => {
@@ -72,7 +72,7 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                       . rw [simplelist_tl]
                         tauto
                   . tauto
-    let v : List V := (DirectedGraph.all_nodes graph)
+    let v : List V := (DirectedGraph.vertices graph)
     let termination_proof: grays.length < v.length := by
       apply simplelist_size_2
       . tauto
@@ -164,7 +164,7 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
            simp [rank] at h₇
            split at h₇ <;> split at h₇ <;> simp_all; try tauto
            revert h₇
-           obtain v : List V := DirectedGraph.all_nodes graph
+           obtain v : List V := DirectedGraph.vertices graph
            have : rank y stack (List.length v) < List.length stack := by apply rank_range; assumption
            omega
          . rename_i h
@@ -252,5 +252,5 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                                                   subst a
                                                   tauto
     }
-termination_by let v : List V := DirectedGraph.all_nodes graph
+termination_by let v : List V := DirectedGraph.vertices graph
                (v.length - grays.length, roots)

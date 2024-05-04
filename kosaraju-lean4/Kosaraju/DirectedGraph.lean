@@ -9,20 +9,20 @@ open Rank
 
 -- finite directed graph
 class DirectedGraph (V : Type u)(Graph : Type v) where
-  all_nodes : Graph -> List V
+  vertices : Graph -> List V
   edge      : Graph -> V -> V -> Prop
   succ      : Graph -> V -> List V
   transpose : Graph -> Graph
   edge_succ : ∀ g a b, b ∈ succ g a <-> edge g a b
-  valid_edge : ∀ (g: Graph) (a b: V), edge g a b -> a ∈ all_nodes g /\ b ∈ all_nodes g
+  valid_edge : ∀ (g: Graph) (a b: V), edge g a b -> a ∈ vertices g /\ b ∈ vertices g
   transpose_transpose : ∀ g, (g |> transpose |> transpose) = g
-  same_nodes : ∀ g, (g |> transpose |> all_nodes) = (g |> all_nodes)
+  same_vertices : ∀ g, (g |> transpose |> vertices) = (g |> vertices)
   reverse_edge :∀ g a b, edge g a b <-> edge (g |> transpose) b a
 
-theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V) : a ∈ DirectedGraph.all_nodes g -> DirectedGraph.succ g a ⊆ DirectedGraph.all_nodes g := by
+theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V) : a ∈ DirectedGraph.vertices g -> DirectedGraph.succ g a ⊆ DirectedGraph.vertices g := by
 intro _ b h
 rw [DirectedGraph.edge_succ] at *
-have : a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g := by
+have : a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g := by
   apply DirectedGraph.valid_edge
   assumption
 tauto
@@ -58,16 +58,16 @@ induction h <;> simp
 
 theorem path_valid [DirectedGraph V Graph] (g : Graph) (a b: V)(l : List V):
         path g a l b ->
-        a ∈ DirectedGraph.all_nodes g /\
-        b ∈ DirectedGraph.all_nodes g /\
-        l ⊆ DirectedGraph.all_nodes g
+        a ∈ DirectedGraph.vertices g /\
+        b ∈ DirectedGraph.vertices g /\
+        l ⊆ DirectedGraph.vertices g
 := by
 intros h
 induction h <;> simp_all
 . apply DirectedGraph.valid_edge
   assumption
 . rename_i a b _ _ h _ _
-  have : a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g := by
+  have : a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g := by
     apply DirectedGraph.valid_edge
     assumption
   tauto
@@ -79,7 +79,7 @@ def reachable [DirectedGraph V Graph]
                 : Prop := (∃ l, path g a l b)
                           \/
                           (
-                            let v : List V := DirectedGraph.all_nodes g
+                            let v : List V := DirectedGraph.vertices g
                             a = b /\ a ∈ v
                           )
 
@@ -105,7 +105,7 @@ all_goals rename_i h g
 theorem reachable_valid [DirectedGraph V Graph]
                         [BEq V] [LawfulBEq V]
                         (g : Graph) (a b: V):
-reachable g a b -> a ∈ DirectedGraph.all_nodes g /\ b ∈ DirectedGraph.all_nodes g
+reachable g a b -> a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g
 := by
 intros h
 cases h with
@@ -170,7 +170,7 @@ def reachable_before [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V]
                      (g : Graph)
                      (x y: V) (s: List V) : Prop :=
-  let v : List V := DirectedGraph.all_nodes g
+  let v : List V := DirectedGraph.vertices g
   let max_int : Nat := v.length
   (∃ l, path g x l y /\
        let xl := List.cons x l
@@ -209,7 +209,7 @@ def wff_stack_G1 [DirectedGraph V Graph]
                  (g : Graph)
                  (blacks grays: List V) :=
     wff_color g blacks grays
-    /\ blacks ⊆ (DirectedGraph.all_nodes g)
+    /\ blacks ⊆ (DirectedGraph.vertices g)
     /\ reachable_before_same_scc g blacks
 
 def wff_stack_G2 [DirectedGraph V Graph]
@@ -218,7 +218,7 @@ def wff_stack_G2 [DirectedGraph V Graph]
                  (blacks grays s: List V) :=
     wff_color g blacks grays
     /\ simplelist s
-    /\ s ⊆ DirectedGraph.all_nodes g
+    /\ s ⊆ DirectedGraph.vertices g
     /\ reachable_before_same_scc (DirectedGraph.transpose V g) s
 
 theorem reachable_before_shrink [DirectedGraph V Graph]
@@ -237,7 +237,7 @@ theorem reachable_before_shrink [DirectedGraph V Graph]
       obtain ⟨h₆, _⟩ := h₆
       subst z
       revert h₄
-      obtain v : List V := DirectedGraph.all_nodes g
+      obtain v : List V := DirectedGraph.vertices g
       have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
       omega
     . constructor
@@ -252,7 +252,7 @@ theorem reachable_before_shrink [DirectedGraph V Graph]
           . specialize h₅ z h₉
             split at h₅ <;> simp_all
             revert h₅
-            obtain v : List V := DirectedGraph.all_nodes g
+            obtain v : List V := DirectedGraph.vertices g
             have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
             omega
         . assumption
@@ -260,7 +260,7 @@ theorem reachable_before_shrink [DirectedGraph V Graph]
         specialize h₅ a h₇
         split at h₅ <;> simp_all
         revert h₅
-        obtain v : List V := DirectedGraph.all_nodes g
+        obtain v : List V := DirectedGraph.vertices g
         have : rank y s (List.length v) < List.length s := by apply rank_range; assumption
         omega
   | inr h₁ => obtain ⟨_, h₁⟩ := h₁
@@ -423,7 +423,7 @@ theorem reachable_transpose [DirectedGraph V Graph]
                               (a b : V) :
 reachable (DirectedGraph.transpose V g) a b <-> reachable g b a := by
 simp [reachable]
-rw [DirectedGraph.same_nodes]
+rw [DirectedGraph.same_vertices]
 constructor <;> intros h
 all_goals cases h
 all_goals rename_i h

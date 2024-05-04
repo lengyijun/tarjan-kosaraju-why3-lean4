@@ -8,9 +8,9 @@ structure Trajectory (Graph V : Type*)
                      (graph: Graph)
 where
   sccs_o  : List (Finset V)
-  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ DirectedGraph.all_nodes graph
+  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ DirectedGraph.vertices graph
   p₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs_o → cc₂ ∈ sccs_o → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
-  p₅ : ∀ v, v ∈ DirectedGraph.all_nodes graph -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
+  p₅ : ∀ v, v ∈ DirectedGraph.vertices graph -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
 
 def kosaraju [DirectedGraph V Graph]
              [BEq V] [LawfulBEq V] [DecidableEq V]
@@ -18,15 +18,15 @@ def kosaraju [DirectedGraph V Graph]
 have h₃ := by
   simp [wff_stack_G1, wff_color, no_black_to_white]
   tauto
-let ⟨(stack: List V), p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.all_nodes graph) [] [] (by tauto) (by tauto) h₃
+let ⟨(stack: List V), p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.vertices graph) [] [] (by tauto) (by tauto) h₃
 
 have a₁ := by
-  rw [DirectedGraph.same_nodes]
+  rw [DirectedGraph.same_vertices]
   simp_all
 
 have a₂ := by
   simp [wff_stack_G2, wff_stack_G1, wff_color, no_black_to_white] at *
-  rw [DirectedGraph.same_nodes]
+  rw [DirectedGraph.same_vertices]
   simp_all
   obtain ⟨_, _, p₃⟩ := p₃
   intro x y hx hy h
@@ -54,7 +54,7 @@ have p₇ := by
     tauto
   . intros x x_in_cc
     apply a₁
-    rw [DirectedGraph.same_nodes]
+    rw [DirectedGraph.same_vertices]
     obtain ⟨_, _, h⟩ := h
     apply h
     assumption
