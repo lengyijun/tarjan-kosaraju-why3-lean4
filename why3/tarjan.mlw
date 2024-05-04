@@ -174,7 +174,7 @@ predicate wf_color (e: env) =
 
 predicate wf_num (e: env) =
   let {stack = s; black = b; gray = g; sccs = ccs; sn = n; num = f} = e in 
-  (forall x. -1 <= f[x] < n <= infty \/ f[x] = infty)  /\
+  (forall x. -1 <= f[x] < n \/ f[x] = infty)  /\
   n = cardinal (union g b) /\
   (forall x. f[x] = infty <-> mem x (set_of ccs)) /\
   (forall x. f[x] = -1 <-> not mem x (union g b)) /\
