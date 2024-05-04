@@ -1,7 +1,8 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
+import Graph.Scc
+import Graph.ReachableBefore
+import ListHelper.Rank
 import Std.Data.List.Lemmas
-
-open Rank
 
 set_option maxHeartbeats 500000
 
@@ -17,8 +18,8 @@ where
 def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
          (graph: Graph)
          (roots black_stack grays : List V)
-         (h₁: roots ⊆ DirectedGraph.all_nodes graph)
-         (h₂: grays ⊆ DirectedGraph.all_nodes graph)
+         (h₁: roots ⊆ DirectedGraph.vertices graph)
+         (h₂: grays ⊆ DirectedGraph.vertices graph)
          (h₃: wff_stack_G1 graph black_stack grays)
          : Brigade graph roots black_stack grays := match roots with
 | List.nil => {
@@ -72,7 +73,7 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                       . rw [simplelist_tl]
                         tauto
                   . tauto
-    let v : List V := (DirectedGraph.all_nodes graph)
+    let v : List V := (DirectedGraph.vertices graph)
     let termination_proof: grays.length < v.length := by
       apply simplelist_size_2
       . tauto
@@ -111,15 +112,6 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
       obtain ⟨⟨_, ⟨h₃, _⟩⟩, _⟩ := h₃
       specialize h₃ _ _ h₄ h₂
       cases h₃
-      . have h₆: simplelist (List.cons x stack) := by
-          rw [simplelist_tl]
-          constructor <;> try assumption
-          simp [wff_stack_G1, wff_color, reachable_before_same_scc] at *
-          tauto
-        specialize h₆ b
-        rw [h, num_occ_concat] at h₆
-        rw [mem_num_occ] at *
-        omega
       . obtain ⟨s', _, _⟩ := monotony
         subst stack
         simp [wff_stack_G1, wff_color, reachable_before_same_scc] at p₃
@@ -135,6 +127,15 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
           apply g
           tauto
         . tauto
+      . have h₆: simplelist (List.cons x stack) := by
+          rw [simplelist_tl]
+          constructor <;> try assumption
+          simp [wff_stack_G1, wff_color, reachable_before_same_scc] at *
+          tauto
+        specialize h₆ b
+        rw [h, num_occ_concat] at h₆
+        rw [mem_num_occ] at *
+        omega
     have g₉: no_path_out_of_in graph black_stack (List.cons x stack) := by
       apply no_edge_out_of_no_path_out_of_in ; assumption
     have h₆ := by
@@ -164,7 +165,7 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
            simp [rank] at h₇
            split at h₇ <;> split at h₇ <;> simp_all; try tauto
            revert h₇
-           obtain v : List V := DirectedGraph.all_nodes graph
+           obtain v : List V := DirectedGraph.vertices graph
            have : rank y stack (List.length v) < List.length stack := by apply rank_range; assumption
            omega
          . rename_i h
@@ -252,5 +253,5 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                                                   subst a
                                                   tauto
     }
-termination_by let v : List V := DirectedGraph.all_nodes graph
+termination_by let v : List V := DirectedGraph.vertices graph
                (v.length - grays.length, roots)

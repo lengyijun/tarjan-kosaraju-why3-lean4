@@ -2,27 +2,6 @@ import Std.Data.List.Basic
 import Std.Data.List.Lemmas
 import Mathlib.Tactic.Tauto
 
-namespace Rank
-def rank [BEq α] [LawfulBEq α] (x : α) (s : List α) (max_int : Nat) : Nat :=
-  match s with
-  | List.nil => max_int
-  | List.cons y s => if x == y && !(List.contains s x) then
-                        s.length
-                      else
-                        rank x s max_int
-
-theorem rank_range [BEq α] [LawfulBEq α] (s : List α) (x : α) (max_int : Nat) :
-                  x ∈ s ->
-                  rank x s max_int < s.length := by
-induction s with intros h₂
-| nil => cases h₂
-| cons a b => simp [rank] at *; split
-              . omega
-              . simp_all
-                cases h₂ <;> simp_all <;> omega
-
-end Rank
-
 def num_occ [BEq α] [LawfulBEq α] (x : α) (s : List α) : Nat :=
 match s with
 | List.nil => 0
@@ -142,3 +121,50 @@ induction l₁
   have : ¬ b ∈ l₁ := by intro h; apply h₉; tauto
   simp_all
   omega
+
+theorem simplelist_l [BEq α] [LawfulBEq α] {l₁ l₂ : List α}:
+simplelist (l₁ ++ l₂) -> simplelist l₁ := by
+intros h x
+specialize h x
+simp at h
+omega
+
+theorem simplelist_r [BEq α] [LawfulBEq α] {l₁ l₂ : List α}:
+simplelist (l₁ ++ l₂) -> simplelist l₂ := by
+intros h x
+specialize h x
+simp at h
+omega
+
+theorem simplelist_uniq [BEq α] [LawfulBEq α] {x : α} :
+∀ l₁ l₃ l₂ l₄: List α,
+l₁ ++ x :: l₂ = l₃ ++ x :: l₄ ->
+simplelist (l₁ ++ x :: l₂ ) ->
+l₁ = l₃ /\ l₂ = l₄ := by
+intro l₁
+induction l₁
+intro l₃
+induction l₃
+all_goals simp
+all_goals intros l₂ l₄ h h₁ h₃
+any_goals subst x
+any_goals subst l₂
+all_goals rename_i y _ _
+. specialize h₃ y
+  simp [num_occ] at h₃
+  omega
+. match l₂ with
+  | [] => simp at h₁
+          obtain ⟨h₁, _⟩ := h₁
+          subst y
+          specialize h₃ x
+          simp [num_occ] at h₃
+          omega
+  | z :: l₂ => simp at h₁
+               obtain ⟨h₁, h₅⟩ := h₁
+               subst z
+               rename_i l₁ induction_step _
+               rw [simplelist_tl] at h₃
+               obtain ⟨h₃, _⟩ := h₃
+               specialize induction_step _ _ _ h₅ h₃
+               tauto

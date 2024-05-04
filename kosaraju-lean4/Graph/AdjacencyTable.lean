@@ -1,4 +1,4 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
 import Mathlib.Data.Matrix.Basic
 
 def shepherd (n : Nat) : List (Fin n) :=
@@ -22,7 +22,7 @@ structure AdjacencyTable (n : Nat) where
 
 def AdjacencyTable.succ (graph : AdjacencyTable n) (node : Fin n) : List (Fin n) := List.filter (fun j => graph.t node j) (shepherd n)
 
-def AdjacencyTable.all_nodes (_g: AdjacencyTable n) : List (Fin n) := shepherd n
+def AdjacencyTable.vertices (_g: AdjacencyTable n) : List (Fin n) := shepherd n
 
 -- graph  : a -> b
 -- result : b -> a
@@ -33,16 +33,16 @@ def AdjacencyTable.transpose (graph : AdjacencyTable n) : AdjacencyTable n := {
 theorem transpose_transpose : ∀ (g : AdjacencyTable n), g.transpose.transpose = g := by
 simp [AdjacencyTable.transpose]
 
-theorem same_nodes : ∀ (g : AdjacencyTable n), g.transpose.all_nodes = g.all_nodes := by
- simp [AdjacencyTable.transpose, AdjacencyTable.all_nodes]
+theorem same_vertices : ∀ (g : AdjacencyTable n), g.transpose.vertices = g.vertices := by
+ simp [AdjacencyTable.transpose, AdjacencyTable.vertices]
 
 instance : DirectedGraph (Fin n) (AdjacencyTable n) where
-  all_nodes := AdjacencyTable.all_nodes
+  vertices := AdjacencyTable.vertices
   edge g a b := g.t a b = True
   succ      := AdjacencyTable.succ
   transpose := AdjacencyTable.transpose
   transpose_transpose := transpose_transpose
-  same_nodes := same_nodes
+  same_vertices := same_vertices
   reverse_edge :=  by simp [AdjacencyTable.transpose]
   edge_succ := by simp [AdjacencyTable.succ]
                   intros
