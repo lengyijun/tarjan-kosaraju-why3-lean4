@@ -3,7 +3,7 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
 <prover id="1" name="Z3" version="4.12.2" timelimit="10" steplimit="0" memlimit="10000"/>
-<prover id="2" name="CVC4" version="1.8" timelimit="10" steplimit="0" memlimit="10000"/>
+<prover id="2" name="CVC4" version="1.8" timelimit="120" steplimit="0" memlimit="10000"/>
 <prover id="3" name="CVC5" version="1.0.8" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="4" name="Eprover" version="2.0" timelimit="100" steplimit="0" memlimit="10000"/>
 <prover id="6" name="Alt-Ergo" version="2.5.2" timelimit="100" steplimit="0" memlimit="10000"/>
@@ -109,10 +109,10 @@
  <proof prover="6"><result status="valid" time="0.059349" steps="292"/></proof>
  </goal>
  <goal name="head_precedes" proved="true">
- <proof prover="2"><result status="valid" time="0.213812" steps="26191"/></proof>
+ <proof prover="3" timelimit="120"><result status="valid" time="0.128200" steps="21518"/></proof>
  </goal>
  <goal name="precedes_tail" proved="true">
- <proof prover="2"><result status="valid" time="10.797287" steps="748380"/></proof>
+ <proof prover="2"><result status="valid" time="4.638280" steps="748380"/></proof>
  </goal>
  <goal name="tail_not_precedes" proved="true">
  <proof prover="6"><result status="valid" time="0.047428" steps="46"/></proof>
@@ -198,7 +198,6 @@
  <proof prover="6"><result status="valid" time="0.121124" steps="305"/></proof>
  </goal>
  <goal name="scc_max" proved="true">
- <proof prover="2"><result status="valid" time="0.279292" steps="38105"/></proof>
  <proof prover="4"><result status="valid" time="5.009932"/></proof>
  </goal>
  <goal name="subscc_after_last_gray" proved="true">
@@ -210,7 +209,6 @@
   <proof prover="6"><result status="valid" time="0.060626" steps="105"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.2" proved="true">
-  <proof prover="2" timelimit="100"><result status="valid" time="95.023145" steps="7074599"/></proof>
   <proof prover="6"><result status="valid" time="5.682044" steps="18509"/></proof>
   </goal>
   <goal name="subscc_after_last_gray.3" proved="true">
@@ -232,7 +230,7 @@
  <proof prover="6"><result status="valid" time="0.704214" steps="3520"/></proof>
  </goal>
  <goal name="wf_color_sccs" proved="true">
- <proof prover="2" timelimit="100"><result status="valid" time="0.572908" steps="53145"/></proof>
+ <proof prover="3" timelimit="120"><result status="valid" time="0.318532" steps="38032"/></proof>
  </goal>
  <goal name="wf_color_3_cases" proved="true">
  <proof prover="1"><result status="valid" time="0.322447" steps="261837"/></proof>
@@ -591,7 +589,6 @@
      <proof prover="6"><result status="valid" time="0.564551" steps="1841"/></proof>
      </goal>
      <goal name="dfs1&#39;vc.14.0.0.8" expl="postcondition" proved="true">
-     <proof prover="2" timelimit="120"><result status="valid" time="32.372863" steps="1739136"/></proof>
      <proof prover="3" timelimit="120"><result status="valid" time="28.285248" steps="458433"/></proof>
      <proof prover="6" timelimit="120"><result status="valid" time="27.188752" steps="101901"/></proof>
      </goal>
@@ -608,7 +605,7 @@
   <proof prover="6"><result status="valid" time="1.357016" steps="3295"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.17" expl="postcondition" proved="true">
-  <proof prover="2" timelimit="100"><result status="valid" time="13.614428" steps="323306"/></proof>
+  <proof prover="3" timelimit="120"><result status="valid" time="6.146043" steps="273802"/></proof>
   </goal>
   <goal name="dfs1&#39;vc.18" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="44.384896" steps="175403"/></proof>
