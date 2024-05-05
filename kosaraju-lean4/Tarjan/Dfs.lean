@@ -48,7 +48,7 @@ def dfs1 [DirectedGraph V Graph]
          (a₃ : ¬ x ∈ e.gray ∪ e.black)
          (a₄ : wf_env e)
          : Flair graph x e :=
-let n0 := e.sn
+let n0 := sn e
 have h := by intros y hy z hz
              rw [DirectedGraph.edge_succ] at hy
              simp [add_stack_incr] at hz
@@ -59,7 +59,7 @@ have h := by intros y hy z hz
                          tauto
 have h₁ : wf_env (add_stack_incr x e) := by
   simp [add_stack_incr]
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _⟩ := a₄
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _⟩ := a₄
   repeat any_goals apply And.intro
   any_goals simp
   any_goals intros
@@ -67,7 +67,7 @@ have h₁ : wf_env (add_stack_incr x e) := by
   any_goals subst x
   any_goals tauto
   any_goals simp_all
-  any_goals tauto
+  -- any_goals tauto
   any_goals intros
   all_goals sorry -- 11 goals
 
@@ -98,7 +98,7 @@ else
             gray := e.gray
             stack := s3
             sccs := (toFinset s2) :: e1.sccs
-            sn := e1.sn
+            -- sn := e1.sn
             num := fun (y: V) => if s2.contains y then infty else e1.num y
           }
     p₁ := by sorry
@@ -136,7 +136,7 @@ def dfs [DirectedGraph V Graph]
         }
 | x :: roots =>
   if dite: (e.num x) == -1 then
-    have h := by obtain ⟨_, _, _, h, _⟩ := a₃
+    have h := by obtain ⟨_, _, h, _, _⟩ := a₃
                  rw [<- h]
                  simp at dite
                  exact dite
@@ -175,7 +175,7 @@ def dfs [DirectedGraph V Graph]
                  | inl h => obtain ⟨_, _, _⟩ := p₁
                             simp_all
                             cases h <;> tauto
-                 | inr h => obtain ⟨_, _, _, a₃, _⟩ := a₃
+                 | inr h => obtain ⟨_, _, a₃, _, _⟩ := a₃
                             rw [<- a₃] at h
                             simp_all
                . apply p₃; assumption

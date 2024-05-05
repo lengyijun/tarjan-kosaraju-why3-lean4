@@ -9,15 +9,16 @@ open Finset List
 
 structure Env (V Graph : Type*)
               [DirectedGraph V Graph]
-              [BEq V] [LawfulBEq V] [DecidableEq V]
               (graph : Graph)
 where
   black: Finset V
   gray: Finset V
   stack: List V
   sccs: List (Finset V)
-  sn: Nat
   num:  V -> Int
+
+def sn [DirectedGraph V Graph] (e: Env V Graph graph) : Int :=
+Finset.card e.gray + Finset.card e.black
 
 def subenv [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (e e': Env V Graph graph) : Prop :=
 e.gray = e'.gray /\
@@ -49,8 +50,7 @@ cases h
 def wf_env [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (e : Env V Graph graph) : Prop :=
 let infty : Int := (DirectedGraph.vertices graph: List V).length
 let sccs_union : Finset V := List.foldl (· ∪ ·) ∅ e.sccs
-e.sn = Finset.card (e.gray ∪ e.black) /\
-(∀ x, (-1 ≤ e.num x /\ e.num x < (e.sn: Int)) \/ e.num x == infty) /\
+(∀ x, (-1 ≤ e.num x /\ e.num x < (sn e)) \/ e.num x == infty) /\
 (∀ x, e.num x = infty <-> x ∈ sccs_union) /\
 (∀ x, e.num x = (-1)  <-> ¬ x ∈ (e.gray ∪ e.black)) /\
 (∀ x, x ∈ e.gray  -> x ∈ DirectedGraph.vertices graph) /\
@@ -82,8 +82,8 @@ def add_stack_incr [DirectedGraph V Graph]
 {
   e with gray  := insert x e.gray
          stack := x :: e.stack
-         sn    := e.sn + 1
-         num   := fun y => if y = x then e.sn else e.num y
+        --  sn    := e.sn + 1
+         num   := fun y => if y = x then sn e else e.num y
 }
 
 def num_of_reachable [DirectedGraph V Graph]
@@ -98,7 +98,7 @@ private theorem num_lmem_inner [DirectedGraph V Graph]
                                (x : V) :
 let infty : Int := (DirectedGraph.vertices graph: List V).length
 (¬ e.num x = -1) /\ (¬ e.num x = infty) <-> x ∈ toFinset e.stack := by
-obtain ⟨h₆, h₅, h₃, h₄, h₇, h₈, h₉, h₂, h, _⟩ := h
+obtain ⟨h₅, h₃, h₄, h₇, h₈, h₉, h₂, h, _⟩ := h
 rw [h]
 simp
 have h₅ := not_congr (h₃ x)
