@@ -1,5 +1,6 @@
 import Kosaraju.DirectedGraph
 import ListHelper.Precede
+import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
 
@@ -131,3 +132,73 @@ intros
 have h := num_lmem_inner h x
 simp at h
 rw [h]
+
+theorem stack_or_scc [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
+                     {e : Env V Graph graph}
+                     (h : wf_env e)
+                     {x : V}
+                     (h₁ : x ∈ e.black) :
+x ∈ e.stack \/ (∃ cc, x ∈ cc /\ cc ∈ e.sccs) := by
+obtain ⟨_, _, _, _, _, _, _, h₃, _⟩ := h
+have h₂ : x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs \/ ¬ x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs  := by tauto
+cases h₂
+. right
+  rename_i h
+  rw [union_helper] at h
+  assumption
+. left
+  have h : x ∈ toFinset e.stack := by
+    rw [h₃]
+    simp
+    tauto
+  simp at h
+  assumption
+
+theorem jiqian [DirectedGraph V Graph]
+               [BEq V] [LawfulBEq V] [DecidableEq V]
+               {e : Env V Graph graph}
+               (h : wf_env e) :
+Finset.toList (e.gray ∪ e.black) ⊆ (DirectedGraph.vertices graph: List V) := by
+intro x h₁
+simp_all
+obtain ⟨_, _, _, h₂, h₃, _⟩ := h
+cases h₁ <;> tauto
+
+theorem navel [DirectedGraph V Graph]
+               [BEq V] [LawfulBEq V] [DecidableEq V]
+               {e : Env V Graph graph}
+               (h : wf_env e) :
+(Finset.toList (e.gray ∪ e.black)).length ≤ (DirectedGraph.vertices graph: List V).length := by
+apply List.Subperm.length_le
+apply List.subperm_of_subset
+. apply Finset.nodup_toList
+. apply jiqian
+  assumption
+
+
+theorem sn_bound [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V] [DecidableEq V]
+                 {e : Env V Graph graph}
+                 (h : wf_env e) :
+sn e ≤ (DirectedGraph.vertices graph: List V).length := by
+simp [sn]
+have h₁ := navel h
+simp at h₁
+obtain ⟨h, _, _, _, _,_⟩ := h
+
+sorry
+
+theorem upper_bound [DirectedGraph V Graph]
+                    [BEq V] [LawfulBEq V] [DecidableEq V]
+                    {e : Env V Graph graph}
+                    (h : wf_env e)
+                    {x : V} :
+e.num x ≤ (DirectedGraph.vertices graph: List V).length := by
+have := sn_bound h
+obtain ⟨h, _, _, _⟩ := h
+specialize h x
+cases h with
+| inl h => omega
+| inr h => simp at h
+           omega

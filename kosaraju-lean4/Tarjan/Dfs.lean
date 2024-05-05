@@ -1,6 +1,7 @@
 import Kosaraju.DirectedGraph
 import ListHelper.Precede
 import ListHelper.Split
+import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
 import Tarjan.Env
@@ -19,10 +20,11 @@ n : Int
 e' : Env V Graph graph
 p₁ : subenv e e'
 p₂ : wf_env e'
-p₃ : n ≤ e'.num x
-p₄ : let infty : Int := (DirectedGraph.vertices graph: List V).length
+p₃ : x ∈ e'.black
+p₄ : n ≤ e'.num x
+p₅ : let infty : Int := (DirectedGraph.vertices graph: List V).length
      n = infty \/ num_of_reachable n x e'
-p₅ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
+p₆ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
 
 structure Shuttle [DirectedGraph V Graph]
                   [BEq V] [LawfulBEq V] [DecidableEq V]
@@ -89,6 +91,7 @@ if dite : n1 < n0 then
     p₃ := by sorry
     p₄ := by sorry
     p₅ := by sorry
+    p₆ := by sorry
   }
 else
   {
@@ -106,6 +109,7 @@ else
     p₃ := by sorry
     p₄ := by sorry
     p₅ := by sorry
+    p₆ := by sorry
   }
 termination_by (Finset.card (((toFinset (DirectedGraph.vertices graph : List V)) \ (e.gray ∪ e.black)) : Finset V), 0)
 
@@ -140,7 +144,7 @@ def dfs [DirectedGraph V Graph]
                  rw [<- h]
                  simp at dite
                  exact dite
-    let ⟨n1, e1, p₁, p₂, p₃, p₄, p₅⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) h a₃
+    let ⟨n1, e1, p₁, p₂, p₃, p₄, p₅, p₆⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) h a₃
     have h := by obtain ⟨h, _, _⟩ := p₁
                  rw [<- h]
                  intros
@@ -152,8 +156,37 @@ def dfs [DirectedGraph V Graph]
       e' := e2
       p₁ := subenv_trans p₁ p₆
       p₂ := p₇
-      p₃ := by sorry
-      p₄ := by sorry
+      p₃ := by intros _ h
+               cases h
+               . simp [Union.union]
+                 right
+                 obtain ⟨_, p₆, _, _, _⟩ := p₆
+                 apply p₆
+                 assumption
+               . tauto
+      p₄ := by intros y h
+               cases h
+               . cases (stack_or_scc p₂ p₃) with
+                 | inl h => obtain ⟨_, _, _, p₆, _⟩ := p₆
+                            specialize p₆ x h
+                            rw [p₆] at p₄
+                            omega
+                 | inr h => obtain ⟨cc, h₁, h₂⟩ := h
+                            obtain ⟨_, _, p₆, _, _⟩ := p₆
+                            specialize p₆ h₂
+                            obtain ⟨_, p₇, _, _⟩ := p₇
+                            specialize p₇ x
+                            have h : e2.num x = (DirectedGraph.vertices graph: List V).length := by
+                              rw [p₇, union_helper]
+                              use cc
+                            rw [h]
+                            cases pₐ <;> try omega
+                            rename_i h
+                            obtain ⟨x, y, _, _, h, _⟩ := h
+                            sorry
+               . rename_i h
+                 specialize p₉ y h
+                 omega
       p₅ := by sorry
       p₆ := by sorry
     }
