@@ -285,7 +285,6 @@ requires {wf_env e} (* invariant I *)
 requires {forall cc1, cc2. mem cc1 e.sccs -> mem cc2 e.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty}
 returns {(_, e') -> subenv e e'} 
 returns {(_, e') -> wf_env e'}
-(* post-conditions *)
 returns {(_, e') -> mem x e'.black} 
 returns {(n, e') -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty \/ num_of_reachable n x e'} 
@@ -319,7 +318,6 @@ requires {forall x. mem x roots -> access_to e.gray x}
 requires {wf_env e} (* invariant I *)
 requires {forall cc1, cc2. mem cc1 e.sccs -> mem cc2 e.sccs -> cc1 = cc2 \/ (inter cc1 cc2) = empty}
 returns {(_, e') -> wf_env e' /\ subenv e e'}
-(* post-conditions *)
 returns {(_, e') -> subset roots (union e'.black e'.gray)} 
 returns {(n, e') -> forall x. mem x roots -> n <= e'.num[x]} 
 returns {(n, e') -> n = infty \/ exists x. mem x roots /\ num_of_reachable n x e'} 
