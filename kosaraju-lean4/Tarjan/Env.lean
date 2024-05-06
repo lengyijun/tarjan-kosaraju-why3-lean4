@@ -56,7 +56,7 @@ let sccs_union : Finset V := List.foldl (· ∪ ·) ∅ e.sccs
 (∀ x, e.num x = (-1)  <-> ¬ x ∈ (e.gray ∪ e.black)) /\
 (∀ x, x ∈ e.gray  -> x ∈ DirectedGraph.vertices graph) /\
 (∀ x, x ∈ e.black -> x ∈ DirectedGraph.vertices graph) /\
-e.black ∩ e.gray = ∅ /\
+Disjoint e.gray e.black  /\
 sccs_union ⊆ e.black /\
 toFinset e.stack = (e.gray ∪ (e.black \ sccs_union)) /\
 no_black_to_white graph e.black e.gray /\
@@ -116,9 +116,10 @@ constructor
     . intros h₁
       specialize h₂ h₁
       simp_all
-      have h : x ∈ e.black ∩ e.gray := by simp [Inter.inter]; tauto
-      rw [h₉] at h
-      tauto
+      have h₂ : {x} ≤ e.gray := by simp; assumption
+      have h : {x} ≤ e.black := by simp; assumption
+      specialize h₉ h₂ h
+      simp at h₉
   | inr _ => tauto
 
 theorem num_lmem [DirectedGraph V Graph]
@@ -185,9 +186,9 @@ sn e ≤ (DirectedGraph.vertices graph: List V).length := by
 simp [sn]
 have h₁ := navel h
 simp at h₁
-obtain ⟨h, _, _, _, _,_⟩ := h
-
-sorry
+obtain ⟨h, _, _, _, _, h₂, _⟩ := h
+rw [Finset.card_union_of_disjoint h₂] at h₁
+omega
 
 theorem upper_bound [DirectedGraph V Graph]
                     [BEq V] [LawfulBEq V] [DecidableEq V]
