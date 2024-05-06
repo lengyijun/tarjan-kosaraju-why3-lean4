@@ -552,9 +552,6 @@
         <goal name="dfs1&#39;vc.14.0.0.1.0.0.8" expl="postcondition" proved="true">
         <proof prover="6"><result status="valid" time="0.394890" steps="813"/></proof>
         </goal>
-        <goal name="dfs1&#39;vc.14.0.0.1.0.0.2" expl="postcondition">
-        <proof prover="6"><result status="valid" time="12.886737" steps="37182"/></proof>
-        </goal>
        </transf>
        </goal>
       </transf>
