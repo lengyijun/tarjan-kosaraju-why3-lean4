@@ -166,7 +166,7 @@ def dfs [DirectedGraph V Graph]
                . tauto
       p₄ := by intros y h
                cases h
-               . cases (stack_or_scc p₂ p₃) with
+               . cases (stack_or_scc p₂ x (by tauto)) with
                  | inl h => obtain ⟨_, _, _, p₆, _⟩ := p₆
                             specialize p₆ x h
                             rw [p₆] at p₄
@@ -174,16 +174,18 @@ def dfs [DirectedGraph V Graph]
                  | inr h => obtain ⟨cc, h₁, h₂⟩ := h
                             obtain ⟨_, _, p₆, _, _⟩ := p₆
                             specialize p₆ h₂
-                            obtain ⟨_, p₇, _, _⟩ := p₇
-                            specialize p₇ x
                             have h : e2.num x = (DirectedGraph.vertices graph: List V).length := by
+                              obtain ⟨_, p₇, _, _⟩ := p₇
                               rw [p₇, union_helper]
                               use cc
                             rw [h]
                             cases pₐ <;> try omega
                             rename_i h
                             obtain ⟨x, y, _, _, h, _⟩ := h
-                            sorry
+                            simp
+                            right
+                            rw [h]
+                            apply upper_bound p₇
                . rename_i h
                  specialize p₉ y h
                  omega

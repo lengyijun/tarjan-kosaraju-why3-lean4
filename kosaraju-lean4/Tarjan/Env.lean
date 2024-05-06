@@ -138,8 +138,8 @@ theorem stack_or_scc [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      {e : Env V Graph graph}
                      (h : wf_env e)
-                     {x : V}
-                     (h₁ : x ∈ e.black) :
+                     (x : V)
+                     (h₁ : x ∈ e.gray \/ x ∈ e.black) :
 x ∈ e.stack \/ (∃ cc, x ∈ cc /\ cc ∈ e.sccs) := by
 obtain ⟨_, _, _, _, _, _, _, h₃, _⟩ := h
 have h₂ : x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs \/ ¬ x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs  := by tauto
