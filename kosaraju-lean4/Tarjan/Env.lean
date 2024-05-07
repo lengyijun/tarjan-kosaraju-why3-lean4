@@ -149,8 +149,7 @@ theorem num_lmem [DirectedGraph V Graph]
                  {e : Env V graph}
                  (h : wf_env e)
                  (x : V) :
-let infty : Int := (DirectedGraph.vertices graph: List V).length
-(¬ e.num x = -1) /\ (¬ e.num x = infty) <-> x ∈ e.stack := by
+(¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ e.stack := by
 intros
 have h := num_lmem_inner h x
 simp at h
@@ -216,7 +215,7 @@ obtain ⟨h, _, _, _, _, h₂, _⟩ := h
 rw [Finset.card_union_of_disjoint h₂] at h₁
 omega
 
-theorem upper_bound [DirectedGraph V Graph]
+theorem num_bound [DirectedGraph V Graph]
                     [BEq V] [LawfulBEq V] [DecidableEq V]
                     {graph : Graph}
                     {e : Env V graph}

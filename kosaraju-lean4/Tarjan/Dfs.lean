@@ -4,6 +4,7 @@ import ListHelper.Split
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
+import Std.Data.List.Lemmas
 import Tarjan.Env
 
 open Finmap
@@ -63,7 +64,7 @@ have h₁ : wf_env (add_stack_incr x e) := by
   simp [add_stack_incr]
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _⟩ := a₄
   repeat any_goals apply And.intro
-  any_goals simp
+  any_goals simp_all -- 15 -> 9
   any_goals intros
   repeat any_goals split
   any_goals subst x
@@ -144,7 +145,7 @@ def dfs [DirectedGraph V Graph]
                  rw [<- h]
                  simp at dite
                  exact dite
-    let ⟨n1, e1, p₁, p₂, p₃, p₄, p₅, p₆⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) h a₃
+    let ⟨n1, e1, p₁, p₂, p₃, p₄, p₅, pₕ⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) h a₃
     have h := by obtain ⟨h, _, _⟩ := p₁
                  rw [<- h]
                  intros
@@ -185,7 +186,7 @@ def dfs [DirectedGraph V Graph]
                             simp
                             right
                             rw [h]
-                            apply upper_bound p₇
+                            apply num_bound p₇
                . rename_i h
                  specialize p₉ y h
                  omega
@@ -214,36 +215,89 @@ def dfs [DirectedGraph V Graph]
                  obtain ⟨y, h⟩ := h
                  use y
                  tauto
-      p₆ := by sorry
+      p₆ := by obtain ⟨_, _, _, q₁, ⟨l₁, p₁, _⟩⟩ := p₁
+               obtain ⟨_, _, _, q₂, ⟨l₂, p₆, _⟩⟩ := p₆
+               intros y h
+               specialize p y
+               specialize pₕ y
+               obtain ⟨⟨s2, h₁, ⟨x, h₂, h₃⟩⟩, h⟩ := h
+               rw [p₁, p₆] at *
+               rw [<- List.append_assoc] at h₁
+               have h₁ := List.append_inj_left' h₁ rfl
+               subst s2
+               specialize q₂ y (by simp; tauto)
+               simp at h₂
+               cases h₂
+               . specialize p ⟨⟨l₂, (by tauto), x, (by assumption), (by assumption)⟩, by simp; tauto⟩
+                 omega
+               . specialize pₕ ⟨⟨l₁, (by tauto), x, (by assumption), (by assumption)⟩, by tauto⟩
+                 rw [q₂] at *
+                 omega
     }
   else
-    let n1 := e.num x
-    have h := by intros
-                 apply a₂
-                 tauto
-    let ⟨n2, e2, p₁, p₂, p₃, p₄, p₅, p₆⟩ := dfs graph roots e (by tauto) h a₃
+    let ⟨n2, e2, p₁, p₂, p₃, p₄, p₅, p₆⟩ := dfs graph roots e (by tauto) (by intros; apply a₂; tauto) a₃
+    have gray_or_black : x ∈ e.gray \/ x ∈ e.black := by
+      obtain ⟨_, _, a₃, _, _⟩ := a₃
+      specialize a₃ x
+      have a₃ := not_congr a₃
+      simp at a₃
+      rw [<- a₃]
+      simp_all
     {
-      n :=  min n1 n2
+      n := min (e.num x) n2
       e' := e2
       p₁ := p₁
       p₂ := p₂
       p₃ := by intros _ h
                cases h
-               . have h : x ∈ e.gray ∪ e.black \/ ¬ x ∈ e.gray ∪ e.black := by tauto
-                 cases h with
-                 | inl h => obtain ⟨_, _, _⟩ := p₁
-                            simp_all
-                            cases h <;> tauto
-                 | inr h => obtain ⟨_, _, a₃, _, _⟩ := a₃
-                            rw [<- a₃] at h
-                            simp_all
+               . obtain ⟨h, _, _⟩ := p₁
+                 rw [<- h]
+                 simp
+                 cases gray_or_black <;> tauto
                . apply p₃; assumption
       p₄ := by intros y h
+               obtain ⟨_, _, p₇, p₈, _⟩ := p₁
                cases h <;> rename_i h
-               . sorry
+               . cases (stack_or_scc a₃ x gray_or_black) <;> rename_i h
+                 . rw [(p₈ _ h)]
+                   omega
+                 . have h₁ : e2.num x = (DirectedGraph.vertices graph: List V).length := by
+                    obtain ⟨_, p₂, _⟩ := p₂
+                    rw [p₂, union_helper]
+                    tauto
+                   rw [h₁]
+                   have : e.num x ≤ (DirectedGraph.vertices graph: List V).length := by apply num_bound; assumption
+                   omega
                . specialize p₄ y h
                  omega
-      p₅ := by sorry
+      p₅ := by
+              intros
+              have h : n2 ≤ e.num x \/ e.num x < n2 := by omega
+              cases h <;> simp [*] <;> cases p₅
+              any_goals tauto
+              all_goals have : e.num x ≤ n2 := by omega
+              all_goals simp [*]
+              all_goals have h : e.num x = (DirectedGraph.vertices graph: List V).length \/ ¬ e.num x = (DirectedGraph.vertices graph: List V).length := by tauto
+              all_goals cases h
+              any_goals tauto
+              any_goals omega
+              all_goals right; left; use x
+              all_goals have h : x ∈ e.stack := by rw [<- num_lmem a₃]; simp_all
+              all_goals have h : e.num x = e2.num x := by obtain ⟨_, _, _, p₁, _⟩ := p₁; apply p₁ _ h
+              all_goals rename_i h₁ h₂ h₃ h₄ h₅
+              all_goals rw [h] at *
+              repeat any_goals apply And.intro
+              any_goals tauto
+              . obtain ⟨_, _, _, _, ⟨s, p₁, _⟩⟩ := p₁
+                rw [p₁]
+                simp
+                tauto
+              . have : e2.num x ≤ (DirectedGraph.vertices graph: List V).length := by
+                  apply num_bound <;> assumption
+                omega
+              . obtain ⟨_, _, _, _, ⟨s, p₁, _⟩⟩ := p₁
+                rw [p₁]
+                simp_all
       p₆ := by intros y h
                specialize p₆ y h
                omega
