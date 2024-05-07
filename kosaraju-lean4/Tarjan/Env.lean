@@ -8,7 +8,7 @@ open Finmap
 open Finset
 open Finset List
 
-structure Env (V Graph : Type*)
+structure Env (V : Type*) {Graph : Type*}
               [DirectedGraph V Graph]
               (graph : Graph)
 where
@@ -18,18 +18,20 @@ where
   sccs: List (Finset V)
   num:  V -> Int
 
-def sn [DirectedGraph V Graph] (e: Env V Graph graph) : Int :=
+def sn [DirectedGraph V Graph] {graph : Graph} (e: Env V graph) : Int :=
 Finset.card e.gray + Finset.card e.black
 
-def subenv [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (e e': Env V Graph graph) : Prop :=
+def subenv [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] {graph : Graph} (e e': Env V graph) : Prop :=
 e.gray = e'.gray /\
 e.black ⊆ e'.black /\
 e.sccs ⊆ e'.sccs /\
 (∀ x, x ∈ e.stack -> e.num x = e'.num x) /\
 (∃ s, e'.stack = s ++ e.stack /\ ∀ x, x ∈ s → x ∈ e'.black)
 
-theorem subenv_trans [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V]
-                    {e1 e2 e3: Env V Graph graph}
+theorem subenv_trans [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
+                     {graph : Graph}
+                    {e1 e2 e3: Env V graph}
                     (h12 : subenv e1 e2)
                     (h23 : subenv e2 e3)
                     : subenv e1 e3 := by
@@ -48,7 +50,7 @@ cases h
   assumption
 
 
-def wf_env [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] (e : Env V Graph graph) : Prop :=
+def wf_env [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] {graph : Graph} (e : Env V graph) : Prop :=
 let infty : Int := (DirectedGraph.vertices graph: List V).length
 let sccs_union : Finset V := List.foldl (· ∪ ·) ∅ e.sccs
 (∀ x, (-1 ≤ e.num x /\ e.num x < (sn e)) \/ e.num x == infty) /\
@@ -69,8 +71,9 @@ simplelist e.stack /\
 
 def add_black [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
               (x : V)
-              (e : Env V Graph graph) : Env V Graph graph :=
+              (e : Env V graph) : Env V graph :=
 {
   e with black := insert x e.black
          gray  := erase  e.gray x
@@ -78,8 +81,9 @@ def add_black [DirectedGraph V Graph]
 
 def add_stack_incr [DirectedGraph V Graph]
                    [BEq V] [LawfulBEq V] [DecidableEq V]
+                   {graph : Graph}
                    (x : V)
-                   (e : Env V Graph graph) : Env V Graph graph :=
+                   (e : Env V graph) : Env V graph :=
 {
   e with gray  := insert x e.gray
          stack := x :: e.stack
@@ -89,12 +93,29 @@ def add_stack_incr [DirectedGraph V Graph]
 
 def num_of_reachable [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
-                     (n: Int) (x: V) (e: Env V Graph graph) : Prop :=
+                     {graph : Graph}
+                     (n: Int) (x: V) (e: Env V graph) : Prop :=
 ∃ y, y ∈ e.stack /\ n = e.num y /\ reachable graph x y
+
+theorem subenv_num_of_reachable
+          [DirectedGraph V Graph]
+          [BEq V] [LawfulBEq V] [DecidableEq V]
+          {graph : Graph}
+          {e e' : Env V graph}
+          {x : V}
+          {n : Int}
+          (h : subenv e e') :
+(num_of_reachable n x e) -> num_of_reachable n x e' := by
+simp [num_of_reachable]
+intros x _ _ _
+use x
+obtain ⟨_, _, _, h, ⟨s, h₂⟩⟩ := h
+simp_all
 
 private theorem num_lmem_inner [DirectedGraph V Graph]
                                [BEq V] [LawfulBEq V] [DecidableEq V]
-                               {e : Env V Graph graph}
+                               {graph : Graph}
+                               {e : Env V graph}
                                (h : wf_env e)
                                (x : V) :
 let infty : Int := (DirectedGraph.vertices graph: List V).length
@@ -124,7 +145,8 @@ constructor
 
 theorem num_lmem [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
-                 {e : Env V Graph graph}
+                 {graph : Graph}
+                 {e : Env V graph}
                  (h : wf_env e)
                  (x : V) :
 let infty : Int := (DirectedGraph.vertices graph: List V).length
@@ -136,7 +158,8 @@ rw [h]
 
 theorem stack_or_scc [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
-                     {e : Env V Graph graph}
+                     {graph : Graph}
+                     {e : Env V graph}
                      (h : wf_env e)
                      (x : V)
                      (h₁ : x ∈ e.gray \/ x ∈ e.black) :
@@ -158,7 +181,8 @@ cases h₂
 
 theorem jiqian [DirectedGraph V Graph]
                [BEq V] [LawfulBEq V] [DecidableEq V]
-               {e : Env V Graph graph}
+               {graph : Graph}
+               {e : Env V graph}
                (h : wf_env e) :
 Finset.toList (e.gray ∪ e.black) ⊆ (DirectedGraph.vertices graph: List V) := by
 intro x h₁
@@ -167,9 +191,10 @@ obtain ⟨_, _, _, h₂, h₃, _⟩ := h
 cases h₁ <;> tauto
 
 theorem navel [DirectedGraph V Graph]
-               [BEq V] [LawfulBEq V] [DecidableEq V]
-               {e : Env V Graph graph}
-               (h : wf_env e) :
+              [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
+              {e : Env V graph}
+              (h : wf_env e) :
 (Finset.toList (e.gray ∪ e.black)).length ≤ (DirectedGraph.vertices graph: List V).length := by
 apply List.Subperm.length_le
 apply List.subperm_of_subset
@@ -180,7 +205,8 @@ apply List.subperm_of_subset
 
 theorem sn_bound [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
-                 {e : Env V Graph graph}
+                 {graph : Graph}
+                 {e : Env V graph}
                  (h : wf_env e) :
 sn e ≤ (DirectedGraph.vertices graph: List V).length := by
 simp [sn]
@@ -192,7 +218,8 @@ omega
 
 theorem upper_bound [DirectedGraph V Graph]
                     [BEq V] [LawfulBEq V] [DecidableEq V]
-                    {e : Env V Graph graph}
+                    {graph : Graph}
+                    {e : Env V graph}
                     (h : wf_env e)
                     {x : V} :
 e.num x ≤ (DirectedGraph.vertices graph: List V).length := by

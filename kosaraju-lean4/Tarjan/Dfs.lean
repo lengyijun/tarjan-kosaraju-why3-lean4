@@ -14,10 +14,10 @@ set_option maxHeartbeats 0
 
 structure Flair [DirectedGraph V Graph]
                 [BEq V] [LawfulBEq V] [DecidableEq V]
-                (graph : Graph) (x : V) (e : Env V Graph graph)
+                (graph : Graph) (x : V) (e : Env V graph)
 where
 n : Int
-e' : Env V Graph graph
+e' : Env V graph
 p₁ : subenv e e'
 p₂ : wf_env e'
 p₃ : x ∈ e'.black
@@ -28,10 +28,10 @@ p₆ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
 
 structure Shuttle [DirectedGraph V Graph]
                   [BEq V] [LawfulBEq V] [DecidableEq V]
-                  (graph : Graph) (roots: List V) (e : Env V Graph graph)
+                  (graph : Graph) (roots: List V) (e : Env V graph)
 where
 n : Int
-e' : Env V Graph graph
+e' : Env V graph
 p₁ : subenv e e'
 p₂ : wf_env e'
 p₃ : ∀ y, y ∈ roots -> y ∈ e'.gray ∪ e'.black
@@ -44,7 +44,7 @@ mutual
 
 def dfs1 [DirectedGraph V Graph]
          [BEq V] [LawfulBEq V] [DecidableEq V]
-         (graph : Graph) (x : V) (e : Env V Graph graph)
+         (graph : Graph) (x : V) (e : Env V graph)
          (a₁ : x ∈ DirectedGraph.vertices graph)
          (a₂ : access_to graph e.gray x)
          (a₃ : ¬ x ∈ e.gray ∪ e.black)
@@ -116,7 +116,7 @@ termination_by (Finset.card (((toFinset (DirectedGraph.vertices graph : List V))
 
 def dfs [DirectedGraph V Graph]
         [BEq V] [LawfulBEq V] [DecidableEq V]
-        (graph : Graph) (roots: List V) (e : Env V Graph graph)
+        (graph : Graph) (roots: List V) (e : Env V graph)
         (a₁ : roots ⊆ DirectedGraph.vertices graph)
         (a₂ : ∀ x, x ∈ roots -> access_to graph e.gray x)
         (a₃ : wf_env e)
@@ -189,7 +189,31 @@ def dfs [DirectedGraph V Graph]
                . rename_i h
                  specialize p₉ y h
                  omega
-      p₅ := by sorry
+      p₅ := by have h : min n1 n2 = n1 \/ min n1 n2 = n2 := by omega
+               cases h
+               all_goals rename_i h
+               all_goals rw [h]
+               all_goals cases pₐ
+               any_goals tauto
+               all_goals cases p₅
+               any_goals tauto
+               any_goals right
+               . use x
+                 constructor
+                 . tauto
+                 . apply subenv_num_of_reachable <;> assumption
+               . use x
+                 constructor
+                 . tauto
+                 . apply subenv_num_of_reachable <;> assumption
+               . rename_i h _
+                 obtain ⟨y, h⟩ := h
+                 use y
+                 tauto
+               . rename_i h _
+                 obtain ⟨y, h⟩ := h
+                 use y
+                 tauto
       p₆ := by sorry
     }
   else
