@@ -19,7 +19,7 @@ where
   sccs: List (Finset V)
   num:  V -> Int
   num_clamp : ∀ x, (-1 ≤ num x /\ num x < gray.card + black.card) \/ num x = (DirectedGraph.vertices graph: List V).length
-  num_1 : ∀ x, num x = (-1)  <-> ¬ x ∈ (gray ∪ black)
+  num_1 : ∀ x, ¬ num x = (-1) ↔ x ∈ gray \/ x ∈ black
   num_infty : ∀ x, num x = (DirectedGraph.vertices graph: List V).length ↔ ∃ cc, x ∈ cc /\ cc ∈ sccs
   valid_gray  : ∀ x ∈ gray,  x ∈ DirectedGraph.vertices graph
   valid_black : ∀ x ∈ black, x ∈ DirectedGraph.vertices graph
@@ -182,10 +182,8 @@ private theorem num_lmem_inner [DirectedGraph V Graph]
 (¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ toFinset e.stack := by
 rw [e.stack_finset]
 simp
-have h₅ := not_congr (e.num_1 x)
 have h₆ := not_congr (e.num_infty x)
-rw [h₅, h₆, <- union_helper]
-simp
+rw [(e.num_1 x), h₆, <- union_helper]
 constructor
 . tauto
 . intros h
