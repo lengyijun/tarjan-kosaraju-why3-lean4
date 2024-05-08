@@ -48,8 +48,8 @@ def dfs1 [DirectedGraph V Graph]
          (graph : Graph) (x : V) (e : Env V graph)
          (a₁ : x ∈ DirectedGraph.vertices graph)
          (a₂ : access_to graph e.gray x)
-         (a₃ : ¬ x ∈ e.gray ∪ e.black)
-        --  (a₄ : wf_env e)
+         (a₃ : ¬ x ∈ e.gray)
+         (a₄ : ¬ x ∈ e.black)
          : Flair graph x e :=
 let n0 := e.gray.card + e.black.card
 have h := by intros y hy z hz
@@ -61,13 +61,37 @@ have h := by intros y hy z hz
                          apply reachable_trans graph z x y a₂
                          tauto
 
-have termination_proof : ((add_stack_incr x e).gray ∪ (add_stack_incr x e).black).card > (e.gray ∪ e.black).card := by
-  simp [add_stack_incr]
-  have h := card_insert_of_not_mem a₃
-  rw [h]
-  omega
+have h₁ : e.gray ∪ e.black ⊆ toFinset (DirectedGraph.vertices graph) := by
+  intros y h
+  simp at h
+  cases h <;> simp_all
+  . apply e.valid_gray; assumption
+  . apply e.valid_black; assumption
 
-let ⟨n1, e1, p₁, p₃, p₄, p₅, p₆⟩ := dfs graph (DirectedGraph.succ graph x) (add_stack_incr x e) (by apply succ_valid; assumption) h
+have h₂ : Insert.insert x (e.gray ∪ e.black) ⊆ toFinset (DirectedGraph.vertices graph) := by
+  intros y h
+  simp at h
+  cases h <;> simp_all
+  rename_i h
+  cases h
+  . apply e.valid_gray; assumption
+  . apply e.valid_black; assumption
+
+have termination_proof : (toFinset (DirectedGraph.vertices graph) \
+  ((add_stack_incr e x a₁ a₂ a₃ a₄).gray ∪ (add_stack_incr e x a₁ a₂ a₃ a₄).black)).card <
+  (toFinset (DirectedGraph.vertices graph) \ (e.gray ∪ e.black)).card := by
+  rw [Finset.card_sdiff]
+  rw [Finset.card_sdiff]
+  any_goals simp [add_stack_incr]
+  any_goals assumption
+  . have h := Finset.card_le_card h₂
+    rw [card_insert_of_not_mem] at *
+    . omega
+    . intros h; simp at h; cases h <;> tauto
+    . intros h; simp at h; cases h <;> tauto
+
+
+let ⟨n1, e1, p₁, p₃, p₄, p₅, p₆⟩ := dfs graph (DirectedGraph.succ graph x) (add_stack_incr e x a₁ a₂ a₃ a₄) (by apply succ_valid; assumption) h
 let (s2, s3) := split x e1.stack
 let infty : Int := (DirectedGraph.vertices graph: List V).length
 if dite : n1 < n0 then
@@ -140,11 +164,11 @@ def dfs [DirectedGraph V Graph]
         }
 | x :: roots =>
   if dite: (e.num x) == -1 then
-    have h := by intros h
-                 simp at h
-                 rw [<- e.num_1] at h
-                 simp_all
-    let ⟨n1, e1, p₁, p₃, p₄, p₅, pₕ⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) h
+    have h : ¬ x ∈ e.gray ∪ e.black := by intros h
+                                          simp at h
+                                          rw [<- e.num_1] at h
+                                          simp_all
+    let ⟨n1, e1, p₁, p₃, p₄, p₅, pₕ⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) (by intros _; apply h; simp_all) (by intros _; apply h; simp_all)
     have h := by obtain ⟨h, _, _⟩ := p₁
                  rw [<- h]
                  intros

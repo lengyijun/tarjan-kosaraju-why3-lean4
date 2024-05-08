@@ -1,5 +1,6 @@
 import Kosaraju.DirectedGraph
 import ListHelper.Precede
+import ListHelper.Simplelist
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
@@ -26,7 +27,7 @@ where
   disjoint_gb : Disjoint gray black
   color₁ : no_black_to_white graph black gray
   -- color₆ : sccs_union ⊆ black
-  stack_finset : toFinset stack = (gray ∪ (black \ sccs.foldl (· ∪ ·) ∅))
+  stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl (· ∪ ·) ∅))
   simplelist_stack : simplelist stack
   wf_stack₁ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
@@ -64,30 +65,6 @@ cases h
   assumption
 
 
-/-
-def add_black [DirectedGraph V Graph]
-              [BEq V] [LawfulBEq V] [DecidableEq V]
-              {graph : Graph}
-              (x : V)
-              (e : Env V graph) : Env V graph :=
-{
-  e with black := insert x e.black
-         gray  := erase  e.gray x
-}
-
-def add_stack_incr [DirectedGraph V Graph]
-                   [BEq V] [LawfulBEq V] [DecidableEq V]
-                   {graph : Graph}
-                   (x : V)
-                   (e : Env V graph) : Env V graph :=
-{
-  e with gray  := insert x e.gray
-         stack := x :: e.stack
-        --  sn    := e.sn + 1
-         num   := fun y => if y = x then sn e else e.num y
-}
--/
-
 def num_of_reachable [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      {graph : Graph}
@@ -123,12 +100,9 @@ cases h₂
   rw [union_helper] at h
   assumption
 . left
-  have h : x ∈ toFinset e.stack := by
-    rw [e.stack_finset]
-    simp
-    tauto
-  simp at h
-  assumption
+  rw [e.stack_finset]
+  simp
+  tauto
 
 theorem jiqian [DirectedGraph V Graph]
                [BEq V] [LawfulBEq V] [DecidableEq V]
@@ -174,12 +148,12 @@ cases (h x) with
 | inr h => simp at h
            omega
 
-private theorem num_lmem_inner [DirectedGraph V Graph]
-                               [BEq V] [LawfulBEq V] [DecidableEq V]
-                               {graph : Graph}
-                               {e : Env V graph}
-                               (x : V) :
-(¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ toFinset e.stack := by
+theorem num_lmem [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V] [DecidableEq V]
+                 {graph : Graph}
+                 (e : Env V graph)
+                 (x : V) :
+(¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ e.stack := by
 rw [e.stack_finset]
 simp
 have h₆ := not_congr (e.num_infty x)
@@ -202,11 +176,192 @@ constructor
       simp at h
   | inr _ => tauto
 
-theorem num_lmem [DirectedGraph V Graph]
-                 [BEq V] [LawfulBEq V] [DecidableEq V]
-                 {graph : Graph}
-                 (e : Env V graph)
-                 (x : V) :
-(¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ e.stack := by
-rw [num_lmem_inner]
-simp
+def add_stack_incr [DirectedGraph V Graph]
+                   [BEq V] [LawfulBEq V] [DecidableEq V]
+                   {graph : Graph}
+                   (e : Env V graph)
+                   (x : V)
+                   (a₁ : x ∈ DirectedGraph.vertices graph)
+                   (a₂ : access_to graph e.gray x)
+                   (a₃ : ¬ x ∈ e.gray)
+                   (a₄ : ¬ x ∈ e.black)
+                   : Env V graph :=
+{
+  gray  := insert x e.gray
+  black := e.black
+  stack := x :: e.stack
+  sccs := e.sccs
+  num   := fun y => if y = x then e.gray.card + e.black.card else e.num y
+--  sn    := e.sn + 1
+  num_clamp := by simp; intros y
+                  rw [Finset.card_insert_of_not_mem a₃]
+                  split
+                  . omega
+                  . cases (e.num_clamp y) <;> omega
+  num_1 := by simp
+              intros y
+              constructor <;> intros h
+              . split at h
+                . tauto
+                . rw [e.num_1] at h
+                  tauto
+              . split
+                . omega
+                . rw [e.num_1]
+                  tauto
+  num_infty := by simp
+                  intros y
+                  split
+                  . subst y
+                    rw [<-(e.num_infty x)]
+                    constructor <;> intros <;> exfalso
+                    . have : (e.gray ∪ e.black) ⊆ (toFinset (DirectedGraph.vertices graph)) := by
+                        intros x h
+                        have := e.valid_gray x
+                        have := e.valid_black x
+                        rw [List.mem_toFinset]
+                        simp at h
+                        cases h <;> tauto
+                      have h : e.gray.card + e.black.card = (DirectedGraph.vertices graph : List V).length := by omega
+                      have : (toFinset (DirectedGraph.vertices graph : List V)).card ≤ (e.gray ∪ e.black).card := by
+                        rw [Finset.card_union_of_disjoint e.disjoint_gb, h]
+                        apply List.toFinset_card_le
+                      have h₁ : e.gray ∪ e.black = toFinset (DirectedGraph.vertices graph) := by apply Finset.eq_of_subset_of_card_le <;> assumption
+                      have h : x ∈ toFinset (DirectedGraph.vertices graph) := by simp; assumption
+                      rw [<- h₁] at h
+                      simp at h
+                      tauto
+                    . have h : ¬ e.num x = -1 := by omega
+                      rw [e.num_1] at h
+                      tauto
+                  . exact e.num_infty y
+  valid_gray  := by intros _ h
+                    simp at h
+                    cases h
+                    . subst x; tauto
+                    . apply e.valid_gray; assumption
+  valid_black := e.valid_black
+  disjoint_gb := by simp_all; exact e.disjoint_gb
+  color₁ := by intros a b h h₁
+               cases (e.color₁ a b h h₁) <;> simp <;> tauto
+  stack_finset := by intros y
+                     simp
+                     rw [e.stack_finset]
+                     simp
+  simplelist_stack := by rw [simplelist_tl]
+                         constructor
+                         . exact e.simplelist_stack
+                         . intros h
+                           rw [e.stack_finset] at h
+                           simp at h
+                           tauto
+  wf_stack₁ := by simp
+                  repeat any_goals apply And.intro
+                  all_goals intros
+                  all_goals split
+                  any_goals subst x
+                  repeat any_goals apply And.intro
+                  any_goals intros
+                  repeat any_goals apply And.intro
+                  any_goals split
+                  any_goals subst x
+                  any_goals simp
+                  all_goals rename_i z h₂ h₃ y h₅ h₆
+                  . constructor <;> intros h <;> exfalso
+                    . rw [<- num_lmem] at h₅
+                      have := e.num_clamp y
+                      omega
+                    . obtain ⟨s1, s2, h₁, h₂⟩ := h
+                      cases h₂ <;> try tauto
+                      have h : simplelist (x :: e.stack) := by
+                        rw [simplelist_tl]
+                        constructor
+                        . apply e.simplelist_stack
+                        . intros h
+                          rw [e.stack_finset] at h
+                          simp at h
+                          tauto
+                      cases s1 <;> simp at h₁ <;> try tauto
+                      specialize h x
+                      obtain ⟨_, h₁⟩ := h₁
+                      rw [h₁] at h
+                      simp [num_occ] at h
+                      have : num_occ x s2 > 0 := by rw [<- mem_num_occ]; tauto
+                      split at h <;> omega
+                  . subst y; simp
+                  . rw [e.stack_finset] at h₃
+                    simp at h₃
+                    tauto
+                  . constructor <;> intros h
+                    . use []; use e.stack; tauto
+                    . rw [<- num_lmem] at h₅
+                      have := e.num_clamp y
+                      omega
+                  . rw [e.stack_finset] at h₅
+                    simp at h₅
+                    tauto
+                  . rw [e.wf_stack₁] <;> try assumption
+                    constructor <;> intros h <;> obtain ⟨s1, s2, h₁, h₂⟩ := h
+                    . rw [h₁]
+                      use (x :: s1)
+                      use s2
+                      tauto
+                    . cases s1 <;> simp at h₁
+                      . tauto
+                      . rename_i s1
+                        use s1
+                        use s2
+                        tauto
+  wf_stack₂ := by simp
+                  repeat any_goals apply And.intro
+                  any_goals tauto
+                  all_goals intros
+                  repeat any_goals apply And.intro
+                  any_goals intros
+                  all_goals rename_i h
+                  any_goals split at h
+                  any_goals split at h
+                  any_goals subst x
+                  any_goals tauto
+                  all_goals rename_i h₁ y h₃ h₄
+                  . rw [<- num_lmem] at h₃
+                    have := e.num_clamp y
+                    omega
+                  . obtain ⟨z, h, _, h₂⟩:= e.wf_stack₃ y h₃
+                    specialize a₂ z h
+                    apply reachable_trans _ y z x <;> tauto
+                  . rw [e.stack_finset] at h₁; simp at h₁; tauto
+                  . rw [e.stack_finset] at h₃; simp at h₃; tauto
+                  . apply e.wf_stack₂ <;> assumption
+  wf_stack₃ := by intro y h
+                  cases h <;> simp_all
+                  . left; tauto
+                  . split
+                    . subst y
+                      exfalso
+                      have h : x ∈ e.stack := by tauto
+                      rw [e.stack_finset] at h
+                      simp at h
+                      tauto
+                    . obtain ⟨z, h⟩ := e.wf_stack₃ y (by tauto)
+                      right
+                      use z
+                      split
+                      . subst z
+                        tauto
+                      . tauto
+  wf_sccs₁ := e.wf_sccs₁
+  wf_sccs₂ := e.wf_sccs₂
+}
+
+/-
+def add_black [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
+              (x : V)
+              (e : Env V graph) : Env V graph :=
+{
+  e with black := insert x e.black
+         gray  := erase  e.gray x
+}
+-/
