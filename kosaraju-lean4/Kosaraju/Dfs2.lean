@@ -108,15 +108,6 @@ def dfs2 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
       obtain ⟨_, ⟨h₃, _⟩⟩ := h₃
       specialize h₃ _ _ h₄ h₂
       cases h₃
-      . have h₆: simplelist (List.cons x stack) := by
-          rw [simplelist_tl]
-          constructor <;> try assumption
-          simp [wff_color, reachable_before_same_scc] at *
-          tauto
-        specialize h₆ b
-        rw [h, num_occ_concat] at h₆
-        rw [mem_num_occ] at *
-        omega
       . obtain ⟨s', _, _⟩ := monotony
         subst stack
         simp [wff_color, reachable_before_same_scc] at p₃
@@ -132,6 +123,15 @@ def dfs2 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
           apply g
           tauto
         . tauto
+      . have h₆: simplelist (List.cons x stack) := by
+          rw [simplelist_tl]
+          constructor <;> try assumption
+          simp [wff_color, reachable_before_same_scc] at *
+          tauto
+        specialize h₆ b
+        rw [h, num_occ_concat] at h₆
+        rw [mem_num_occ] at *
+        omega
     have g₉: no_path_out_of_in graph black_stack (List.cons x stack) := by
       apply no_edge_out_of_no_path_out_of_in ; assumption
     have h₆ := by

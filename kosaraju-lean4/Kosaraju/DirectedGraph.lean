@@ -149,7 +149,7 @@ def no_black_to_white [DirectedGraph V Graph]
                       [Membership V Lv]
                       (g : Graph)
                       (blacks grays: Lv) : Prop :=
-    ∀ a b, DirectedGraph.edge g a b -> a ∈ blacks -> b ∈ blacks \/ b ∈ grays
+    ∀ a b, DirectedGraph.edge g a b -> a ∈ blacks -> b ∈ grays \/ b ∈ blacks
 
 def access_from_set [DirectedGraph V Graph]
                     [BEq V] [LawfulBEq V]
