@@ -169,12 +169,50 @@ def dfs [DirectedGraph V Graph]
                                           rw [<- e.num_1] at h
                                           simp_all
     let ⟨n1, e1, p₁, p₃, p₄, p₅, pₕ⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) (by intros _; apply h; simp_all) (by intros _; apply h; simp_all)
-    have h := by obtain ⟨h, _, _⟩ := p₁
-                 rw [<- h]
-                 intros
-                 apply a₂
-                 tauto
-    let ⟨n2, e2, p₆, p₈, p₉, pₐ, p⟩ := dfs graph roots e1 (by tauto) h
+    have h₂ := by obtain ⟨h, _, _⟩ := p₁
+                  rw [<- h]
+                  intros
+                  apply a₂
+                  tauto
+
+    have t₁ : e.gray ∪ e.black ⊆ toFinset (DirectedGraph.vertices graph) := by
+      intros y h
+      simp at h
+      cases h <;> simp_all
+      . apply e.valid_gray; assumption
+      . apply e.valid_black; assumption
+
+    have t₂ : e1.gray ∪ e1.black ⊆ toFinset (DirectedGraph.vertices graph) := by
+      intros y h
+      simp at h
+      cases h <;> simp_all
+      . apply e1.valid_gray; assumption
+      . apply e1.valid_black; assumption
+
+    have termination_proof : (toFinset (DirectedGraph.vertices graph) \ (e1.gray ∪ e1.black)).card < (toFinset (DirectedGraph.vertices graph) \ (e.gray ∪ e.black)).card := by
+      rw [Finset.card_sdiff]
+      rw [Finset.card_sdiff]
+      any_goals assumption
+      have t₁ := Finset.card_le_card t₁
+      have t₂ := Finset.card_le_card t₂
+      rw [Finset.card_union_of_disjoint e.disjoint_gb] at *
+      rw [Finset.card_union_of_disjoint e1.disjoint_gb] at *
+      obtain ⟨p₁, p₂, _⟩:= p₁
+      rw [p₁] at t₁
+      rw [p₁]
+      have h : e.black ⊂ e1.black := by
+        constructor
+        . exact p₂
+        . intros h₃
+          specialize h₃ p₃
+          apply h
+          simp
+          tauto
+      have h := Finset.card_lt_card h
+      simp_all
+      omega
+
+    let ⟨n2, e2, p₆, p₈, p₉, pₐ, p⟩ := dfs graph roots e1 (by tauto) h₂
     {
       n :=  min n1 n2
       e' := e2
@@ -309,8 +347,7 @@ def dfs [DirectedGraph V Graph]
                 rw [p₁]
                 simp
                 tauto
-              . have : e2.num x ≤ (DirectedGraph.vertices graph: List V).length := by
-                  apply num_bound <;> assumption
+              . have : e2.num x ≤ (DirectedGraph.vertices graph: List V).length := by apply num_bound
                 simp_all
               . obtain ⟨_, _, _, _, ⟨s, p₁, _⟩⟩ := p₁
                 rw [p₁]
