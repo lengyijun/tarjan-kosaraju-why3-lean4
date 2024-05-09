@@ -43,7 +43,7 @@ p₆ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
 
 mutual
 
-def dfs1 [DirectedGraph V Graph]
+def dfs3 [DirectedGraph V Graph]
          [BEq V] [LawfulBEq V] [DecidableEq V]
          (graph : Graph) (x : V) (e : Env V graph)
          (a₁ : x ∈ DirectedGraph.vertices graph)
@@ -51,7 +51,7 @@ def dfs1 [DirectedGraph V Graph]
          (a₃ : ¬ x ∈ e.gray)
          (a₄ : ¬ x ∈ e.black)
          : Flair graph x e :=
-let n0 := e.gray.card + e.black.card
+-- let n0 := e.gray.card + e.black.card
 have h := by intros y hy z hz
              rw [DirectedGraph.edge_succ] at hy
              simp [add_stack_incr] at hz
@@ -94,15 +94,126 @@ have termination_proof : (toFinset (DirectedGraph.vertices graph) \
 let ⟨n1, e1, p₁, p₃, p₄, p₅, p₆⟩ := dfs graph (DirectedGraph.succ graph x) (add_stack_incr e x a₁ a₂ a₃ a₄) (by apply succ_valid; assumption) h
 let (s2, s3) := split x e1.stack
 let infty : Int := (DirectedGraph.vertices graph: List V).length
-if dite : n1 < n0 then
+if dite : n1 < e.gray.card + e.black.card then
+  have : x ∈ e1.gray := by
+    obtain ⟨p₁, _ ⟩ := p₁
+    rw [<- p₁]
+    simp [add_stack_incr]
+  have not_x_in_black : ¬ x ∈ e1.black := by
+    intros _
+    have hb : {x} ≤ e1.black := by simp; assumption
+    have hg : {x} ≤ e1.gray := by simp; assumption
+    have h := e1.disjoint_gb hg hb
+    simp at h
+  have : erase e1.gray x ∪ insert x e1.black ⊆ e1.gray ∪ e1.black := by
+    intros y h
+    have hy : y = x \/ ¬ y = x := by tauto
+    cases hy <;> simp_all
+  have : e1.gray ∪ e1.black ⊆ erase e1.gray x ∪ insert x e1.black := by
+    intros y h
+    have hy : y = x \/ ¬ y = x := by tauto
+    cases hy <;> simp_all
+  have h₉ : erase e1.gray x ∪ insert x e1.black = e1.gray ∪ e1.black := by
+    apply Finset.Subset.antisymm <;> assumption
+  have disjoint_gb : Disjoint (erase e1.gray x) (insert x e1.black) := by
+    simp
+    rw [Finset.erase_eq e1.gray x]
+    apply Disjoint.disjoint_sdiff_left e1.disjoint_gb
+  have h₈ : e1.num x = e.gray.card + e.black.card := by
+    obtain ⟨_, _, _, p₁, _⟩ := p₁
+    rw [<- p₁]
+    all_goals simp [add_stack_incr]
   {
     n := n1
-    e' := add_black x e1
-    p₁ := by sorry
-    p₃ := by sorry
-    p₄ := by sorry
-    p₅ := by sorry
-    p₆ := by sorry
+    e' := {
+black := insert x e1.black
+gray := erase e1.gray x
+stack := e1.stack
+sccs := e1.sccs
+num := e1.num
+num_clamp := by
+  intros y
+  have h := Finset.card_union_of_disjoint disjoint_gb
+  rw [h₉, Finset.card_union_of_disjoint e1.disjoint_gb] at h
+  have := e1.num_clamp y
+  omega
+num_1 := by intros y; rw [e1.num_1, ← Finset.mem_union, ← Finset.mem_union, h₉]
+num_infty := e1.num_infty
+valid_gray := by intros; apply e1.valid_gray; simp_all
+valid_black := by intros _ h
+                  simp at h
+                  cases h
+                  . subst x
+                    tauto
+                  . apply e1.valid_black; assumption
+disjoint_gb := disjoint_gb
+color₁ := by intros a b h₁ h₂
+             rw [← Finset.mem_union, h₉]
+             simp at h₂
+             cases h₂
+             . apply p₃
+               rw [DirectedGraph.edge_succ]
+               subst a
+               assumption
+             . rw [Finset.mem_union]
+               apply e1.color₁ <;> assumption
+stack_finset := by
+  intros y
+  rw [e1.stack_finset]
+  have h : y = x \/ ¬ y = x := by tauto
+  cases h <;> constructor <;> simp_all
+  intros h
+  rw [union_helper] at h
+  apply not_x_in_black
+  simp_all
+  obtain ⟨cc, h, h₁⟩ := h
+  rw [e1.wf_sccs₁] at h₁
+  tauto
+simplelist_stack := e1.simplelist_stack
+wf_stack₁ := e1.wf_stack₁
+wf_stack₂ := e1.wf_stack₂
+wf_stack₃ := by intros y hy
+                obtain ⟨z, _⟩ := e1.wf_stack₃ y hy
+                use z
+                have h₃ : x = z \/ ¬ x = z := by tauto
+                cases h₃
+                . subst z
+                  sorry
+                . simp_all
+                  tauto
+wf_sccs₁ := by intros cc
+               rw [e1.wf_sccs₁ cc]
+               constructor <;> intros h₁ <;> simp_all <;> intros y h
+               . simp
+                 right
+                 tauto
+               . obtain ⟨h₁, _⟩ := h₁
+                 have h₄ := h₁ h
+                 simp at h₄
+                 have h₃ : x = y \/ ¬ x = y := by tauto
+                 cases h₃ <;> cases h₄
+                 any_goals subst y
+                 any_goals tauto
+                 all_goals sorry
+wf_sccs₂ := e1.wf_sccs₂
+          }
+
+    p₁ := by simp [subenv]
+             simp_all
+             sorry
+    p₃ := by simp
+    p₄ := by simp; rw [h₈]; omega
+    p₅ := by cases p₅ with
+             | inl p₅ => left; tauto
+             | inr p₅ => right
+                         obtain ⟨y, h₁, z, h₂, h₃, h₄⟩ := p₅
+                         use z
+                         rw [DirectedGraph.edge_succ] at h₁
+                         have := DirectedGraph.valid_edge _ _ _ h₁
+                         simp_all
+                         apply reachable_trans _ x y z <;> tauto
+    p₆ := by simp
+             sorry
   }
 else
   {
@@ -114,20 +225,20 @@ else
             sccs := (toFinset s2) :: e1.sccs
             -- sn := e1.sn
             num := fun (y: V) => if s2.contains y then infty else e1.num y
-            num_clamp :=  sorry
-            num_1 := sorry
-            num_infty := sorry
-            valid_gray  := sorry
-            valid_black :=  sorry
-            disjoint_gb := sorry
-            color₁ := sorry
+            num_clamp := by sorry
+            num_1 := by sorry
+            num_infty := by sorry
+            valid_gray  := by sorry
+            valid_black :=  by sorry
+            disjoint_gb := by sorry
+            color₁ := by sorry
             stack_finset := sorry
-            simplelist_stack := sorry
-            wf_stack₁ := sorry
-            wf_stack₂ := sorry
-            wf_stack₃ := sorry
-            wf_sccs₁ := sorry
-            wf_sccs₂ := sorry
+            simplelist_stack := by sorry
+            wf_stack₁ := by sorry
+            wf_stack₂ := by sorry
+            wf_stack₃ := by sorry
+            wf_sccs₁ := by sorry
+            wf_sccs₂ := by sorry
           }
     p₁ := by sorry
     p₃ := by sorry
@@ -168,7 +279,7 @@ def dfs [DirectedGraph V Graph]
                                           simp at h
                                           rw [<- e.num_1] at h
                                           simp_all
-    let ⟨n1, e1, p₁, p₃, p₄, p₅, pₕ⟩ := dfs1 graph x e (by tauto) (by apply a₂; tauto) (by intros _; apply h; simp_all) (by intros _; apply h; simp_all)
+    let ⟨n1, e1, p₁, p₃, p₄, p₅, pₕ⟩ := dfs3 graph x e (by tauto) (by apply a₂; tauto) (by intros _; apply h; simp_all) (by intros _; apply h; simp_all)
     have h₂ := by obtain ⟨h, _, _⟩ := p₁
                   rw [<- h]
                   intros
