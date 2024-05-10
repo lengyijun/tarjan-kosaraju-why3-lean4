@@ -35,34 +35,46 @@ where
   wf_sccs₁ : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
   wf_sccs₂ : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = ∅
 
+structure SubEnv {V Graph : Type*}
+                 [BEq V] [LawfulBEq V] [DecidableEq V]
+                 [DirectedGraph V Graph]
+                 {graph : Graph}
+                 (e e': Env V graph)
+where
+  eq_gray : e.gray = e'.gray
+  sub_black : e.black ⊆ e'.black
+  sub_sccs : e.sccs ⊆ e'.sccs
+  stack_num : ∀ x ∈ e.stack, e.num x = e'.num x
+  sub_stack : ∃ s, e'.stack = s ++ e.stack /\ ∀ x ∈ s, x ∈ e'.black
 
-def subenv [DirectedGraph V Graph] [BEq V] [LawfulBEq V] [DecidableEq V] {graph : Graph} (e e': Env V graph) : Prop :=
-e.gray = e'.gray /\
-e.black ⊆ e'.black /\
-e.sccs ⊆ e'.sccs /\
-(∀ x, x ∈ e.stack -> e.num x = e'.num x) /\
-(∃ s, e'.stack = s ++ e.stack /\ ∀ x, x ∈ s → x ∈ e'.black)
-
-theorem subenv_trans [DirectedGraph V Graph]
-                     [BEq V] [LawfulBEq V] [DecidableEq V]
-                     {graph : Graph}
-                    {e1 e2 e3: Env V graph}
-                    (h12 : subenv e1 e2)
-                    (h23 : subenv e2 e3)
-                    : subenv e1 e3 := by
-obtain ⟨ _,  _,  _, h₄, h₅, h₆, h₇⟩ := h12
-obtain ⟨k₁, k₂, k₃, k₄, k₅, k₆, k₇⟩ := h23
-repeat any_goals apply And.intro
-any_goals tauto
-any_goals simp_all
-use (k₅ ++ h₅)
-simp_all
-intros _ h
-cases h
-. apply k₇; assumption
-. apply k₂
-  apply h₇
-  assumption
+def subenv_trans [DirectedGraph V Graph]
+                 [BEq V] [LawfulBEq V] [DecidableEq V]
+                 {graph : Graph}
+                 {e1 e2 e3: Env V graph}
+                 (h12 : SubEnv e1 e2)
+                 (h23 : SubEnv e2 e3)
+                 : SubEnv e1 e3 :=
+{
+  eq_gray := by rw [h12.eq_gray, h23.eq_gray]
+  sub_black := Finset.Subset.trans h12.sub_black h23.sub_black
+  sub_sccs := List.Subset.trans h12.sub_sccs h23.sub_sccs
+  stack_num := by intros x h
+                  rw [h12.stack_num x h]
+                  apply h23.stack_num
+                  obtain ⟨s, h, _⟩ := h12.sub_stack
+                  rw [h]
+                  simp
+                  tauto
+  sub_stack := by obtain ⟨l₁, h₁, h₂⟩ := h12.sub_stack
+                  obtain ⟨l₂, h₃, h₄⟩ := h23.sub_stack
+                  use (l₂ ++ l₁)
+                  simp_all
+                  intros x h
+                  cases h with
+                  | inl _ => tauto
+                  | inr h => apply h23.sub_black
+                             apply h₂ _ h
+}
 
 
 def num_of_reachable [DirectedGraph V Graph]
@@ -78,7 +90,7 @@ theorem subenv_num_of_reachable
           {e e' : Env V graph}
           {x : V}
           {n : Int}
-          (h : subenv e e') :
+          (h : SubEnv e e') :
 (num_of_reachable n x e) -> num_of_reachable n x e' := by
 simp [num_of_reachable]
 intros x _ _ _

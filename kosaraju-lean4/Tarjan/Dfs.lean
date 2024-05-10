@@ -19,7 +19,7 @@ structure Flair [DirectedGraph V Graph]
 where
 n : Int
 e' : Env V graph
-p₁ : subenv e e'
+p₁ : SubEnv e e'
 -- p₂ : wf_env e'
 p₃ : x ∈ e'.black
 p₄ : n ≤ e'.num x
@@ -33,7 +33,7 @@ structure Shuttle [DirectedGraph V Graph]
 where
 n : Int
 e' : Env V graph
-p₁ : subenv e e'
+p₁ : SubEnv e e'
 -- p₂ : wf_env e'
 p₃ : ∀ y, y ∈ roots -> y ∈ e'.gray ∪ e'.black
 p₄ : ∀ y, y ∈ roots -> n ≤ e'.num y
@@ -198,9 +198,7 @@ wf_sccs₁ := by intros cc
 wf_sccs₂ := e1.wf_sccs₂
           }
 
-    p₁ := by simp [subenv]
-             simp_all
-             sorry
+    p₁ := by sorry
     p₃ := by simp
     p₄ := by simp; rw [h₈]; omega
     p₅ := by cases p₅ with
@@ -240,7 +238,13 @@ else
             wf_sccs₁ := by sorry
             wf_sccs₂ := by sorry
           }
-    p₁ := by sorry
+    p₁ := {
+            eq_gray := by sorry
+            sub_black := by sorry
+            sub_sccs := by sorry
+            stack_num := by sorry
+            sub_stack := by sorry
+          }
     p₃ := by sorry
     p₄ := by sorry
     p₅ := by sorry
@@ -259,10 +263,14 @@ def dfs [DirectedGraph V Graph]
 | [] => {
            n := (DirectedGraph.vertices graph: List V).length
            e' := e
-           p₁ := by repeat any_goals apply And.intro
-                    any_goals tauto
-                    any_goals simp_all
-          --  p₂ := a₃
+           p₁ := {
+                    eq_gray := rfl
+                    sub_black := by tauto
+                    sub_sccs := by tauto
+                    stack_num := by tauto
+                    sub_stack := by use []
+                                    simp_all
+                 }
            p₃ := by intros; tauto
            p₄ := by intros; tauto
            p₅ := by intros; tauto
