@@ -553,8 +553,3 @@ def access_to [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V]
               (graph : Graph)(s: Finset V) (y: V) : Prop :=
 ∀ x, x ∈ s -> reachable graph x y
-
-def xedge_to [DirectedGraph V Graph]
-             [BEq V] [LawfulBEq V] [DecidableEq V]
-             (graph : Graph) (s1 s3: List V) (y: V) : Prop :=
-(∃ s2, s1 = s2 ++ s3 /\ ∃ x ∈ s2, DirectedGraph.edge graph x y) /\ y ∈ s3

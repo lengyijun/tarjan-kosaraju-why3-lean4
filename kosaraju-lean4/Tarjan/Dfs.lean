@@ -20,12 +20,11 @@ where
 n : Int
 e' : Env V graph
 p₁ : SubEnv e e'
--- p₂ : wf_env e'
 p₃ : x ∈ e'.black
 p₄ : n ≤ e'.num x
 p₅ : let infty : Int := (DirectedGraph.vertices graph: List V).length
      n = infty \/ num_of_reachable n x e'
-p₆ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
+p₆ : ∀ y ∈ e.stack, (∃ s, e'.stack = s ++ e.stack /\ ∃ x ∈ s, DirectedGraph.edge graph x y) → n ≤ e'.num y
 
 structure Shuttle [DirectedGraph V Graph]
                   [BEq V] [LawfulBEq V] [DecidableEq V]
@@ -34,12 +33,11 @@ where
 n : Int
 e' : Env V graph
 p₁ : SubEnv e e'
--- p₂ : wf_env e'
-p₃ : ∀ y, y ∈ roots -> y ∈ e'.gray ∪ e'.black
-p₄ : ∀ y, y ∈ roots -> n ≤ e'.num y
+p₃ : ∀ y ∈ roots, y ∈ e'.gray ∪ e'.black
+p₄ : ∀ y ∈ roots, n ≤ e'.num y
 p₅ : let infty : Int := (DirectedGraph.vertices graph: List V).length
-     n = infty \/ ∃ x, x ∈ roots /\ num_of_reachable n x e'
-p₆ : ∀ y,  xedge_to graph e'.stack e.stack y -> n <= e'.num y
+     n = infty \/ ∃ x ∈ roots, num_of_reachable n x e'
+p₆ : ∀ y ∈ e.stack, (∃ s, e'.stack = s ++ e.stack /\ ∃ x ∈ s, DirectedGraph.edge graph x y) → n ≤ e'.num y
 
 mutual
 
@@ -268,18 +266,25 @@ wf_sccs₂ := e1.wf_sccs₂
              simp_all
              apply reachable_trans _ x y z <;> tauto
     p₆ := by simp
-             intros y h
-             obtain ⟨⟨s2, h, h₂⟩, hy⟩ := h
-             apply p₆
+             intros y hy s hs z hz _
+             apply p₆ <;> try assumption
+             all_goals simp [add_stack_incr]
+             any_goals tauto
              obtain ⟨s5, h₃, h₄⟩ := p₁.sub_stack
              simp [add_stack_incr] at h₃
+             use s5
              constructor
-             . use s5
-               simp [add_stack_incr]
-               constructor
-               . tauto
-               . sorry
              . tauto
+             . use z
+               rw [hs] at h₃
+               have : s = s5 ++ [x] := by simp at h₃
+               subst s
+               simp_all
+               have hxz : z = x \/ ¬ z = x := by tauto
+               cases hxz
+               . subst z
+                 sorry
+               . tauto   -- trival
   }
 else
   {
@@ -330,7 +335,6 @@ def dfs [DirectedGraph V Graph]
         (graph : Graph) (roots: List V) (e : Env V graph)
         (a₁ : roots ⊆ DirectedGraph.vertices graph)
         (a₂ : ∀ x, x ∈ roots -> access_to graph e.gray x)
-        -- (a₃ : wf_env e)
         : Shuttle graph roots e := match roots with
 | [] => {
            n := (DirectedGraph.vertices graph: List V).length
@@ -346,8 +350,8 @@ def dfs [DirectedGraph V Graph]
            p₃ := by intros; tauto
            p₄ := by intros; tauto
            p₅ := by intros; tauto
-           p₆ := by intros _ h
-                    obtain ⟨⟨s2, h₁, ⟨x, h₃, _⟩⟩, _⟩ := h
+           p₆ := by intros _ _ h
+                    obtain ⟨s2, h₁, ⟨x, h₃, _⟩⟩ := h
                     symm at h₁
                     rw [List.append_left_eq_self] at h₁
                     subst s2
@@ -468,10 +472,10 @@ def dfs [DirectedGraph V Graph]
                  tauto
       p₆ := by obtain ⟨_, _, _, q₁, ⟨l₁, p₁, _⟩⟩ := p₁
                obtain ⟨_, _, _, q₂, ⟨l₂, p₆, _⟩⟩ := p₆
-               intros y h
+               intros y h h₁
                specialize p y
                specialize pₕ y
-               obtain ⟨⟨s2, h₁, ⟨x, h₂, h₃⟩⟩, h⟩ := h
+               obtain ⟨s2, h₁, ⟨x, h₂, h₃⟩⟩ := h₁
                rw [p₁, p₆] at *
                rw [<- List.append_assoc] at h₁
                have h₁ := List.append_inj_left' h₁ rfl
@@ -479,9 +483,9 @@ def dfs [DirectedGraph V Graph]
                specialize q₂ y (by simp; tauto)
                simp at h₂
                cases h₂
-               . specialize p ⟨⟨l₂, (by tauto), x, (by assumption), (by assumption)⟩, by simp; tauto⟩
+               . specialize p (by simp; tauto) ⟨l₂, (by tauto), x, (by assumption), (by assumption)⟩
                  omega
-               . specialize pₕ ⟨⟨l₁, (by tauto), x, (by assumption), (by assumption)⟩, by tauto⟩
+               . specialize pₕ (by tauto) ⟨l₁, (by tauto), x, (by assumption), (by assumption)⟩
                  rw [q₂] at *
                  simp_all
     }
@@ -543,8 +547,8 @@ def dfs [DirectedGraph V Graph]
               . obtain ⟨_, _, _, _, ⟨s, p₁, _⟩⟩ := p₁
                 rw [p₁]
                 simp_all
-      p₆ := by intros y h
-               specialize p₆ y h
+      p₆ := by intros y hy h
+               specialize p₆ y hy h
                omega
     }
 termination_by (Finset.card (((toFinset (DirectedGraph.vertices graph : List V)) \ (e.gray ∪ e.black)) : Finset V), roots.length)

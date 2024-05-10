@@ -81,7 +81,7 @@ def num_of_reachable [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      {graph : Graph}
                      (n: Int) (x: V) (e: Env V graph) : Prop :=
-∃ y, y ∈ e.stack /\ n = e.num y /\ reachable graph x y
+∃ y ∈ e.stack, n = e.num y /\ reachable graph x y
 
 theorem subenv_num_of_reachable
           [DirectedGraph V Graph]
