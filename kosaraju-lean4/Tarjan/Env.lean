@@ -116,6 +116,23 @@ cases h₂
   simp
   tauto
 
+theorem gray_le_stack [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
+                     {graph : Graph}
+                     {e : Env V graph}
+                     {x : V}
+                     (h₁ : x ∈ e.gray) : x ∈ e.stack := by
+cases (stack_or_scc x (by tauto)) with
+| inl h => tauto
+| inr h => obtain ⟨cc, h, h₁⟩ := h
+           rw [e.wf_sccs₁] at h₁
+           obtain ⟨h₁, _⟩ := h₁
+           specialize h₁ h
+           have hb : {x} ≤ e.black := by simp; assumption
+           have hg : {x} ≤ e.gray := by simp; assumption
+           have h := e.disjoint_gb hg hb
+           simp at h
+
 theorem jiqian [DirectedGraph V Graph]
                [BEq V] [LawfulBEq V] [DecidableEq V]
                {graph : Graph}
