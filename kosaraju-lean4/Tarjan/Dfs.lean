@@ -95,6 +95,11 @@ let ⟨n1, e1, p₁, p₃, p₄, p₅, p₆⟩ := dfs graph (DirectedGraph.succ 
 let (s2, s3) := split x e1.stack
 let infty : Int := (DirectedGraph.vertices graph: List V).length
 if dite : n1 < e.gray.card + e.black.card then
+  have p₅ : ∃ y ∈ DirectedGraph.succ graph x, ∃ z ∈ e1.stack, n1 = e1.num z ∧ reachable graph y z := by
+    cases p₅ <;> try tauto
+    subst n1
+    have := sn_bound e
+    omega
   have : x ∈ e1.gray := by
     obtain ⟨p₁, _ ⟩ := p₁
     rw [<- p₁]
@@ -123,6 +128,23 @@ if dite : n1 < e.gray.card + e.black.card then
     obtain ⟨_, _, _, p₁, _⟩ := p₁
     rw [<- p₁]
     all_goals simp [add_stack_incr]
+  have h₇ : ∃ s, e1.stack = s ++ x :: e.stack ∧ ∀ y ∈ s, y ∈ e1.black := by
+    have h := p₁.sub_stack
+    simp [add_stack_incr] at h
+    obtain ⟨s, h, h₁⟩ := h
+    use s
+  have h₆ : ∃ y ∈ e1.gray, ¬ y = x /\ e1.num y < e1.num x /\ in_same_scc graph x y := by
+    obtain ⟨y, p₅, z, h, _, _⟩ := p₅
+    use z
+    simp [in_same_scc]
+    -- have : e1.num y < e1.num x := by
+    --   rw [<- h]
+    --   omega
+    simp_all
+    --  z in e.stack
+      --  z in e.gray ok
+      --  z in e.black ???
+    sorry
   {
     n := n1
     e' := {
@@ -178,6 +200,7 @@ wf_stack₃ := by intros y hy
                 have h₃ : x = z \/ ¬ x = z := by tauto
                 cases h₃
                 . subst z
+                  exfalso
                   sorry
                 . simp_all
                   tauto
@@ -194,24 +217,69 @@ wf_sccs₁ := by intros cc
                  cases h₃ <;> cases h₄
                  any_goals subst y
                  any_goals tauto
-                 all_goals sorry
+                 exfalso
+                 sorry
 wf_sccs₂ := e1.wf_sccs₂
           }
 
-    p₁ := by sorry
+    p₁ := {
+            eq_gray := by simp
+                          rw [<- p₁.eq_gray]
+                          simp [add_stack_incr]
+                          rw [Finset.erase_eq_of_not_mem]
+                          all_goals tauto
+            sub_black := by simp
+                            have h := p₁.sub_black
+                            simp [add_stack_incr] at h
+                            intros y hy
+                            specialize h hy
+                            simp
+                            tauto
+            sub_sccs := by simp
+                           have h := p₁.sub_sccs
+                           simp [add_stack_incr] at h
+                           assumption
+            stack_num := by simp
+                            have h := p₁.stack_num
+                            simp [add_stack_incr] at h
+                            obtain ⟨_, h⟩ := h
+                            intros y hy
+                            specialize h y hy
+                            split at h
+                            any_goals assumption
+                            subst y
+                            rw [e.stack_finset] at hy
+                            simp at hy
+                            cases hy <;> tauto
+            sub_stack := by simp
+                            obtain ⟨s, h₇⟩ := h₇
+                            use (s ++ [x])
+                            simp_all
+                            intros y h
+                            cases h <;> tauto
+          }
     p₃ := by simp
     p₄ := by simp; rw [h₈]; omega
-    p₅ := by cases p₅ with
-             | inl p₅ => left; tauto
-             | inr p₅ => right
-                         obtain ⟨y, h₁, z, h₂, h₃, h₄⟩ := p₅
-                         use z
-                         rw [DirectedGraph.edge_succ] at h₁
-                         have := DirectedGraph.valid_edge _ _ _ h₁
-                         simp_all
-                         apply reachable_trans _ x y z <;> tauto
+    p₅ := by right
+             obtain ⟨y, h₁, z, h₂, h₃, h₄⟩ := p₅
+             use z
+             rw [DirectedGraph.edge_succ] at h₁
+             have := DirectedGraph.valid_edge _ _ _ h₁
+             simp_all
+             apply reachable_trans _ x y z <;> tauto
     p₆ := by simp
-             sorry
+             intros y h
+             obtain ⟨⟨s2, h, h₂⟩, hy⟩ := h
+             apply p₆
+             obtain ⟨s5, h₃, h₄⟩ := p₁.sub_stack
+             simp [add_stack_incr] at h₃
+             constructor
+             . use s5
+               simp [add_stack_incr]
+               constructor
+               . tauto
+               . sorry
+             . tauto
   }
 else
   {
@@ -239,11 +307,15 @@ else
             wf_sccs₂ := by sorry
           }
     p₁ := {
-            eq_gray := by sorry
-            sub_black := by sorry
-            sub_sccs := by sorry
-            stack_num := by sorry
-            sub_stack := by sorry
+            eq_gray := by simp
+            sub_black := by simp
+                            sorry
+            sub_sccs := by simp
+                           sorry
+            stack_num := by simp
+                            sorry
+            sub_stack := by simp
+                            sorry
           }
     p₃ := by sorry
     p₄ := by sorry
