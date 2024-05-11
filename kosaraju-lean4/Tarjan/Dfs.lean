@@ -197,14 +197,20 @@ simplelist_stack := e1.simplelist_stack
 decreasing_stack := e1.decreasing_stack
 wf_stack₂ := e1.wf_stack₂
 wf_stack₃ := by intros y hy
-                obtain ⟨z, _⟩ := e1.wf_stack₃ y hy
+                obtain ⟨z, _, _, _⟩ := e1.wf_stack₃ y hy
                 have h₃ : x = z \/ ¬ x = z := by tauto
                 cases h₃
                 . subst z
-                  exfalso
-                  -- y in e1.black
-                  -- y and x in same scc ?
-                  sorry
+                  obtain ⟨z, _, _, ⟨_, _⟩⟩ := h₆
+                  use z
+                  simp
+                  repeat any_goals apply And.intro
+                  any_goals omega
+                  any_goals tauto
+                  . intros h
+                    subst z
+                    omega
+                  . apply reachable_trans _ y x z <;> assumption
                 . use z
                   simp_all
                   tauto
@@ -222,7 +228,17 @@ sccs_in_black := by intros cc
                       any_goals subst y
                       any_goals tauto
                       exfalso
-                      sorry -- trival
+                      obtain ⟨y, _, _, _⟩ := h₆
+                      have h := scc_max graph x y cc (by assumption) (by assumption) (by assumption)
+                      specialize h₁ h
+                      simp at h₁
+                      cases h₁
+                      . subst y
+                        simp_all
+                      . have hg : {y} ≤ e1.gray := by simp; assumption
+                        have hb : {y} ≤ e1.black := by simp; assumption
+                        have h := e1.disjoint_gb hg hb
+                        simp at h
 sccs_disjoint := e1.sccs_disjoint
           }
 
@@ -273,24 +289,25 @@ sccs_disjoint := e1.sccs_disjoint
              apply reachable_trans _ x y z <;> tauto
     p₆ := by simp
              intros y hy s hs z hz _
-             apply p₆ <;> try assumption
-             all_goals simp [add_stack_incr]
-             any_goals tauto
-             obtain ⟨s5, h₃, h₄⟩ := p₁.sub_stack
-             simp [add_stack_incr] at h₃
-             use s5
-             constructor
-             . tauto
-             . use z
-               rw [hs] at h₃
-               have : s = s5 ++ [x] := by simp at h₃
-               subst s
-               simp_all
-               have hxz : z = x \/ ¬ z = x := by tauto
-               cases hxz
-               . subst z
-                 sorry  -- trival
-               . tauto   -- trival
+             have hxz : z = x \/ ¬ z = x := by tauto
+             cases hxz
+             . subst z
+               apply p₄
+               rw [DirectedGraph.edge_succ]
+               assumption
+             . apply p₆
+               all_goals simp [add_stack_incr]
+               any_goals tauto
+               obtain ⟨s5, h₃, h₄⟩ := p₁.sub_stack
+               simp [add_stack_incr] at h₃
+               use s5
+               constructor
+               . tauto
+               . use z
+                 rw [hs, ← singleton_append, ← List.append_assoc] at h₃
+                 have := append_inj_left' h₃ rfl
+                 subst s
+                 simp_all
   }
 else
   {
