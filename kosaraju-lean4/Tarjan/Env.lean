@@ -29,11 +29,11 @@ where
   -- color₆ : sccs_union ⊆ black
   stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl (· ∪ ·) ∅))
   simplelist_stack : simplelist stack
-  wf_stack₁ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
+  decreasing_stack : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
   wf_stack₃ : ∀ y ∈ stack, ∃ x ∈ gray,  num x ≤ num y /\ reachable graph y x
-  wf_sccs₁ : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
-  wf_sccs₂ : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = ∅
+  sccs_in_black : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
+  sccs_disjoint : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = ∅
 
 structure SubEnv {V Graph : Type*}
                  [BEq V] [LawfulBEq V] [DecidableEq V]
@@ -125,7 +125,7 @@ theorem gray_le_stack [DirectedGraph V Graph]
 cases (stack_or_scc x (by tauto)) with
 | inl h => tauto
 | inr h => obtain ⟨cc, h, h₁⟩ := h
-           rw [e.wf_sccs₁] at h₁
+           rw [e.sccs_in_black] at h₁
            obtain ⟨h₁, _⟩ := h₁
            specialize h₁ h
            have hb : {x} ≤ e.black := by simp; assumption
@@ -199,7 +199,7 @@ constructor
       obtain ⟨cc, h₁, h₃⟩ := h₁
       have hg : {x} ≤ e.gray := by simp; assumption
       have hb : {x} ≤ e.black := by simp
-                                    rw [e.wf_sccs₁] at h₃
+                                    rw [e.sccs_in_black] at h₃
                                     tauto
       have h := e.disjoint_gb hg hb
       simp at h
@@ -284,7 +284,8 @@ def add_stack_incr [DirectedGraph V Graph]
                            rw [e.stack_finset] at h
                            simp at h
                            tauto
-  wf_stack₁ := by simp
+  decreasing_stack := by
+                  simp
                   repeat any_goals apply And.intro
                   all_goals intros
                   all_goals split
@@ -329,7 +330,7 @@ def add_stack_incr [DirectedGraph V Graph]
                   . rw [e.stack_finset] at h₅
                     simp at h₅
                     tauto
-                  . rw [e.wf_stack₁] <;> try assumption
+                  . rw [e.decreasing_stack] <;> try assumption
                     constructor <;> intros h <;> obtain ⟨s1, s2, h₁, h₂⟩ := h
                     . rw [h₁]
                       use (x :: s1)
@@ -379,8 +380,8 @@ def add_stack_incr [DirectedGraph V Graph]
                       . subst z
                         tauto
                       . tauto
-  wf_sccs₁ := e.wf_sccs₁
-  wf_sccs₂ := e.wf_sccs₂
+  sccs_in_black := e.sccs_in_black
+  sccs_disjoint := e.sccs_disjoint
 }
 
 /-
