@@ -31,7 +31,7 @@ where
   simplelist_stack : simplelist stack
   wf_stack₁ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
-  wf_stack₃ : ∀ y ∈ stack, ∃ x, x ∈ gray /\ num x ≤ num y /\ reachable graph y x
+  wf_stack₃ : ∀ y ∈ stack, ∃ x ∈ gray,  num x ≤ num y /\ reachable graph y x
   wf_sccs₁ : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
   wf_sccs₂ : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = ∅
 
