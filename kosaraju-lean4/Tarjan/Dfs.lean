@@ -129,24 +129,24 @@ if dite : n1 < e.gray.card + e.black.card then
     simp [add_stack_incr] at h
     obtain ⟨s, h, h₁⟩ := h
     use s
-  have h₆ : ∃ y ∈ e.gray, e1.num y < e1.num x /\ in_same_scc graph x y := by
+  have h₆ : ∃ y ∈ e1.gray, e1.num y < e1.num x /\ in_same_scc graph x y := by
     obtain ⟨y, p₅, z, h, h₁, h₂⟩ := p₅
-    use z
-    have : e1.num z < e1.num x := by
-      rw [<- h₁]
-      omega
+    obtain ⟨k, h₃, h₄, h₅⟩ := e1.wf_stack₃ z h
+    use k
+    have : e1.num z < e1.num x := by rw [<- h₁]; omega
+    have : e1.num k < e1.num x := by omega
     repeat any_goals apply And.intro
     any_goals assumption
-    . obtain ⟨s, h₇, _⟩ := h₇
-      sorry
-    . apply reachable_trans _ x y z
+    . apply reachable_trans _ x z k
+      any_goals assumption
+      apply reachable_trans _ x y z
       any_goals assumption
       rw [DirectedGraph.edge_succ] at p₅
       tauto
     . apply e1.wf_stack₂
-      any_goals assumption
       any_goals omega
-      apply gray_le_stack <;> assumption
+      any_goals apply gray_le_stack
+      any_goals assumption
   {
     n := n1
     e' := {
@@ -191,10 +191,10 @@ stack_finset := by
   apply not_x_in_black
   simp_all
   obtain ⟨cc, h, h₁⟩ := h
-  rw [e1.wf_sccs₁] at h₁
+  rw [e1.sccs_in_black] at h₁
   tauto
 simplelist_stack := e1.simplelist_stack
-wf_stack₁ := e1.wf_stack₁
+decreasing_stack := e1.decreasing_stack
 wf_stack₂ := e1.wf_stack₂
 wf_stack₃ := by intros y hy
                 obtain ⟨z, _⟩ := e1.wf_stack₃ y hy
@@ -208,22 +208,22 @@ wf_stack₃ := by intros y hy
                 . use z
                   simp_all
                   tauto
-wf_sccs₁ := by intros cc
-               rw [e1.wf_sccs₁ cc]
-               constructor <;> intros h₁ <;> simp_all <;> intros y h
-               . simp
-                 right
-                 tauto
-               . obtain ⟨h₁, _⟩ := h₁
-                 have h₄ := h₁ h
-                 simp at h₄
-                 have h₃ : x = y \/ ¬ x = y := by tauto
-                 cases h₃ <;> cases h₄
-                 any_goals subst y
-                 any_goals tauto
-                 exfalso
-                 sorry -- trival
-wf_sccs₂ := e1.wf_sccs₂
+sccs_in_black := by intros cc
+                    rw [e1.sccs_in_black cc]
+                    constructor <;> intros h₁ <;> simp_all <;> intros y h
+                    . simp
+                      right
+                      tauto
+                    . obtain ⟨h₁, _⟩ := h₁
+                      have h₄ := h₁ h
+                      simp at h₄
+                      have h₃ : x = y \/ ¬ x = y := by tauto
+                      cases h₃ <;> cases h₄
+                      any_goals subst y
+                      any_goals tauto
+                      exfalso
+                      sorry -- trival
+sccs_disjoint := e1.sccs_disjoint
           }
 
     p₁ := {
@@ -311,11 +311,11 @@ else
             color₁ := by sorry
             stack_finset := sorry
             simplelist_stack := by sorry
-            wf_stack₁ := by sorry
+            decreasing_stack := by sorry
             wf_stack₂ := by sorry
             wf_stack₃ := by sorry
-            wf_sccs₁ := by sorry
-            wf_sccs₂ := by sorry
+            sccs_in_black := by sorry
+            sccs_disjoint := by sorry
           }
     p₁ := {
             eq_gray := by simp
@@ -504,7 +504,6 @@ def dfs [DirectedGraph V Graph]
       n := min (e.num x) n2
       e' := e2
       p₁ := p₁
-      -- p₂ := p₂
       p₃ := by intros _ h
                cases h
                . obtain ⟨h, _, _⟩ := p₁
@@ -538,7 +537,7 @@ def dfs [DirectedGraph V Graph]
               any_goals tauto
               any_goals omega
               all_goals right; left; use x
-              all_goals have h : x ∈ e.stack := by rw [<- num_lmem]; simp_all
+              all_goals have h : x ∈ e.stack := by rw [<- stack_num]; simp_all
               all_goals have h : e.num x = e2.num x := by obtain ⟨_, _, _, p₁, _⟩ := p₁; apply p₁ _ h
               all_goals rename_i h₁ h₂ h₃ h₄ h₅
               all_goals rw [h] at *

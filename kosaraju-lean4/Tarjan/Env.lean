@@ -4,6 +4,7 @@ import ListHelper.Simplelist
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
+import Mathlib.Data.List.Sort
 
 open Finmap
 open Finset
@@ -29,7 +30,8 @@ where
   -- color₆ : sccs_union ⊆ black
   stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl (· ∪ ·) ∅))
   simplelist_stack : simplelist stack
-  decreasing_stack : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
+  decreasing_stack : List.Sorted (fun x y => num x ≥ num y) stack
+  -- ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
   wf_stack₃ : ∀ y ∈ stack, ∃ x ∈ gray,  num x ≤ num y /\ reachable graph y x
   sccs_in_black : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
@@ -177,7 +179,7 @@ cases (h x) with
 | inr h => simp at h
            omega
 
-theorem num_lmem [DirectedGraph V Graph]
+theorem stack_num [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
                  {graph : Graph}
                  (e : Env V graph)
@@ -288,60 +290,29 @@ def add_stack_incr [DirectedGraph V Graph]
                   simp
                   repeat any_goals apply And.intro
                   all_goals intros
-                  all_goals split
+                  any_goals split
                   any_goals subst x
                   repeat any_goals apply And.intro
                   any_goals intros
                   repeat any_goals apply And.intro
-                  any_goals split
-                  any_goals subst x
-                  any_goals simp
-                  all_goals rename_i z h₂ h₃ y h₅ h₆
-                  . constructor <;> intros h <;> exfalso
-                    . rw [<- num_lmem] at h₅
-                      have := e.num_clamp y
-                      omega
-                    . obtain ⟨s1, s2, h₁, h₂⟩ := h
-                      cases h₂ <;> try tauto
-                      have h : simplelist (x :: e.stack) := by
-                        rw [simplelist_tl]
-                        constructor
-                        . apply e.simplelist_stack
-                        . intros h
-                          rw [e.stack_finset] at h
-                          simp at h
-                          tauto
-                      cases s1 <;> simp at h₁ <;> try tauto
-                      specialize h x
-                      obtain ⟨_, h₁⟩ := h₁
-                      rw [h₁] at h
-                      simp [num_occ] at h
-                      have : num_occ x s2 > 0 := by rw [<- mem_num_occ]; tauto
-                      split at h <;> omega
-                  . subst y; simp
-                  . rw [e.stack_finset] at h₃
-                    simp at h₃
-                    tauto
-                  . constructor <;> intros h
-                    . use []; use e.stack; tauto
-                    . rw [<- num_lmem] at h₅
-                      have := e.num_clamp y
-                      omega
-                  . rw [e.stack_finset] at h₅
-                    simp at h₅
-                    tauto
-                  . rw [e.decreasing_stack] <;> try assumption
-                    constructor <;> intros h <;> obtain ⟨s1, s2, h₁, h₂⟩ := h
-                    . rw [h₁]
-                      use (x :: s1)
-                      use s2
+                  any_goals omega
+                  all_goals rename_i y h₂ h₃
+                  . have := e.num_clamp y
+                    rw [<- stack_num] at h₂
+                    omega
+                  . have : ¬ x ∈ e.stack := by
+                      intros h
+                      rw [e.stack_finset] at h
+                      simp at h
                       tauto
-                    . cases s1 <;> simp at h₁
-                      . tauto
-                      . rename_i s1
-                        use s1
-                        use s2
-                        tauto
+                    simp [Sorted]
+                    rw [<- List.Pairwise.iff_of_mem]
+                    . exact e.decreasing_stack
+                    . intros a b ha hb
+                      split <;> split
+                      any_goals subst a
+                      any_goals subst b
+                      any_goals tauto
   wf_stack₂ := by simp
                   repeat any_goals apply And.intro
                   any_goals tauto
@@ -354,7 +325,7 @@ def add_stack_incr [DirectedGraph V Graph]
                   any_goals subst x
                   any_goals tauto
                   all_goals rename_i h₁ y h₃ h₄
-                  . rw [<- num_lmem] at h₃
+                  . rw [<- stack_num] at h₃
                     have := e.num_clamp y
                     omega
                   . obtain ⟨z, h, _, h₂⟩:= e.wf_stack₃ y h₃
