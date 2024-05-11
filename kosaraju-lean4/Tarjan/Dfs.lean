@@ -99,8 +99,7 @@ if dite : n1 < e.gray.card + e.black.card then
     have := sn_bound e
     omega
   have : x ∈ e1.gray := by
-    obtain ⟨p₁, _ ⟩ := p₁
-    rw [<- p₁]
+    rw [<- p₁.eq_gray]
     simp [add_stack_incr]
   have not_x_in_black : ¬ x ∈ e1.black := by
     intros _
@@ -123,26 +122,31 @@ if dite : n1 < e.gray.card + e.black.card then
     rw [Finset.erase_eq e1.gray x]
     apply Disjoint.disjoint_sdiff_left e1.disjoint_gb
   have h₈ : e1.num x = e.gray.card + e.black.card := by
-    obtain ⟨_, _, _, p₁, _⟩ := p₁
-    rw [<- p₁]
+    rw [<- p₁.stack_num]
     all_goals simp [add_stack_incr]
   have h₇ : ∃ s, e1.stack = s ++ x :: e.stack ∧ ∀ y ∈ s, y ∈ e1.black := by
     have h := p₁.sub_stack
     simp [add_stack_incr] at h
     obtain ⟨s, h, h₁⟩ := h
     use s
-  have h₆ : ∃ y ∈ e1.gray, ¬ y = x /\ e1.num y < e1.num x /\ in_same_scc graph x y := by
-    obtain ⟨y, p₅, z, h, _, _⟩ := p₅
+  have h₆ : ∃ y ∈ e.gray, e1.num y < e1.num x /\ in_same_scc graph x y := by
+    obtain ⟨y, p₅, z, h, h₁, h₂⟩ := p₅
     use z
-    simp [in_same_scc]
-    -- have : e1.num y < e1.num x := by
-    --   rw [<- h]
-    --   omega
-    simp_all
-    --  z in e.stack
-      --  z in e.gray ok
-      --  z in e.black ???
-    sorry
+    have : e1.num z < e1.num x := by
+      rw [<- h₁]
+      omega
+    repeat any_goals apply And.intro
+    any_goals assumption
+    . obtain ⟨s, h₇, _⟩ := h₇
+      sorry
+    . apply reachable_trans _ x y z
+      any_goals assumption
+      rw [DirectedGraph.edge_succ] at p₅
+      tauto
+    . apply e1.wf_stack₂
+      any_goals assumption
+      any_goals omega
+      apply gray_le_stack <;> assumption
   {
     n := n1
     e' := {
@@ -194,13 +198,15 @@ wf_stack₁ := e1.wf_stack₁
 wf_stack₂ := e1.wf_stack₂
 wf_stack₃ := by intros y hy
                 obtain ⟨z, _⟩ := e1.wf_stack₃ y hy
-                use z
                 have h₃ : x = z \/ ¬ x = z := by tauto
                 cases h₃
                 . subst z
                   exfalso
+                  -- y in e1.black
+                  -- y and x in same scc ?
                   sorry
-                . simp_all
+                . use z
+                  simp_all
                   tauto
 wf_sccs₁ := by intros cc
                rw [e1.wf_sccs₁ cc]
@@ -216,7 +222,7 @@ wf_sccs₁ := by intros cc
                  any_goals subst y
                  any_goals tauto
                  exfalso
-                 sorry
+                 sorry -- trival
 wf_sccs₂ := e1.wf_sccs₂
           }
 
@@ -283,7 +289,7 @@ wf_sccs₂ := e1.wf_sccs₂
                have hxz : z = x \/ ¬ z = x := by tauto
                cases hxz
                . subst z
-                 sorry
+                 sorry  -- trival
                . tauto   -- trival
   }
 else
