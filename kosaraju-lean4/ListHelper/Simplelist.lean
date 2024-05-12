@@ -135,3 +135,36 @@ intros h x
 specialize h x
 simp at h
 omega
+
+theorem simplelist_uniq [BEq α] [LawfulBEq α] {x : α} :
+∀ l₁ l₃ l₂ l₄: List α,
+l₁ ++ x :: l₂ = l₃ ++ x :: l₄ ->
+simplelist (l₁ ++ x :: l₂ ) ->
+l₁ = l₃ /\ l₂ = l₄ := by
+intro l₁
+induction l₁
+intro l₃
+induction l₃
+all_goals simp
+all_goals intros l₂ l₄ h h₁ h₃
+any_goals subst x
+any_goals subst l₂
+all_goals rename_i y _ _
+. specialize h₃ y
+  simp [num_occ] at h₃
+  omega
+. match l₂ with
+  | [] => simp at h₁
+          obtain ⟨h₁, _⟩ := h₁
+          subst y
+          specialize h₃ x
+          simp [num_occ] at h₃
+          omega
+  | z :: l₂ => simp at h₁
+               obtain ⟨h₁, h₅⟩ := h₁
+               subst z
+               rename_i l₁ induction_step _
+               rw [simplelist_tl] at h₃
+               obtain ⟨h₃, _⟩ := h₃
+               specialize induction_step _ _ _ h₅ h₃
+               tauto
