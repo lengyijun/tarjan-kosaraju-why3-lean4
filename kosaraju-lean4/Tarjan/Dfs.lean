@@ -58,7 +58,11 @@ have h := by intros y hy z hz
              | inr hz => specialize a₂ z hz
                          apply reachable_trans graph z x y a₂
                          tauto
-
+have : ¬ x ∈ e.stack := by
+  intros h
+  rw [e.stack_finset] at h
+  simp at h
+  tauto
 have h₁ : e.gray ∪ e.black ⊆ toFinset (DirectedGraph.vertices graph) := by
   intros y h
   simp at h
@@ -102,11 +106,17 @@ have not_x_in_black : ¬ x ∈ e1.black := by
 have h₈ : e1.num x = e.gray.card + e.black.card := by
   rw [<- p₁.stack_num]
   all_goals simp [add_stack_incr]
-have h₇ : ∃ s, e1.stack = s ++ x :: e.stack ∧ ∀ y ∈ s, y ∈ e1.black := by
-  have h := p₁.sub_stack
-  simp [add_stack_incr] at h
-  obtain ⟨s, h, h₁⟩ := h
-  use s
+let ⟨s, last⟩ := split_once x e1.stack
+have h₇ : s ++ x :: e.stack = e1.stack /\ ∀ y ∈ s, y ∈ e1.black := by
+  obtain ⟨s, h, h₁⟩ := p₁.sub_stack
+  simp [add_stack_incr] at h h₁
+  obtain ⟨s3, h₂⟩ := last (by apply gray_le_stack; assumption)
+  have h₃ := e1.simplelist_stack
+  rw [h] at h₂ h₃
+  symm at h₂
+  obtain ⟨_, _⟩ := simplelist_uniq _ _ _ _ h₂ h₃
+  subst s3 s
+  tauto
 if dite : n1 < e.gray.card + e.black.card then
   have p₅ : ∃ y ∈ DirectedGraph.succ graph x, ∃ z ∈ e1.stack, n1 = e1.num z ∧ reachable graph y z := by
     cases p₅ <;> try tauto
@@ -270,7 +280,6 @@ sccs_disjoint := e1.sccs_disjoint
                             simp at hy
                             cases hy <;> tauto
             sub_stack := by simp
-                            obtain ⟨s, h₇⟩ := h₇
                             use (s ++ [x])
                             simp_all
                             intros y h
@@ -308,29 +317,30 @@ sccs_disjoint := e1.sccs_disjoint
                  simp_all
   }
 else
-  let ⟨s2, s3, combine, last⟩ := rip x e1.stack
-  have disjoint_s2_s3: ∀ x, x ∈ s2 -> x ∈ s3 -> False := by
-    intros x xs2 xs3
-    have h := e1.simplelist_stack x
-    rw [<- combine] at h
-    simp at h
+  have disjoint_s2_s3: ∀ x, x ∈ s -> x ∈ e.stack -> False := by
+    intros y h₁ h₂
+    have h := e1.simplelist_stack y
+    obtain ⟨h₇, _⟩ := h₇
+    rw [<- h₇] at h
+    simp [num_occ] at h
     rw [mem_num_occ] at *
-    omega
-  let infty : Int := (DirectedGraph.vertices graph: List V).length
+    split at h
+    any_goals omega
   {
     n := (DirectedGraph.vertices graph: List V).length
     e' := {
             black := insert x e1.black
             gray := e.gray
-            stack := s3
-            sccs := (toFinset s2) :: e1.sccs
+            stack := e.stack
+            sccs := (toFinset (x :: s)) :: e1.sccs
             -- sn := e1.sn
-            num := fun (y: V) => if s2.contains y then infty else e1.num y
+            num := fun (y: V) => if (x :: s).contains y then (DirectedGraph.vertices graph: List V).length else e1.num y
             num_clamp := by simp
                             intros y
                             rw [Finset.card_insert_of_not_mem]
                             any_goals assumption
                             split
+                            any_goals tauto
                             all_goals sorry
             num_1 := by simp
                         intros y
@@ -345,7 +355,12 @@ else
                                 tauto
                               . apply e1.valid_black; assumption
             disjoint_gb := by simp
-                              sorry
+                              constructor
+                              . assumption
+                              . have h := e1.disjoint_gb
+                                rw [<- p₁.eq_gray] at h
+                                simp [add_stack_incr] at h
+                                tauto
             color₁ := by intros a b h₁ h₂
                          simp at h₂
                          simp
@@ -362,34 +377,76 @@ else
                                      simp [add_stack_incr] at h
                                      tauto
             stack_finset := by sorry
-            simplelist_stack := by have h := e1.simplelist_stack
-                                   rw [<- combine] at h
-                                   have := simplelist_r h
-                                   tauto
-            decreasing_stack := by have h := e1.decreasing_stack
+            simplelist_stack := e.simplelist_stack
+            decreasing_stack := by have h := e.decreasing_stack
                                    simp [Sorted] at h
-                                   rw [← combine, List.pairwise_append] at h
-                                   obtain ⟨_, h, _⟩ := h
                                    simp [Sorted]
                                    rw [<- List.Pairwise.iff_of_mem]
                                    . exact h
                                    . intros a b sa sb
-                                     have := disjoint_s2_s3 a
-                                     have := disjoint_s2_s3 b
+                                     obtain ⟨h₇, _⟩ := h₇
+                                     have ha := e1.simplelist_stack a
+                                     have hb := e1.simplelist_stack b
+                                     rw [<- h₇] at ha hb
+                                     simp [num_occ] at ha hb
                                      split <;> split
-                                     all_goals tauto
+                                     any_goals rw [mem_num_occ] at *
+                                     any_goals rename_i h₁ h₂
+                                     any_goals cases h₁
+                                     any_goals cases h₂
+                                     any_goals split at ha
+                                     any_goals split at hb
+                                     any_goals subst a
+                                     any_goals subst b
+                                     any_goals tauto
+                                     any_goals omega
+                                     all_goals sorry -- trival, use simplelist
             wf_stack₂ := by simp
-                            intros x sx y sy h
-                            have := disjoint_s2_s3 x
-                            have := disjoint_s2_s3 y
+                            intros a sa b sb h
+                            obtain ⟨h₇, _⟩ := h₇
+                            have := disjoint_s2_s3 a
+                            have := disjoint_s2_s3 b
                             any_goals split at h
                             any_goals split at h
+                            all_goals rename_i ha hb
+                            any_goals cases ha
+                            any_goals cases hb
+                            any_goals subst a
+                            any_goals subst b
                             any_goals tauto
                             any_goals apply e1.wf_stack₂
-                            any_goals rw [<- combine]
-                            any_goals simp
+                            any_goals tauto
+                            any_goals rw [<- h₇]
+                            all_goals simp
                             all_goals tauto
-            wf_stack₃ := by sorry
+            wf_stack₃ := by intros y hy
+                            obtain ⟨z, hz, _, _⟩ := e.wf_stack₃ y hy
+                            use z
+                            repeat any_goals apply And.intro
+                            any_goals tauto
+                            any_goals simp
+                            any_goals split
+                            any_goals split
+                            any_goals omega
+                            any_goals apply num_bound
+                            all_goals rename_i hz hy
+                            . cases hz
+                              . subst z
+                                tauto
+                              . exfalso
+                                apply disjoint_s2_s3 z
+                                any_goals assumption
+                                apply gray_le_stack
+                                assumption
+                            . rw [← p₁.stack_num, ← p₁.stack_num]
+                              any_goals simp [add_stack_incr]
+                              any_goals tauto
+                              . split <;> split
+                                any_goals omega
+                                all_goals tauto
+                              . right
+                                apply gray_le_stack
+                                assumption
             sccs_in_black := by sorry
             sccs_disjoint := by intros
                                 sorry
@@ -419,17 +476,21 @@ else
                             any_goals subst y
                             any_goals tauto
                             all_goals rename_i h₁
-                            . sorry
-                            . rw [e.stack_finset] at h
-                              simp at h
-                              cases h <;> tauto
+                            obtain ⟨h₇, _⟩ := h₇
+                            have h := e1.simplelist_stack y
+                            rw [<- h₇] at h
+                            simp [num_occ] at h
+                            cases h₁
+                            all_goals split at h
+                            any_goals subst y
+                            any_goals rw [mem_num_occ] at *
+                            all_goals omega
             sub_stack := by simp
-                            sorry
           }
-    p₃ := by sorry
-    p₄ := by sorry
-    p₅ := by sorry
-    p₆ := by sorry
+    p₃ := by simp
+    p₄ := by simp
+    p₅ := by simp
+    p₆ := by simp
   }
 termination_by (Finset.card (((toFinset (DirectedGraph.vertices graph : List V)) \ (e.gray ∪ e.black)) : Finset V), 0)
 
