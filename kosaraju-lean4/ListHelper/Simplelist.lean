@@ -121,3 +121,17 @@ induction l₁
   have : ¬ b ∈ l₁ := by intro h; apply h₉; tauto
   simp_all
   omega
+
+theorem simplelist_l [BEq α] [LawfulBEq α] {l₁ l₂ : List α}:
+simplelist (l₁ ++ l₂) -> simplelist l₁ := by
+intros h x
+specialize h x
+simp at h
+omega
+
+theorem simplelist_r [BEq α] [LawfulBEq α] {l₁ l₂ : List α}:
+simplelist (l₁ ++ l₂) -> simplelist l₂ := by
+intros h x
+specialize h x
+simp at h
+omega
