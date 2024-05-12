@@ -1,6 +1,6 @@
 import Kosaraju.DirectedGraph
 import ListHelper.Precede
-import ListHelper.Split
+import ListHelper.Rip
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finmap
@@ -90,23 +90,29 @@ have termination_proof : (toFinset (DirectedGraph.vertices graph) \
 
 
 let ⟨n1, e1, p₁, p₃, p₄, p₅, p₆⟩ := dfs graph (DirectedGraph.succ graph x) (add_stack_incr e x a₁ a₂ a₃ a₄) (by apply succ_valid; assumption) h
-let (s2, s3) := split x e1.stack
-let infty : Int := (DirectedGraph.vertices graph: List V).length
+have : x ∈ e1.gray := by
+  rw [<- p₁.eq_gray]
+  simp [add_stack_incr]
+have not_x_in_black : ¬ x ∈ e1.black := by
+  intros _
+  have hb : {x} ≤ e1.black := by simp; assumption
+  have hg : {x} ≤ e1.gray := by simp; assumption
+  have h := e1.disjoint_gb hg hb
+  simp at h
+have h₈ : e1.num x = e.gray.card + e.black.card := by
+  rw [<- p₁.stack_num]
+  all_goals simp [add_stack_incr]
+have h₇ : ∃ s, e1.stack = s ++ x :: e.stack ∧ ∀ y ∈ s, y ∈ e1.black := by
+  have h := p₁.sub_stack
+  simp [add_stack_incr] at h
+  obtain ⟨s, h, h₁⟩ := h
+  use s
 if dite : n1 < e.gray.card + e.black.card then
   have p₅ : ∃ y ∈ DirectedGraph.succ graph x, ∃ z ∈ e1.stack, n1 = e1.num z ∧ reachable graph y z := by
     cases p₅ <;> try tauto
     subst n1
     have := sn_bound e
     omega
-  have : x ∈ e1.gray := by
-    rw [<- p₁.eq_gray]
-    simp [add_stack_incr]
-  have not_x_in_black : ¬ x ∈ e1.black := by
-    intros _
-    have hb : {x} ≤ e1.black := by simp; assumption
-    have hg : {x} ≤ e1.gray := by simp; assumption
-    have h := e1.disjoint_gb hg hb
-    simp at h
   have : erase e1.gray x ∪ insert x e1.black ⊆ e1.gray ∪ e1.black := by
     intros y h
     have hy : y = x \/ ¬ y = x := by tauto
@@ -121,14 +127,6 @@ if dite : n1 < e.gray.card + e.black.card then
     simp
     rw [Finset.erase_eq e1.gray x]
     apply Disjoint.disjoint_sdiff_left e1.disjoint_gb
-  have h₈ : e1.num x = e.gray.card + e.black.card := by
-    rw [<- p₁.stack_num]
-    all_goals simp [add_stack_incr]
-  have h₇ : ∃ s, e1.stack = s ++ x :: e.stack ∧ ∀ y ∈ s, y ∈ e1.black := by
-    have h := p₁.sub_stack
-    simp [add_stack_incr] at h
-    obtain ⟨s, h, h₁⟩ := h
-    use s
   have h₆ : ∃ y ∈ e1.gray, e1.num y < e1.num x /\ in_same_scc graph x y := by
     obtain ⟨y, p₅, z, h, h₁, h₂⟩ := p₅
     obtain ⟨k, h₃, h₄, h₅⟩ := e1.wf_stack₃ z h
@@ -310,6 +308,15 @@ sccs_disjoint := e1.sccs_disjoint
                  simp_all
   }
 else
+  let ⟨s2, s3, combine, last⟩ := rip x e1.stack
+  have disjoint_s2_s3: ∀ x, x ∈ s2 -> x ∈ s3 -> False := by
+    intros x xs2 xs3
+    have h := e1.simplelist_stack x
+    rw [<- combine] at h
+    simp at h
+    rw [mem_num_occ] at *
+    omega
+  let infty : Int := (DirectedGraph.vertices graph: List V).length
   {
     n := (DirectedGraph.vertices graph: List V).length
     e' := {
@@ -319,29 +326,103 @@ else
             sccs := (toFinset s2) :: e1.sccs
             -- sn := e1.sn
             num := fun (y: V) => if s2.contains y then infty else e1.num y
-            num_clamp := by sorry
-            num_1 := by sorry
+            num_clamp := by simp
+                            intros y
+                            rw [Finset.card_insert_of_not_mem]
+                            any_goals assumption
+                            split
+                            all_goals sorry
+            num_1 := by simp
+                        intros y
+                        split
+                        all_goals sorry
             num_infty := by sorry
-            valid_gray  := by sorry
-            valid_black :=  by sorry
-            disjoint_gb := by sorry
-            color₁ := by sorry
-            stack_finset := sorry
-            simplelist_stack := by sorry
-            decreasing_stack := by sorry
-            wf_stack₂ := by sorry
+            valid_gray  := e.valid_gray
+            valid_black := by intros _ h
+                              simp at h
+                              cases h
+                              . subst x
+                                tauto
+                              . apply e1.valid_black; assumption
+            disjoint_gb := by simp
+                              sorry
+            color₁ := by intros a b h₁ h₂
+                         simp at h₂
+                         simp
+                         cases h₂ with
+                         | inl h₂ => subst a
+                                     rw [← DirectedGraph.edge_succ] at h₁
+                                     specialize p₃ b h₁
+                                     simp at p₃
+                                     rw [← p₁.eq_gray] at p₃
+                                     simp [add_stack_incr] at p₃
+                                     tauto
+                         | inr h₂ => have h := e1.color₁ a b h₁ h₂
+                                     rw [← p₁.eq_gray] at h
+                                     simp [add_stack_incr] at h
+                                     tauto
+            stack_finset := by sorry
+            simplelist_stack := by have h := e1.simplelist_stack
+                                   rw [<- combine] at h
+                                   have := simplelist_r h
+                                   tauto
+            decreasing_stack := by have h := e1.decreasing_stack
+                                   simp [Sorted] at h
+                                   rw [← combine, List.pairwise_append] at h
+                                   obtain ⟨_, h, _⟩ := h
+                                   simp [Sorted]
+                                   rw [<- List.Pairwise.iff_of_mem]
+                                   . exact h
+                                   . intros a b sa sb
+                                     have := disjoint_s2_s3 a
+                                     have := disjoint_s2_s3 b
+                                     split <;> split
+                                     all_goals tauto
+            wf_stack₂ := by simp
+                            intros x sx y sy h
+                            have := disjoint_s2_s3 x
+                            have := disjoint_s2_s3 y
+                            any_goals split at h
+                            any_goals split at h
+                            any_goals tauto
+                            any_goals apply e1.wf_stack₂
+                            any_goals rw [<- combine]
+                            any_goals simp
+                            all_goals tauto
             wf_stack₃ := by sorry
             sccs_in_black := by sorry
-            sccs_disjoint := by sorry
+            sccs_disjoint := by intros
+                                sorry
           }
     p₁ := {
             eq_gray := by simp
             sub_black := by simp
-                            sorry
+                            intros y hy
+                            have h := p₁.sub_black
+                            simp [add_stack_incr] at h
+                            specialize h hy
+                            simp
+                            tauto
             sub_sccs := by simp
-                           sorry
+                           intros cc h
+                           simp
+                           right
+                           apply p₁.sub_sccs
+                           simp [add_stack_incr]
+                           assumption
             stack_num := by simp
-                            sorry
+                            intros y h
+                            rw [← p₁.stack_num]
+                            any_goals simp [add_stack_incr]
+                            any_goals split
+                            any_goals split
+                            any_goals subst y
+                            any_goals tauto
+                            all_goals rename_i h₁
+                            . sorry
+                            . rw [e.stack_finset] at h
+                              simp at h
+                              cases h <;> tauto
             sub_stack := by simp
                             sorry
           }
