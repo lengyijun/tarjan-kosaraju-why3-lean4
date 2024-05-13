@@ -173,11 +173,7 @@ theorem num_bound [DirectedGraph V Graph]
                     {x : V} :
 e.num x ≤ (DirectedGraph.vertices graph: List V).length := by
 have := sn_bound e
-have h := e.num_clamp
-cases (h x) with
-| inl h => omega
-| inr h => simp at h
-           omega
+cases (e.num_clamp x) <;> omega
 
 theorem stack_num [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
