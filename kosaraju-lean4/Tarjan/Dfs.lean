@@ -154,7 +154,7 @@ if dite : n1 < e.gray.card + e.black.card then
     . apply e1.wf_stack₂
       any_goals omega
       any_goals apply gray_le_stack
-      any_goals assumption
+      all_goals assumption
   {
     n := n1
     e' := {
@@ -325,7 +325,7 @@ else
     simp [num_occ] at h
     rw [mem_num_occ] at *
     split at h
-    any_goals omega
+    all_goals omega
   {
     n := (DirectedGraph.vertices graph: List V).length
     e' := {
@@ -341,12 +341,39 @@ else
                             any_goals assumption
                             split
                             any_goals tauto
-                            all_goals sorry
+                            have h := e1.num_clamp y
+                            rw [← p₁.eq_gray] at h
+                            simp [add_stack_incr] at h
+                            rw [Finset.card_insert_of_not_mem] at h
+                            any_goals tauto
+                            cases h <;> omega
             num_1 := by simp
                         intros y
                         split
-                        all_goals sorry
-            num_infty := by sorry
+                        any_goals simp
+                        any_goals tauto
+                        rw [e1.num_1]
+                        rw [← p₁.eq_gray]
+                        simp [add_stack_incr]
+                        all_goals tauto
+            num_infty := by simp
+                            intros y
+                            rw [e1.num_infty]
+                            have h : (y = x \/ y ∈ s) \/ (¬ (y = x \/ y ∈ s)) := by tauto
+                            cases h <;> constructor
+                            any_goals simp_all
+                            . use (Insert.insert x (toFinset s))
+                              simp
+                              tauto
+                            . intros cc _ _
+                              use cc
+                              tauto
+                            . intros cc hy h
+                              cases h with
+                              | inl h => subst cc
+                                         simp at hy
+                                         tauto
+                              | inr h => tauto
             valid_gray  := e.valid_gray
             valid_black := by intros _ h
                               simp at h
@@ -376,7 +403,44 @@ else
                                      rw [← p₁.eq_gray] at h
                                      simp [add_stack_incr] at h
                                      tauto
-            stack_finset := by sorry
+            stack_finset := by obtain ⟨h₇, _⟩ := h₇
+                               rw [tepid e1, ← h₇, ← p₁.eq_gray]
+                               simp [add_stack_incr]
+                               rw [pertinent (Insert.insert x (toFinset s))]
+                               simp
+                               intros y
+                               rw [e.stack_finset]
+                               simp
+                               constructor <;> intros h <;> cases h
+                               any_goals tauto
+                               right
+                               rename_i h
+                               obtain ⟨h₂, h₃⟩:= h
+                               repeat any_goals apply And.intro
+                               . right
+                                 constructor
+                                 . right
+                                   tauto
+                                 . intros h
+                                   cases h
+                                   . subst y; tauto
+                                   . have hg : {y} ≤ e.gray := by simp; assumption
+                                     have hb : {y} ≤ e.black := by simp; assumption
+                                     have h := e.disjoint_gb hg hb
+                                     simp at h
+                               . intros h
+                                 cases h with
+                                 | inl h => subst y; tauto
+                                 | inr h =>
+                                cases (stack_or_scc y (by tauto)) with
+                                | inl h₁ => cases h with
+                                            | inl h => apply disjoint_s2_s3 <;> assumption
+                                            | inr h => rw [union_helper, ← e1.num_infty] at h
+                                                       have h₁ : y ∈ e1.stack := by rw [← h₇]; simp; tauto
+                                                       rw [← stack_num] at h₁
+                                                       omega
+                                | inr h₁ => rw [← union_helper] at h₁
+                                            tauto
             simplelist_stack := e.simplelist_stack
             decreasing_stack := by have h := e.decreasing_stack
                                    simp [Sorted] at h
@@ -400,7 +464,11 @@ else
                                      any_goals subst b
                                      any_goals tauto
                                      any_goals omega
-                                     all_goals sorry -- trival, use simplelist
+                                     rw [← mem_num_occ] at *
+                                     rw [← p₁.stack_num, ← p₁.stack_num]
+                                     all_goals simp [add_stack_incr]
+                                     any_goals split
+                                     all_goals tauto
             wf_stack₂ := by simp
                             intros a sa b sb h
                             obtain ⟨h₇, _⟩ := h₇
@@ -447,9 +515,227 @@ else
                               . right
                                 apply gray_le_stack
                                 assumption
-            sccs_in_black := by sorry
-            sccs_disjoint := by intros
-                                sorry
+            sccs_in_black := by obtain ⟨h₇, s_in_black⟩ := h₇
+                                have h := e1.decreasing_stack
+                                simp [Sorted] at h
+                                rw [← h₇, List.pairwise_append, List.pairwise_cons] at h
+                                obtain ⟨h₆, ⟨h₅, h₈⟩, h₉⟩ := h
+                                have h : ∀ y ∈ s, reachable graph y x := by
+                                  intros y hy
+                                  obtain ⟨z, hz, _, ryz⟩ := e1.wf_stack₃ y (by rw [← h₇]; simp; tauto)
+                                  rw [← p₁.eq_gray] at hz
+                                  simp [add_stack_incr] at hz
+                                  cases hz
+                                  . subst z
+                                    tauto
+                                  . apply reachable_trans graph y z x ryz
+                                    apply e1.wf_stack₂
+                                    any_goals rw [← h₇]
+                                    any_goals simp
+                                    . right; right
+                                      apply gray_le_stack
+                                      assumption
+                                    . apply h₅
+                                      apply gray_le_stack
+                                      assumption
+                                have : is_subscc graph (toFinset (x :: s)) := by
+                                  apply scc_navel x
+                                  . intros y hy
+                                    simp at hy
+                                    cases hy
+                                    . subst y; tauto
+                                    . apply h; tauto
+                                  . intros y hy
+                                    simp at hy
+                                    apply e1.wf_stack₂
+                                    any_goals rw [← h₇]
+                                    any_goals simp
+                                    any_goals tauto
+                                    cases hy
+                                    . subst y; omega
+                                    . apply h₉
+                                      any_goals assumption
+                                      all_goals tauto
+                                have h₄ : ∀ y ∈ (x :: s), ∀ z ∈ e.stack, DirectedGraph.edge graph y z → False := by
+                                  intros y hy z hz y2z
+                                  specialize h₅ z hz
+                                  specialize p₆ z (by tauto)
+                                  simp at p₆
+                                  have := sn_bound e
+                                  have h := e.num_clamp z
+                                  have h₁ := p₁.stack_num z (by tauto)
+                                  simp [add_stack_incr] at h₁
+                                  split at h₁
+                                  any_goals subst z
+                                  any_goals tauto
+                                  rw [← stack_num] at hz
+                                  cases h <;> cases hy
+                                  any_goals omega
+                                  . rw [← DirectedGraph.edge_succ] at y2z
+                                    have := p₄ z y2z
+                                    omega
+                                  . specialize p₆ s (by tauto) y (by tauto) y2z
+                                    omega
+                                have h₅ : ∀ y ∈ (x :: s), ∀ z, DirectedGraph.edge graph y z → z ∈ (e1.gray ∪ e1.black) := by
+                                  intros y hy z hz
+                                  cases hy
+                                  . apply p₃
+                                    rw [DirectedGraph.edge_succ]
+                                    tauto
+                                  . simp
+                                    apply e1.color₁
+                                    . tauto
+                                    . apply s_in_black
+                                      tauto
+                                have h₁ : ∀ y ∈ (x :: s), ∀ z ∈ e1.sccs.foldl Union.union ∅, in_same_scc graph y z → False := by
+                                  intros y hy z hz h₁
+                                  rw [union_helper] at hz
+                                  obtain ⟨cc, h₁, h₂⟩ := hz
+                                  have : y ∈ cc := by apply scc_max graph z y cc
+                                                      any_goals assumption
+                                                      . rw [e1.sccs_in_black] at h₂
+                                                        tauto
+                                                      . simp [in_same_scc] at *; tauto
+                                  have : e1.num y = (DirectedGraph.vertices graph: List V).length := by
+                                    rw [e1.num_infty]
+                                    use cc
+                                  have h : y ∈ e1.stack := by
+                                    rw [← h₇]
+                                    simp
+                                    simp at hy
+                                    tauto
+                                  rw [← stack_num] at h
+                                  omega
+                                have h : ∀ z, ∀ y ∈ (x :: s), DirectedGraph.edge graph y z → reachable graph z y → z ∈ (x :: s) := by
+                                  intros z y hy y2z z2y
+                                  have h := h₅ y hy z y2z
+                                  rw [stature] at h
+                                  simp at h
+                                  cases h with
+                                  | inl h => rw [← h₇] at h
+                                             simp at h
+                                             cases h with
+                                             | inl h => tauto
+                                             | inr h => cases h with
+                                                        | inl h => subst z; tauto
+                                                        | inr h => exfalso
+                                                                   apply h₄ y (by tauto) z (by tauto) y2z
+                                  | inr h => exfalso
+                                             apply h₁ y hy z h
+                                             constructor
+                                             any_goals assumption
+                                             all_goals tauto
+                                have h₃ : ∀ z, ∀ l₁, ∀ y ∈ (x :: s), path graph y l₁ z → reachable graph z y → z ∈ (x :: s) := by
+                                  intros z l₁
+                                  induction l₁ <;> intros y hy y2z z2y
+                                  . cases y2z
+                                    apply h z y hy
+                                    all_goals assumption
+                                  . rename_i induction_step
+                                    cases y2z
+                                    rename_i head tail h₈ h₉
+                                    have : reachable graph head y := by
+                                      apply reachable_trans _ _ z _
+                                      any_goals assumption
+                                      all_goals tauto
+                                    apply induction_step head
+                                    any_goals tauto
+                                    . apply reachable_trans _ _ y _
+                                      any_goals assumption
+                                      all_goals tauto
+                                have : is_scc graph (toFinset (x :: s)) := by
+                                  constructor
+                                  . assumption
+                                  . intros s' h₂ h₁
+                                    have h : s' ⊆ (toFinset (x :: s)) \/ ¬ s' ⊆ (toFinset (x :: s)) := by tauto
+                                    cases h with
+                                    | inl _ => assumption
+                                    | inr h => exfalso
+                                               simp [Subset] at h
+                                               obtain ⟨z, _, h⟩ := h
+                                               specialize h₁ z x (by assumption) (by apply h₂; simp)
+                                               obtain ⟨h₁, h₂⟩ := h₁
+                                               cases h₂ with
+                                               | inl h₂ => apply h
+                                                           obtain ⟨l, h₂⟩ := h₂
+                                                           specialize h₃ z l x (by tauto) (by assumption) (by assumption)
+                                                           simp at h₃
+                                                           tauto
+                                               | inr h₂ => obtain ⟨_, _⟩ := h₂
+                                                           subst z
+                                                           tauto
+                                intros cc
+                                constructor <;> intros h
+                                . cases h
+                                  all_goals rename_i h
+                                  . constructor
+                                    . simp
+                                      apply Finset.insert_subset_insert
+                                      intros y
+                                      simp
+                                      apply s_in_black
+                                    . tauto
+                                  . have h : cc ∈ e1.sccs := by tauto
+                                    rw [e1.sccs_in_black] at h
+                                    obtain ⟨h, _⟩ := h
+                                    constructor
+                                    . apply Finset.Subset.trans h
+                                      apply Finset.subset_insert
+                                    . tauto
+                                . have h : x ∈ cc \/ ¬ x ∈ cc := by tauto
+                                  cases h
+                                  . have : cc = toFinset (x :: s) := by
+                                      apply disjoint_scc graph
+                                      any_goals assumption
+                                      any_goals tauto
+                                      use x
+                                      simp_all
+                                    subst cc
+                                    tauto
+                                  . obtain ⟨h, _⟩ := h
+                                    simp
+                                    right
+                                    rw [e1.sccs_in_black]
+                                    constructor
+                                    . intros y hy
+                                      specialize h hy
+                                      simp at h
+                                      cases h
+                                      any_goals tauto
+                                      any_goals subst y
+                                      all_goals tauto
+                                    . tauto
+            sccs_disjoint := by intros cc₁ h₁ cc₂ h₂
+                                cases h₁ <;> cases h₂
+                                any_goals tauto
+                                all_goals rename_i h₁ h₂
+                                . right
+                                  rw [eq_empty_iff_forall_not_mem]
+                                  intros z h₆
+                                  simp [*] at h₆
+                                  obtain ⟨h₆, h₈⟩ := h₆
+                                  obtain ⟨h₇, _⟩ := h₇
+                                  have h : z ∈ e1.stack := by rw [← h₇]; cases h₆ <;> simp <;> tauto
+                                  rw [← stack_num] at h
+                                  obtain ⟨_, h⟩ := h
+                                  apply h
+                                  rw [e1.num_infty]
+                                  use cc₂
+                                  tauto
+                                . right
+                                  rw [eq_empty_iff_forall_not_mem]
+                                  intros z h₆
+                                  simp [*] at h₆
+                                  obtain ⟨h₆, h₈⟩ := h₆
+                                  obtain ⟨h₇, _⟩ := h₇
+                                  have h : z ∈ e1.stack := by rw [← h₇]; cases h₈ <;> simp <;> tauto
+                                  rw [← stack_num] at h
+                                  obtain ⟨_, h⟩ := h
+                                  apply h
+                                  rw [e1.num_infty]
+                                  use cc₁
+                                  tauto
+                                . apply e1.sccs_disjoint <;> tauto
           }
     p₁ := {
             eq_gray := by simp
@@ -577,7 +863,6 @@ def dfs [DirectedGraph V Graph]
       n :=  min n1 n2
       e' := e2
       p₁ := subenv_trans p₁ p₆
-      -- p₂ := p₇
       p₃ := by intros _ h
                cases h
                . simp [Union.union]
