@@ -1,6 +1,20 @@
 import Mathlib.Data.Finset.Basic
 open Finset
 
+theorem pertinent
+[BEq V] [LawfulBEq V] [DecidableEq V]
+{sccs : List (Finset V)} :
+∀ (init : Finset V),
+List.foldl (fun x x_1 => x ∪ x_1) init sccs = init ∪ List.foldl (fun x x_1 => x ∪ x_1) ∅ sccs
+:= by
+induction sccs
+. simp
+. intros init
+  simp
+  rename_i scc sccs induction_step
+  rw [induction_step, induction_step scc]
+  simp
+
 theorem jiting
 [BEq V] [LawfulBEq V] [DecidableEq V]
 {x : V} {sccs : List (Finset V)} :
