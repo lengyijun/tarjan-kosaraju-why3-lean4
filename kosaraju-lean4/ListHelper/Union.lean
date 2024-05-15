@@ -5,7 +5,7 @@ theorem pertinent
 [BEq V] [LawfulBEq V] [DecidableEq V]
 {sccs : List (Finset V)} :
 ∀ (init : Finset V),
-List.foldl (fun x x_1 => x ∪ x_1) init sccs = init ∪ List.foldl (fun x x_1 => x ∪ x_1) ∅ sccs
+List.foldl Union.union init sccs = init ∪ List.foldl Union.union ∅ sccs
 := by
 induction sccs <;> simp
 rename_i scc sccs induction_step
@@ -16,7 +16,7 @@ simp
 theorem union_helper
 [BEq V] [LawfulBEq V] [DecidableEq V]
 {x : V} {sccs : List (Finset V)} :
-x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ sccs ↔ (∃ cc, x ∈ cc /\ cc ∈ sccs) := by
+x ∈ List.foldl Union.union ∅ sccs ↔ (∃ cc, x ∈ cc /\ cc ∈ sccs) := by
 induction sccs
 . tauto
 . simp

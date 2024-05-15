@@ -28,7 +28,7 @@ where
   disjoint_gb : Disjoint gray black
   color₁ : no_black_to_white graph black gray
   -- color₆ : sccs_union ⊆ black
-  stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl (· ∪ ·) ∅))
+  stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl Union.union ∅))
   simplelist_stack : simplelist stack
   decreasing_stack : List.Sorted (fun x y => num x ≥ num y) stack
   -- ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
@@ -107,7 +107,7 @@ theorem stack_or_scc [DirectedGraph V Graph]
                      (x : V)
                      (h₁ : x ∈ e.gray \/ x ∈ e.black) :
 x ∈ e.stack \/ (∃ cc, x ∈ cc /\ cc ∈ e.sccs) := by
-have h₂ : x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs \/ ¬ x ∈ List.foldl (fun x x_1 => x ∪ x_1) ∅ e.sccs  := by tauto
+have h₂ : x ∈ List.foldl Union.union ∅ e.sccs \/ ¬ x ∈ List.foldl Union.union ∅ e.sccs := by tauto
 cases h₂
 . right
   rename_i h
@@ -135,7 +135,7 @@ cases (stack_or_scc x (by tauto)) with
            have h := e.disjoint_gb hg hb
            simp at h
 
-theorem jiqian [DirectedGraph V Graph]
+theorem barrel [DirectedGraph V Graph]
                [BEq V] [LawfulBEq V] [DecidableEq V]
                {graph : Graph}
                {e : Env V graph} :
@@ -154,7 +154,48 @@ theorem navel [DirectedGraph V Graph]
 apply List.Subperm.length_le
 apply List.subperm_of_subset
 . apply Finset.nodup_toList
-. apply jiqian
+. apply barrel
+
+theorem shrewd [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
+              (e : Env V graph) :
+e.gray ⊔ e.black = toFinset e.stack ⊔ e.sccs.foldl Union.union ∅ := by
+apply Subset.antisymm
+. intros x
+  simp
+  intros h
+  cases h
+  . left
+    apply gray_le_stack
+    assumption
+  . have h₁ : x ∈ e.sccs.foldl Union.union ∅ \/ ¬ x ∈ e.sccs.foldl Union.union ∅ := by tauto
+    cases h₁
+    . tauto
+    . rw [e.stack_finset]
+      simp
+      tauto
+. intros x
+  simp
+  rw [e.stack_finset]
+  simp
+  intros h
+  cases h with
+  | inl h => cases h <;> tauto
+  | inr h => right
+             rw [union_helper] at h
+             obtain ⟨cc, _, h⟩ := h
+             rw [e.sccs_in_black] at h
+             tauto
+
+
+theorem tepid [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
+              (e : Env V graph) :
+e.black = (toFinset e.stack ⊔ e.sccs.foldl Union.union ∅) \ e.gray := by
+rw [← shrewd, Disjoint.sup_sdiff_cancel_left]
+exact e.disjoint_gb
 
 theorem sn_bound [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
