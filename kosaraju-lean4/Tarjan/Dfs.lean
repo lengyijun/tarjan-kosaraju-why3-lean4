@@ -1,4 +1,4 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
 import ListHelper.Precede
 import ListHelper.Rip
 import ListHelper.Union

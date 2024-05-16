@@ -1,5 +1,5 @@
 import Kosaraju.Dfs2
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
 import ListHelper.Rank
 import Mathlib.Data.Finset.Basic
 import Std.Data.List.Lemmas

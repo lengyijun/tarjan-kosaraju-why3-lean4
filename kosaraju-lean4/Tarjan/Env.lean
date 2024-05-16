@@ -1,4 +1,5 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
+import Graph.Scc
 import ListHelper.Precede
 import ListHelper.Simplelist
 import ListHelper.Union
@@ -146,7 +147,7 @@ cases h₁
 . apply e.valid_gray; assumption
 . apply e.valid_black; assumption
 
-theorem navel [DirectedGraph V Graph]
+theorem croissant [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
               {graph : Graph}
               (e : Env V graph) :
@@ -202,7 +203,7 @@ theorem sn_bound [DirectedGraph V Graph]
                  {graph : Graph}
                  (e : Env V graph) :
 e.gray.card + e.black.card ≤ (DirectedGraph.vertices graph: List V).length := by
-have h₁ := navel e
+have h₁ := croissant e
 simp at h₁
 rw [Finset.card_union_of_disjoint e.disjoint_gb] at h₁
 omega

@@ -1,4 +1,6 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
+import Graph.Scc
+import Graph.ReachableBefore
 import ListHelper.Rank
 import Std.Data.List.Lemmas
 

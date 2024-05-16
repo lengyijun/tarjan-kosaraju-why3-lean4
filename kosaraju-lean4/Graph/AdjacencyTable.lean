@@ -1,4 +1,4 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
 import Mathlib.Data.Matrix.Basic
 
 def shepherd (n : Nat) : List (Fin n) :=

@@ -1,4 +1,4 @@
-import Kosaraju.DirectedGraph
+import Graph.DirectedGraph
 import Kosaraju.Dfs1
 import Kosaraju.Grail
 
