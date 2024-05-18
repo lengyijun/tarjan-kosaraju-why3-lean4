@@ -189,6 +189,14 @@ apply Subset.antisymm
              rw [e.sccs_in_black] at h
              tauto
 
+theorem stature [DirectedGraph V Graph]
+              [BEq V] [LawfulBEq V] [DecidableEq V]
+              {graph : Graph}
+              (e : Env V graph) :
+e.gray ∪ e.black = toFinset e.stack ∪ e.sccs.foldl Union.union ∅ := by
+have h := shrewd e
+simp at h
+tauto
 
 theorem tepid [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
