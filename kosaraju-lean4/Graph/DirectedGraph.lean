@@ -3,17 +3,16 @@ import Std.Data.List.Lemmas
 import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic.Use
 import Mathlib.Tactic.Tauto
-import ListHelper.Rank
 import ListHelper.Simplelist
 
 -- finite directed graph
 class DirectedGraph (V : Type u)(Graph : Type v) where
   vertices : Graph -> List V
-  edge      : Graph -> V -> V -> Prop
   succ      : Graph -> V -> List V
-  transpose : Graph -> Graph
+  edge      : Graph -> V -> V -> Prop := fun g x y => y ∈ succ g x
   edge_succ : ∀ g a b, b ∈ succ g a <-> edge g a b
   valid_edge : ∀ (g: Graph) (a b: V), edge g a b -> a ∈ vertices g /\ b ∈ vertices g
+  transpose : Graph -> Graph
   transpose_transpose : ∀ g, (g |> transpose |> transpose) = g
   same_vertices : ∀ g, (g |> transpose |> vertices) = (g |> vertices)
   reverse_edge :∀ g a b, edge g a b <-> edge (g |> transpose) b a

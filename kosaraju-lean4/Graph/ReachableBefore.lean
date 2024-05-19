@@ -1,5 +1,6 @@
 import Graph.DirectedGraph
 import Graph.Scc
+import ListHelper.Rank
 
 def reachable_before [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V]
