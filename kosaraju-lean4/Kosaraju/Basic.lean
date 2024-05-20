@@ -8,9 +8,9 @@ structure Trajectory (Graph V : Type*)
                      (graph: Graph)
 where
   sccs_o  : List (Finset V)
-  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ DirectedGraph.vertices graph
-  p₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs_o → cc₂ ∈ sccs_o → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
-  p₅ : ∀ v, v ∈ DirectedGraph.vertices graph -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
+  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x ∈ cc, x ∈ DirectedGraph.vertices graph
+  p₄ : ∀ cc₁ ∈ sccs_o, ∀ cc₂ ∈ sccs_o, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
+  p₅ : ∀ v ∈ DirectedGraph.vertices graph, ∃ cc, v ∈ cc /\ cc ∈ sccs_o
 
 def kosaraju [DirectedGraph V Graph]
              [BEq V] [LawfulBEq V] [DecidableEq V]

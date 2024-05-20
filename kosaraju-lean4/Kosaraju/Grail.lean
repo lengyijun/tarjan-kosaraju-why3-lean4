@@ -18,10 +18,10 @@ where
   blacks_o : List V
   sccs_o   : List (Finset V)
   p₁ : wff_stack_G2 graph blacks_o List.nil List.nil
-  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc -> x ∈ blacks_o
+  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x ∈ cc, x ∈ blacks_o
   p₃ : ∀ x, x ∈ blacks_o ↔ x ∈ stack \/ x ∈ blacks_i
-  p₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs_o → cc₂ ∈ sccs_o → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
-  p₅ : ∀ v, v ∈ stack -> ∃ cc, v ∈ cc /\ cc ∈ sccs_o
+  p₄ : ∀ cc₁ ∈ sccs_o, ∀ cc₂ ∈ sccs_o, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
+  p₅ : ∀ v ∈ stack, ∃ cc, v ∈ cc /\ cc ∈ sccs_o
   p₆ : sccs_i ⊆ sccs_o
 
 def iter2 [DirectedGraph V Graph]
@@ -33,7 +33,7 @@ def iter2 [DirectedGraph V Graph]
                v.filter (fun x => !blacks.contains x) ⊆ stack)
          (a₂ : wff_stack_G2 graph blacks List.nil stack)
          (a₃ : ∀ cc, cc ∈ sccs ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x, x ∈ cc → x ∈ blacks)
-         (a₄ : ∀ cc₁ cc₂, cc₁ ∈ sccs → cc₂ ∈ sccs → cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty)
+         (a₄ : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty)
          (a₅ : ∀ v, v ∈ blacks -> ∃ cc, v ∈ cc /\ cc ∈ sccs)
          : Pillar graph stack blacks sccs := match stack with
 | List.nil =>
@@ -321,24 +321,24 @@ def iter2 [DirectedGraph V Graph]
           use y
           simp_all
 
+    have : ∀ cc ∈ sccs, cc₁ ∩ cc = ∅ := by
+      intros cc h₅
+      rw [eq_empty_iff_forall_not_mem]
+      intros z h₆
+      simp [*] at h₆
+      obtain ⟨h₆, h₇⟩ := h₆
+      rw [a₃] at h₅
+      obtain ⟨_, _, _⟩ := h₅
+      rw [mem_toFinset, List.mem_filter] at *
+      simp_all
     have h₄ := by
-      have : ∀ cc, cc ∈ sccs → cc₁ ∩ cc = ∅ := by
-        intros cc h₅
-        rw [eq_empty_iff_forall_not_mem]
-        intros z h₆
-        simp [*] at h₆
-        obtain ⟨h₆, h₇⟩ := h₆
-        rw [a₃] at h₅
-        obtain ⟨_, _, _⟩ := h₅
-        rw [mem_toFinset, List.mem_filter] at *
-        simp_all
-
-      intros cc₃ cc₄ h₅ h₆
-      have := a₄ cc₃ cc₄
-      cases h₅ <;> cases h₆ <;> try tauto
-      right
-      rw [inter_comm]
-      tauto
+      intros cc₃ h₅ cc₄ h₆
+      cases h₅ <;> cases h₆
+      any_goals try tauto
+      . right
+        rw [inter_comm]
+        tauto
+      . apply a₄ <;> tauto
 
     have h₅ := by
       intros z h
