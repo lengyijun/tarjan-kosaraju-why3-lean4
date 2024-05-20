@@ -1,4 +1,3 @@
-import ListHelper.Basic
 import Mathlib.Tactic.Tauto
 
 structure Rapport (x : V) (s : List V) where

@@ -1,13 +1,11 @@
 import Graph.DirectedGraph
-import ListHelper.Precede
 import ListHelper.Rip
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finmap
+import Mathlib.Data.Finset.Card
 import Std.Data.List.Lemmas
 import Tarjan.Env
 
-open Finmap
 open Finset
 open Finset List
 

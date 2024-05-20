@@ -1,13 +1,11 @@
 import Graph.DirectedGraph
 import Graph.Scc
-import ListHelper.Precede
 import ListHelper.Simplelist
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Finmap
+import Mathlib.Data.Finset.Card
 import Mathlib.Data.List.Sort
 
-open Finmap
 open Finset
 open Finset List
 
