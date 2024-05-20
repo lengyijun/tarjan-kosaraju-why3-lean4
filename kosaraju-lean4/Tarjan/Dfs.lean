@@ -179,16 +179,16 @@ valid_black := by intros _ h
                     tauto
                   . apply e1.valid_black; assumption
 disjoint_gb := disjoint_gb
-color₁ := by intros a b h₁ h₂
-             rw [← Finset.mem_union, h₉]
-             simp at h₂
-             cases h₂
-             . apply p₃
-               rw [DirectedGraph.edge_succ]
-               subst a
-               assumption
-             . rw [Finset.mem_union]
-               apply e1.color₁ <;> assumption
+color := by intros a b h₁ h₂
+            rw [← Finset.mem_union, h₉]
+            simp at h₂
+            cases h₂
+            . apply p₃
+              rw [DirectedGraph.edge_succ]
+              subst a
+              assumption
+            . rw [Finset.mem_union]
+              apply e1.color <;> assumption
 stack_finset := by
   intros y
   rw [e1.stack_finset]
@@ -305,7 +305,7 @@ sccs_disjoint := e1.sccs_disjoint
              . apply p₆
                all_goals simp [add_stack_incr]
                any_goals tauto
-               obtain ⟨s5, h₃, h₄⟩ := p₁.sub_stack
+               obtain ⟨s5, h₃, _⟩ := p₁.sub_stack
                simp [add_stack_incr] at h₃
                use s5
                constructor
@@ -388,21 +388,21 @@ else
                                 rw [<- p₁.eq_gray] at h
                                 simp [add_stack_incr] at h
                                 tauto
-            color₁ := by intros a b h₁ h₂
-                         simp at h₂
-                         simp
-                         cases h₂ with
-                         | inl h₂ => subst a
-                                     rw [← DirectedGraph.edge_succ] at h₁
-                                     specialize p₃ b h₁
-                                     simp at p₃
-                                     rw [← p₁.eq_gray] at p₃
-                                     simp [add_stack_incr] at p₃
-                                     tauto
-                         | inr h₂ => have h := e1.color₁ a b h₁ h₂
-                                     rw [← p₁.eq_gray] at h
-                                     simp [add_stack_incr] at h
-                                     tauto
+            color := by intros a b h₁ h₂
+                        simp at h₂
+                        simp
+                        cases h₂ with
+                        | inl h₂ => subst a
+                                    rw [← DirectedGraph.edge_succ] at h₁
+                                    specialize p₃ b h₁
+                                    simp at p₃
+                                    rw [← p₁.eq_gray] at p₃
+                                    simp [add_stack_incr] at p₃
+                                    tauto
+                        | inr h₂ => have h := e1.color a b h₁ h₂
+                                    rw [← p₁.eq_gray] at h
+                                    simp [add_stack_incr] at h
+                                    tauto
             stack_finset := by obtain ⟨h₇, _⟩ := h₇
                                rw [tepid e1, ← h₇, ← p₁.eq_gray]
                                simp [add_stack_incr]
@@ -583,7 +583,7 @@ else
                                     rw [DirectedGraph.edge_succ]
                                     tauto
                                   . simp
-                                    apply e1.color₁
+                                    apply e1.color
                                     . tauto
                                     . apply s_in_black
                                       tauto
@@ -887,7 +887,7 @@ def dfs [DirectedGraph V Graph]
                             rw [h]
                             cases pₐ <;> try omega
                             rename_i h
-                            obtain ⟨x, y, _, _, h, _⟩ := h
+                            obtain ⟨x, _, _, _, h, _⟩ := h
                             simp
                             right
                             rw [h]
@@ -920,7 +920,7 @@ def dfs [DirectedGraph V Graph]
                  obtain ⟨y, h⟩ := h
                  use y
                  tauto
-      p₆ := by obtain ⟨_, _, _, q₁, ⟨l₁, p₁, _⟩⟩ := p₁
+      p₆ := by obtain ⟨_, _, _,  _, ⟨l₁, p₁, _⟩⟩ := p₁
                obtain ⟨_, _, _, q₂, ⟨l₂, p₆, _⟩⟩ := p₆
                intros y h h₁
                specialize p y

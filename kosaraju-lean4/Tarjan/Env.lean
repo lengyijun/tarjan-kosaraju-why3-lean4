@@ -27,8 +27,7 @@ where
   valid_gray  : ∀ x ∈ gray,  x ∈ DirectedGraph.vertices graph
   valid_black : ∀ x ∈ black, x ∈ DirectedGraph.vertices graph
   disjoint_gb : Disjoint gray black
-  color₁ : no_black_to_white graph black gray
-  -- color₆ : sccs_union ⊆ black
+  color : no_black_to_white graph black gray
   stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl Union.union ∅))
   simplelist_stack : simplelist stack
   decreasing_stack : List.Sorted (fun x y => num x ≥ num y) stack
@@ -319,8 +318,8 @@ def add_stack_incr [DirectedGraph V Graph]
                     . apply e.valid_gray; assumption
   valid_black := e.valid_black
   disjoint_gb := by simp_all; exact e.disjoint_gb
-  color₁ := by intros a b h h₁
-               cases (e.color₁ a b h h₁) <;> simp <;> tauto
+  color := by intros a b h h₁
+              cases (e.color a b h h₁) <;> simp <;> tauto
   stack_finset := by intros y
                      simp
                      rw [e.stack_finset]
