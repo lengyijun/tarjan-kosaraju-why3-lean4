@@ -34,7 +34,7 @@ where
   -- ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
   wf_stack₃ : ∀ y ∈ stack, ∃ x ∈ gray,  num x ≤ num y /\ reachable graph y x
-  sccs_in_black : ∀ cc, cc ∈ sccs ↔ cc ⊆ black /\ is_scc graph cc
+  sccs_in_black : ∀ cc, cc ∈ sccs ↔ Nonempty cc /\ cc ⊆ black /\ is_scc graph cc
   sccs_disjoint : ∀ cc₁ ∈ sccs, ∀ cc₂ ∈ sccs, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = ∅
 
 structure SubEnv {V Graph : Type*}
@@ -128,7 +128,7 @@ cases (stack_or_scc x (by tauto)) with
 | inl h => tauto
 | inr h => obtain ⟨cc, h, h₁⟩ := h
            rw [e.sccs_in_black] at h₁
-           obtain ⟨h₁, _⟩ := h₁
+           obtain ⟨_, h₁, _⟩ := h₁
            specialize h₁ h
            have hb : {x} ≤ e.black := by simp; assumption
            have hg : {x} ≤ e.gray := by simp; assumption

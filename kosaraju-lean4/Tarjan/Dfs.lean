@@ -228,7 +228,7 @@ sccs_in_black := by intros cc
                     . simp
                       right
                       tauto
-                    . obtain ⟨h₁, _⟩ := h₁
+                    . obtain ⟨_, h₁, _⟩ := h₁
                       have h₄ := h₁ h
                       simp at h₄
                       have h₃ : x = y \/ ¬ x = y := by tauto
@@ -668,20 +668,25 @@ else
                                 constructor <;> intros h
                                 . cases h
                                   all_goals rename_i h
-                                  . constructor
-                                    . simp
-                                      apply Finset.insert_subset_insert
-                                      intros y
+                                  . apply And.intro
+                                    . use x
                                       simp
-                                      apply s_in_black
-                                    . tauto
+                                    . apply And.intro
+                                      . simp
+                                        apply Finset.insert_subset_insert
+                                        intros y
+                                        simp
+                                        apply s_in_black
+                                      . tauto
                                   . have h : cc ∈ e1.sccs := by tauto
                                     rw [e1.sccs_in_black] at h
-                                    obtain ⟨h, _⟩ := h
-                                    constructor
+                                    obtain ⟨_, h, _⟩ := h
+                                    any_goals apply And.intro
+                                    any_goals assumption
+                                    any_goals apply And.intro
+                                    any_goals tauto
                                     . apply Finset.Subset.trans h
                                       apply Finset.subset_insert
-                                    . tauto
                                 . have h : x ∈ cc \/ ¬ x ∈ cc := by tauto
                                   cases h
                                   . have : cc = toFinset (x :: s) := by
@@ -692,11 +697,14 @@ else
                                       simp_all
                                     subst cc
                                     tauto
-                                  . obtain ⟨h, _⟩ := h
+                                  . obtain ⟨_, h, _⟩ := h
                                     simp
                                     right
                                     rw [e1.sccs_in_black]
-                                    constructor
+                                    any_goals apply And.intro
+                                    any_goals assumption
+                                    any_goals apply And.intro
+                                    any_goals tauto
                                     . intros y hy
                                       specialize h hy
                                       simp at h
@@ -704,7 +712,6 @@ else
                                       any_goals tauto
                                       any_goals subst y
                                       all_goals tauto
-                                    . tauto
             sccs_disjoint := by intros cc₁ h₁ cc₂ h₂
                                 cases h₁ <;> cases h₂
                                 any_goals tauto
