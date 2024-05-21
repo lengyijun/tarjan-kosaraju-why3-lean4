@@ -1,6 +1,5 @@
 import Tarjan.Env
 import Tarjan.Dfs
-import Kosaraju.Basic
 
 def tarjan [DirectedGraph V Graph]
            [BEq V] [LawfulBEq V] [DecidableEq V]

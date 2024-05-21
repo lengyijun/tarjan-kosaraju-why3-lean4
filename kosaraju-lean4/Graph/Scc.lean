@@ -149,3 +149,13 @@ constructor
 . apply reachable_trans g b x a
   . apply h₂ ; assumption
   . apply h₁ ; assumption
+
+structure Trajectory (Graph V : Type*)
+                     [DirectedGraph V Graph]
+                     [BEq V] [LawfulBEq V] [DecidableEq V]
+                     (graph: Graph)
+where
+  sccs_o  : List (Finset V)
+  p₂ : ∀ cc, cc ∈ sccs_o ↔ Nonempty cc /\ is_scc graph cc /\ ∀ x ∈ cc, x ∈ DirectedGraph.vertices graph
+  p₄ : ∀ cc₁ ∈ sccs_o, ∀ cc₂ ∈ sccs_o, cc₁ = cc₂ \/ cc₁ ∩ cc₂ = Finset.empty
+  p₅ : ∀ v ∈ DirectedGraph.vertices graph, ∃ cc, v ∈ cc /\ cc ∈ sccs_o
