@@ -116,16 +116,17 @@ theorem reachable_before_extension [DirectedGraph V Graph]
 
 theorem no_edge_out_of_cons [DirectedGraph V Graph]
                             [BEq V] [LawfulBEq V]
-                            (g : Graph) :
-    ∀ s1 s2 (x : V), no_edge_out_of g s1 s2 ->
+                            (g : Graph)
+                            (s1 s2: List V) (x : V) :
+                        no_edge_out_of g s1 s2 ->
                         (∀ z, z ∈ s1 -> DirectedGraph.edge g z x -> False) ->
                         no_edge_out_of g s1 (List.cons x s2) := by
     simp [no_edge_out_of]
-    intros s1 s2 x h₁ h₂ s5 h₃ a b h₄ h₅ h₆
+    intros h₁ h₂ s5 h₃ a b h₄ h₅ h₆
     cases s5 with simp_all
     | cons a5 s5 => obtain ⟨h₃, h₇⟩ := h₃
                     subst a5 s2
-                    have := h₁ a b h₄
+                    specialize h₁ a b h₄
                     cases h₅ <;> simp_all
 
 theorem path_cross_sets [DirectedGraph V Graph]

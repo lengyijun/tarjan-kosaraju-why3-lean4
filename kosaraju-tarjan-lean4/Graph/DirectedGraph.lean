@@ -17,8 +17,10 @@ class DirectedGraph (V : Type u)(Graph : Type v) where
   same_vertices : ∀ g, (g |> transpose |> vertices) = (g |> vertices)
   reverse_edge :∀ g a b, edge g a b <-> edge (g |> transpose) b a
 
-theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V) : a ∈ DirectedGraph.vertices g -> DirectedGraph.succ g a ⊆ DirectedGraph.vertices g := by
-intro _ b h
+theorem succ_valid [DirectedGraph V Graph] (g : Graph) (a: V)
+  (_ : a ∈ DirectedGraph.vertices g) :
+  DirectedGraph.succ g a ⊆ DirectedGraph.vertices g := by
+intro b h
 rw [DirectedGraph.edge_succ] at *
 have : a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g := by
   apply DirectedGraph.valid_edge
@@ -29,9 +31,9 @@ inductive path [DirectedGraph V Graph] : Graph -> V -> List V -> V -> Prop
   | edge: ∀ (g: Graph) (a b: V), DirectedGraph.edge g a b -> path g a List.nil b
   | cons: ∀ (g: Graph) (a b c: V) (l: List V), DirectedGraph.edge g a b -> path g b l c -> path g a (List.cons b l) c
 
-theorem path_trans [DirectedGraph V Graph] (g : Graph) (a b c: V) (lab lbc: List V) :
-        path g a lab b -> path g b lbc c -> path g a (lab ++ List.cons b lbc) c := by
-intro h
+theorem path_trans [DirectedGraph V Graph] (g : Graph) (a b c: V) (lab lbc: List V)
+        (h : path g a lab b) :
+        path g b lbc c -> path g a (lab ++ List.cons b lbc) c := by
 induction h
 . simp; intros; constructor <;> assumption
 . intros; simp_all; constructor <;> assumption
@@ -45,22 +47,20 @@ induction lab <;> simp_all <;> intros a b c lbc h <;> cases h
   specialize induction_step x b c lbc h₃
   tauto
 
-theorem reverse_path [DirectedGraph V Graph] (g : Graph) (a b : V) (l : List V) :
-        path g a l b -> path (DirectedGraph.transpose V g) b l.reverse a :=  by
-intro h
+theorem reverse_path [DirectedGraph V Graph] (g : Graph) (a b : V) (l : List V)
+        (h : path g a l b) : path (DirectedGraph.transpose V g) b l.reverse a := by
 induction h <;> simp
 . constructor; rw [<- DirectedGraph.reverse_edge]; assumption
 . apply path_trans
   . assumption
   . constructor; rw [<- DirectedGraph.reverse_edge]; assumption
 
-theorem path_valid [DirectedGraph V Graph] (g : Graph) (a b: V)(l : List V):
-        path g a l b ->
+theorem path_valid [DirectedGraph V Graph] (g : Graph) (a b: V)(l : List V)
+        (h : path g a l b) :
         a ∈ DirectedGraph.vertices g /\
         b ∈ DirectedGraph.vertices g /\
         l ⊆ DirectedGraph.vertices g
 := by
-intros h
 induction h <;> simp_all
 . apply DirectedGraph.valid_edge
   assumption
@@ -102,10 +102,10 @@ all_goals rename_i h g
 
 theorem reachable_valid [DirectedGraph V Graph]
                         [BEq V] [LawfulBEq V]
-                        (g : Graph) (a b: V):
-reachable g a b -> a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g
+                        (g : Graph) (a b: V)
+                        (h : reachable g a b) :
+ a ∈ DirectedGraph.vertices g /\ b ∈ DirectedGraph.vertices g
 := by
-intros h
 cases h with
 | inl h => obtain ⟨l, h⟩ := h
            have := path_valid g _ _ _ h
