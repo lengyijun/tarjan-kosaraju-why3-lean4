@@ -1,9 +1,10 @@
 import Tarjan.Env
 import Tarjan.Dfs
 
-def tarjan [DirectedGraph V Graph]
+def tarjan {V Graph : Type*}
+           [DirectedGraph V Graph]
            [BEq V] [LawfulBEq V] [DecidableEq V]
-           (graph: Graph) : Trajectory Graph V graph :=
+           (graph: Graph) : Trajectory V graph :=
 let e : Env V graph := {
   black := ∅
   gray := ∅
@@ -23,8 +24,8 @@ let e : Env V graph := {
   wf_stack₂ := by tauto
   wf_stack₃ := by tauto
   sccs_in_black := by simp
-                      intros _ x h h₁ _
-                      specialize h₁ h
+                      intros cc x h h₁ _
+                      subst cc
                       tauto
   sccs_disjoint := by simp
 }

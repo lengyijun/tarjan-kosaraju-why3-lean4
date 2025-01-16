@@ -2,14 +2,14 @@ import Kosaraju.Dfs2
 import Graph.DirectedGraph
 import ListHelper.Rank
 import Mathlib.Data.Finset.Basic
-import Std.Data.List.Lemmas
+import Init.Data.List.Lemmas
 
-open Finset
 open Finset List
 
 set_option maxHeartbeats 0
 
-structure Pillar [DirectedGraph V Graph]
+structure Pillar {V Graph: Type*}
+                 [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
                  (graph: Graph)
                  (stack blacks_i: List V)
@@ -24,7 +24,8 @@ where
   p₅ : ∀ v ∈ stack, ∃ cc, v ∈ cc /\ cc ∈ sccs_o
   p₆ : sccs_i ⊆ sccs_o
 
-def iter2 [DirectedGraph V Graph]
+def iter2 {V Graph: Type*}
+          [DirectedGraph V Graph]
           [BEq V] [LawfulBEq V] [DecidableEq V]
          (graph: Graph)
          (stack blacks: List V)
@@ -54,7 +55,7 @@ def iter2 [DirectedGraph V Graph]
                   cases a₁ <;> try assumption
                   rw [List.mem_filter] at h
                   simp_all
-    have h₂ := by simp [wff_stack_G2, simplelist_tl] at *
+    have h₂ := by simp [wff_stack_G2, List.nodup_cons] at *
                   simp_all
                   intros y z h₁ h₂ h₃
                   have ⟨_, a₆, a₇, a₈⟩:= a₂
@@ -174,7 +175,7 @@ def iter2 [DirectedGraph V Graph]
                       have : z ∈ l := by rw [<- List.mem_reverse]; assumption
                       tauto
                   . intros z h
-                    simp [wff_stack_G2, simplelist_tl] at a₂
+                    simp [wff_stack_G2, List.nodup_cons] at a₂
                     simp [rank]
                     split <;> split <;> try tauto
                     all_goals simp_all
@@ -272,7 +273,7 @@ def iter2 [DirectedGraph V Graph]
                             tauto
                  | inr h => assumption
 
-    have h₂ := by simp [wff_stack_G2, simplelist_tl] at *
+    have h₂ := by simp [wff_stack_G2, List.nodup_cons] at *
                   simp_all
                   intros y z h₁ h₂ h₃
                   have ⟨_, a₆, _, a₈⟩:= a₂

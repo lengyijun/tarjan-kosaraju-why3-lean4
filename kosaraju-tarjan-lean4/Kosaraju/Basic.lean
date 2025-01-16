@@ -3,9 +3,10 @@ import Graph.Scc
 import Kosaraju.Dfs1
 import Kosaraju.Grail
 
-def kosaraju [DirectedGraph V Graph]
+def kosaraju {V Graph: Type*}
+             [DirectedGraph V Graph]
              [BEq V] [LawfulBEq V] [DecidableEq V]
-             (graph: Graph) : Trajectory Graph V graph :=
+             (graph: Graph) : Trajectory V graph :=
 have h₃ := by
   simp [wff_stack_G1, wff_color, no_black_to_white]
   tauto

@@ -1,12 +1,14 @@
 import Graph.DirectedGraph
 
-def in_same_scc [DirectedGraph V Graph]
+def in_same_scc {V Graph : Type*}
+                [DirectedGraph V Graph]
                 [BEq V] [LawfulBEq V]
                 (g : Graph)
                 (a b : V)
                 : Prop := reachable g a b /\ reachable g b a
 
-theorem same_scc_trans [DirectedGraph V Graph]
+theorem same_scc_trans {V Graph : Type*}
+                       [DirectedGraph V Graph]
                        [BEq V] [LawfulBEq V]
                        (g : Graph)
                        (x y z : V) :
@@ -17,19 +19,22 @@ constructor
 all_goals apply reachable_trans
 all_goals assumption
 
-def is_subscc [DirectedGraph V Graph]
+def is_subscc {V Graph : Type*}
+              [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V]
               (g : Graph)
               (s : Finset V) : Prop :=
     ∀ x y, x ∈ s -> y ∈ s -> in_same_scc g x y
 
-def is_scc [DirectedGraph V Graph]
+def is_scc {V Graph : Type*}
+           [DirectedGraph V Graph]
            [BEq V] [LawfulBEq V]
            (g : Graph)
            (s : Finset V) : Prop :=
     is_subscc g s /\ (∀ s', s ⊆ s' -> is_subscc g s' -> s' ⊆ s)
 
-theorem in_same_scc_transpose [DirectedGraph V Graph]
+theorem in_same_scc_transpose {V Graph : Type*}
+                              [DirectedGraph V Graph]
                               [BEq V] [LawfulBEq V]
                               (g : Graph)
                               (a b : V) :
@@ -38,7 +43,8 @@ simp [in_same_scc]
 repeat rw [reachable_transpose]
 tauto
 
-theorem is_subscc_transpose [DirectedGraph V Graph]
+theorem is_subscc_transpose {V Graph : Type*}
+                            [DirectedGraph V Graph]
                             [BEq V] [LawfulBEq V]
                             (g : Graph)
                             (cc : Finset V) :
@@ -50,7 +56,8 @@ all_goals specialize h x y
 all_goals rw [in_same_scc_transpose] at *
 all_goals tauto
 
-private theorem is_scc_transpose_inner [DirectedGraph V Graph]
+private theorem is_scc_transpose_inner {V Graph : Type*}
+                                       [DirectedGraph V Graph]
                                        [BEq V] [LawfulBEq V]
                                        (g : Graph)
                                        (cc : Finset V) :
@@ -63,7 +70,8 @@ intros
 rw [<- is_subscc_transpose] at *
 tauto
 
-theorem is_scc_transpose [DirectedGraph V Graph]
+theorem is_scc_transpose  {V Graph : Type*}
+                          [DirectedGraph V Graph]
                           [BEq V] [LawfulBEq V]
                           (g : Graph)
                           (cc : Finset V) :
@@ -75,7 +83,8 @@ constructor
   rw [DirectedGraph.transpose_transpose] at h
   assumption
 
-theorem scc_max [DirectedGraph V Graph]
+theorem scc_max {V Graph : Type*}
+                [DirectedGraph V Graph]
                 [BEq V] [LawfulBEq V] [DecidableEq V]
                 (g : Graph)
                 (x y : V) (cc : Finset V)
@@ -111,7 +120,8 @@ have : is_subscc g (insert y cc) := by
 apply h₂ (insert y cc) <;> simp_all
 
 
-theorem disjoint_scc [DirectedGraph V Graph]
+theorem disjoint_scc {V Graph : Type*}
+                     [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      (g : Graph)
                      (cc1 cc2 : Finset V)
@@ -133,7 +143,8 @@ any_goals tauto
 . obtain ⟨h₄, _⟩ := h₄
   apply h₄ <;> tauto
 
-theorem scc_navel [DirectedGraph V Graph]
+theorem scc_navel {V Graph : Type*}
+                  [DirectedGraph V Graph]
                   [BEq V] [LawfulBEq V] [DecidableEq V]
                   {g : Graph}
                   {cc : Finset V}
@@ -150,7 +161,8 @@ constructor
   . apply h₂ ; assumption
   . apply h₁ ; assumption
 
-structure Trajectory (Graph V : Type*)
+structure Trajectory {Graph : Type*}
+                     (V : Type*)
                      [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      (graph: Graph)

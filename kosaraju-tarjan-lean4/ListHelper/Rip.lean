@@ -1,10 +1,10 @@
 import Mathlib.Tactic.Tauto
 
-structure Rapport (x : V) (s : List V) where
+structure Rapport {V: Type*}(x : V) (s : List V) where
   s1 : List V
   last : x ∈ s -> ∃ s2, s1 ++ x :: s2 = s
 
-def split_once [DecidableEq V] (x : V) (s: List V) : Rapport x s := match s with
+def split_once {V: Type*}[DecidableEq V] (x : V) (s: List V) : Rapport x s := match s with
 | [] => {
           s1 := []
           last := by tauto

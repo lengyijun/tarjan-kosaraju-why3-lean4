@@ -2,6 +2,7 @@ import Mathlib.Data.Finset.Basic
 open Finset
 
 theorem pertinent
+{V: Type*}
 [BEq V] [LawfulBEq V] [DecidableEq V]
 {sccs : List (Finset V)} :
 ∀ (init : Finset V),
@@ -14,6 +15,7 @@ rw [induction_step, induction_step scc]
 simp
 
 theorem union_helper
+{V: Type*}
 [BEq V] [LawfulBEq V] [DecidableEq V]
 {x : V} {sccs : List (Finset V)} :
 x ∈ List.foldl Union.union ∅ sccs ↔ (∃ cc, x ∈ cc /\ cc ∈ sccs) := by

@@ -20,23 +20,23 @@ theorem all_in_shepherd {n : Nat} (x : Fin n) : x ∈ shepherd n := by
 structure AdjacencyTable (n : Nat) where
   t : Matrix (Fin n) (Fin n) Bool
 
-def AdjacencyTable.succ (graph : AdjacencyTable n) (node : Fin n) : List (Fin n) := List.filter (fun j => graph.t node j) (shepherd n)
+def AdjacencyTable.succ {n : ℕ}(graph : AdjacencyTable n) (node : Fin n) : List (Fin n) := List.filter (fun j => graph.t node j) (shepherd n)
 
-def AdjacencyTable.vertices (_g: AdjacencyTable n) : List (Fin n) := shepherd n
+def AdjacencyTable.vertices {n : ℕ}(_g: AdjacencyTable n) : List (Fin n) := shepherd n
 
 -- graph  : a -> b
 -- result : b -> a
-def AdjacencyTable.transpose (graph : AdjacencyTable n) : AdjacencyTable n := {
+def AdjacencyTable.transpose {n : ℕ}(graph : AdjacencyTable n) : AdjacencyTable n := {
     t :=  graph.t.transpose
 }
 
-theorem transpose_transpose : ∀ (g : AdjacencyTable n), g.transpose.transpose = g := by
+theorem transpose_transpose {n : ℕ}: ∀ (g : AdjacencyTable n), g.transpose.transpose = g := by
 simp [AdjacencyTable.transpose]
 
-theorem same_vertices : ∀ (g : AdjacencyTable n), g.transpose.vertices = g.vertices := by
+theorem same_vertices {n : ℕ}: ∀ (g : AdjacencyTable n), g.transpose.vertices = g.vertices := by
  simp [AdjacencyTable.transpose, AdjacencyTable.vertices]
 
-instance : DirectedGraph (Fin n) (AdjacencyTable n) where
+instance {n : ℕ}: DirectedGraph (Fin n) (AdjacencyTable n) where
   vertices := AdjacencyTable.vertices
   edge g a b := g.t a b = True
   succ      := AdjacencyTable.succ
@@ -46,10 +46,5 @@ instance : DirectedGraph (Fin n) (AdjacencyTable n) where
   reverse_edge :=  by simp [AdjacencyTable.transpose]
   edge_succ := by simp [AdjacencyTable.succ]
                   intros
-                  constructor <;> intro h₂
-                  . rw [List.mem_filter] at h₂
-                    tauto
-                  . rw [List.mem_filter]; constructor
-                    . apply all_in_shepherd
-                    . exact h₂
+                  apply all_in_shepherd
   valid_edge := by intros; constructor <;> apply all_in_shepherd

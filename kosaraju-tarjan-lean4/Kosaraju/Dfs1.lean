@@ -2,11 +2,13 @@ import Graph.DirectedGraph
 import Graph.Scc
 import Graph.ReachableBefore
 import ListHelper.Rank
-import Std.Data.List.Lemmas
+import Init.Data.List.Lemmas
 
 set_option maxHeartbeats 500000
 
-structure Brigade [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
+structure Brigade {V Graph: Type*}
+                  [DirectedGraph V Graph]
+                  [BEq V] [LawfulBEq V]
                   (graph: Graph)
                   (roots black_stack grays : List V)
 where
@@ -15,13 +17,15 @@ where
   p₂ : roots ⊆ stack ++ grays
   monotony: ∃ s', stack = s' ++ black_stack /\ access_from_set graph roots s'
 
-def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
-         (graph: Graph)
-         (roots black_stack grays : List V)
-         (h₁: roots ⊆ DirectedGraph.vertices graph)
-         (h₂: grays ⊆ DirectedGraph.vertices graph)
-         (h₃: wff_stack_G1 graph black_stack grays)
-         : Brigade graph roots black_stack grays := match roots with
+def dfs1  {V Graph: Type*}
+          [instance_graph : DirectedGraph V Graph]
+          [BEq V] [LawfulBEq V]
+          (graph: Graph)
+          (roots black_stack grays : List V)
+          (h₁: roots ⊆ DirectedGraph.vertices graph)
+          (h₂: grays ⊆ DirectedGraph.vertices graph)
+          (h₃: wff_stack_G1 graph black_stack grays)
+          : Brigade graph roots black_stack grays := match roots with
 | List.nil => {
   stack := black_stack
   p₁ := by assumption
@@ -62,19 +66,14 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
                     constructor <;> simp_all
                     . intros y h₁ h₂
                       subst y
-                      apply h₅
                       tauto
-                    . constructor
-                      . simp [no_black_to_white]
-                        intros a b
-                        obtain ⟨⟨_, ⟨h₃, _⟩⟩, _⟩ := h₃
-                        specialize h₃ a b
-                        tauto
-                      . rw [simplelist_tl]
-                        tauto
+                    . simp [no_black_to_white]
+                      intros a b
+                      obtain ⟨⟨_, ⟨h₃, _⟩⟩, _⟩ := h₃
+                      specialize h₃ a b
+                      tauto
                   . tauto
-    let v : List V := (DirectedGraph.vertices graph)
-    let termination_proof: grays.length < v.length := by
+    have : grays.length < (instance_graph.vertices graph).length := by
       apply simplelist_size_2
       . tauto
       . simp [wff_stack_G1, wff_color] at h₃
@@ -85,7 +84,6 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
         . rename_i h
           simp [*] at h
           intro g
-          apply h
           tauto
     let ⟨stack, p₃, p₄, monotony⟩ := dfs1 graph (DirectedGraph.succ graph x) black_stack (List.cons x grays) (by apply succ_valid; tauto) h₄ h₅
     have h₇ : ¬ x ∈ stack := by
@@ -115,39 +113,33 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
       . obtain ⟨s', _, _⟩ := monotony
         subst stack
         simp [wff_stack_G1, wff_color, reachable_before_same_scc] at p₃
-        obtain ⟨⟨p₃, _⟩, _⟩ := p₃
-        apply p₃ b
-        . have h : x :: s' ++ black_stack = s1 ++ black_stack := by tauto
-          have h := List.append_inj_left' h rfl
-          subst s1
-          cases h₆ <;> try tauto
-          rename_i g _ _ _ _ _ _ __ _ h₆
-          simp at g
-          exfalso
-          apply g
-          tauto
-        . tauto
-      . have h₆: simplelist (List.cons x stack) := by
-          rw [simplelist_tl]
+        casesm* _ ∨ _, _ ∧ _
+        have h : x :: s' ++ black_stack = s1 ++ black_stack := by tauto
+        have h := List.append_inj_left' h rfl
+        subst s1
+        cases h₆ <;> try tauto
+        rename_i g _ _ _ _ _ _ __ _ h₆
+        specialize g b (by tauto)
+        tauto
+      . have h₆: List.Nodup (List.cons x stack) := by
+          rw [List.nodup_cons]
           constructor <;> try assumption
           simp [wff_stack_G1, wff_color, reachable_before_same_scc] at *
           tauto
-        specialize h₆ b
-        rw [h, num_occ_concat] at h₆
-        rw [mem_num_occ] at *
-        omega
+        unfold List.Nodup at h₆
+        rw [h] at h₆
+        rw [List.pairwise_append] at h₆
+        obtain ⟨_, _, h₆⟩ := h₆
+        apply h₆ b (by tauto) b (by tauto) rfl
     have g₉: no_path_out_of_in graph black_stack (List.cons x stack) := by
       apply no_edge_out_of_no_path_out_of_in ; assumption
     have h₆ := by
        simp [wff_stack_G1, wff_color, reachable_before_same_scc] at p₃
        simp [wff_stack_G1, wff_color, reachable_before_same_scc]
        obtain ⟨⟨p₅, p₈, ⟨p₇, p₉⟩⟩, p₆, p₃⟩ := p₃
-       rw [simplelist_tl] at *
+      --  rw [List.nodup_cons] at *
        simp_all
        constructor
-       any_goals constructor
-       . intros a h₃ h₄
-         apply p₅ <;> tauto
        . apply h₁
          tauto
        . intros x₁ y h h₉ h₇
@@ -177,7 +169,7 @@ def dfs1 [DirectedGraph V Graph] [BEq V] [LawfulBEq V]
            obtain ⟨s', _, h₉⟩ := monotony
            subst stack y
            obtain ⟨l, _, _, h₇⟩ := h₇
-           constructor <;> tauto
+           constructor <;> try tauto
            left
            rename_i g₁ _ _
            rw [List.mem_append_eq] at g₁

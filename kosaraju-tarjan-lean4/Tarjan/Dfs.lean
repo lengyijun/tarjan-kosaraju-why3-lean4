@@ -3,15 +3,15 @@ import ListHelper.Rip
 import ListHelper.Union
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
-import Std.Data.List.Lemmas
+import Init.Data.List.Lemmas
 import Tarjan.Env
 
-open Finset
 open Finset List
 
 set_option maxHeartbeats 0
 
-structure Flair [DirectedGraph V Graph]
+structure Flair {V Graph: Type*}
+                [DirectedGraph V Graph]
                 [BEq V] [LawfulBEq V] [DecidableEq V]
                 (graph : Graph) (x : V) (e : Env V graph)
 where
@@ -24,7 +24,8 @@ p₅ : let infty : Int := (DirectedGraph.vertices graph: List V).length
      n = infty \/ num_of_reachable n x e'
 p₆ : ∀ y ∈ e.stack, (∃ s, e'.stack = s ++ e.stack /\ ∃ x ∈ s, DirectedGraph.edge graph x y) → n ≤ e'.num y
 
-structure Shuttle [DirectedGraph V Graph]
+structure Shuttle {V Graph: Type*}
+                  [DirectedGraph V Graph]
                   [BEq V] [LawfulBEq V] [DecidableEq V]
                   (graph : Graph) (roots: List V) (e : Env V graph)
 where
@@ -39,14 +40,15 @@ p₆ : ∀ y ∈ e.stack, (∃ s, e'.stack = s ++ e.stack /\ ∃ x ∈ s, Direct
 
 mutual
 
-def dfs3 [DirectedGraph V Graph]
-         [BEq V] [LawfulBEq V] [DecidableEq V]
-         (graph : Graph) (x : V) (e : Env V graph)
-         (a₁ : x ∈ DirectedGraph.vertices graph)
-         (a₂ : access_to graph e.gray x)
-         (a₃ : ¬ x ∈ e.gray)
-         (a₄ : ¬ x ∈ e.black)
-         : Flair graph x e :=
+def dfs3  {V Graph: Type*}
+          [DirectedGraph V Graph]
+          [BEq V] [LawfulBEq V] [DecidableEq V]
+          (graph : Graph) (x : V) (e : Env V graph)
+          (a₁ : x ∈ DirectedGraph.vertices graph)
+          (a₂ : access_to graph e.gray x)
+          (a₃ : ¬ x ∈ e.gray)
+          (a₄ : ¬ x ∈ e.black)
+          : Flair graph x e :=
 -- let n0 := e.gray.card + e.black.card
 have h := by intros y hy z hz
              rw [DirectedGraph.edge_succ] at hy
@@ -317,13 +319,13 @@ sccs_disjoint := e1.sccs_disjoint
 else
   have disjoint_s2_s3: ∀ x, x ∈ s -> x ∈ e.stack -> False := by
     intros y h₁ h₂
-    have h := e1.simplelist_stack y
     obtain ⟨h₇, _⟩ := h₇
+    have h := e1.simplelist_stack
+    unfold List.Nodup at h
     rw [<- h₇] at h
-    simp [num_occ] at h
-    rw [mem_num_occ] at *
-    split at h
-    all_goals omega
+    rw [List.pairwise_append] at h
+    obtain ⟨_, _, h⟩ := h
+    apply h y (by tauto) y (by tauto) rfl
   {
     n := (DirectedGraph.vertices graph: List V).length
     e' := {
@@ -360,17 +362,22 @@ else
                             have h : (y = x \/ y ∈ s) \/ (¬ (y = x \/ y ∈ s)) := by tauto
                             cases h <;> constructor
                             any_goals simp_all
-                            . use (Insert.insert x (toFinset s))
+                            . intros _
+                              use (Insert.insert x (toFinset s))
                               simp
                               tauto
-                            . intros cc _ _
+                            . intros cc _ h _ _
+                              use cc
+                              cases h
+                              all_goals tauto
+                            . intros cc hy h
                               use cc
                               tauto
                             . intros cc hy h
                               cases h with
-                              | inl h => subst cc
-                                         simp at hy
-                                         tauto
+                              | inl h =>  subst cc
+                                          simp at hy
+                                          tauto
                               | inr h => tauto
             valid_gray  := e.valid_gray
             valid_black := by intros _ h
@@ -401,44 +408,48 @@ else
                                     rw [← p₁.eq_gray] at h
                                     simp [add_stack_incr] at h
                                     tauto
-            stack_finset := by obtain ⟨h₇, _⟩ := h₇
-                               rw [tepid e1, ← h₇, ← p₁.eq_gray]
-                               simp [add_stack_incr]
-                               rw [pertinent (Insert.insert x (toFinset s))]
-                               simp
-                               intros y
-                               rw [e.stack_finset]
-                               simp
-                               constructor <;> intros h <;> cases h
-                               any_goals tauto
-                               right
-                               rename_i h
-                               obtain ⟨h₂, h₃⟩:= h
-                               repeat any_goals apply And.intro
-                               . right
-                                 constructor
-                                 . right
-                                   tauto
-                                 . intros h
-                                   cases h
-                                   . subst y; tauto
-                                   . have hg : {y} ≤ e.gray := by simp; assumption
-                                     have hb : {y} ≤ e.black := by simp; assumption
-                                     have h := e.disjoint_gb hg hb
-                                     simp at h
-                               . intros h
-                                 cases h with
-                                 | inl h => subst y; tauto
-                                 | inr h =>
-                                cases (stack_or_scc y (by tauto)) with
-                                | inl h₁ => cases h with
-                                            | inl h => apply disjoint_s2_s3 <;> assumption
-                                            | inr h => rw [union_helper, ← e1.num_infty] at h
-                                                       have h₁ : y ∈ e1.stack := by rw [← h₇]; simp; tauto
-                                                       rw [← stack_num] at h₁
-                                                       omega
-                                | inr h₁ => rw [← union_helper] at h₁
-                                            tauto
+            stack_finset := by  obtain ⟨h₇, _⟩ := h₇
+                                rw [tepid e1, ← h₇, ← p₁.eq_gray]
+                                simp [add_stack_incr]
+                                rw [pertinent (Insert.insert x (toFinset s))]
+                                simp
+                                intros y
+                                rw [e.stack_finset]
+                                simp
+                                constructor <;> intros h <;> cases h
+                                any_goals tauto
+                                right
+                                rename_i h
+                                obtain ⟨h₂, h₃⟩:= h
+                                repeat any_goals apply And.intro
+                                . right
+                                  repeat any_goals apply And.intro
+                                  . right
+                                    tauto
+                                  . intros _
+                                    subst y
+                                    tauto
+                                  . intros _
+                                    have hg : {y} ≤ e.gray := by simp; assumption
+                                    have hb : {y} ≤ e.black := by simp; assumption
+                                    have h := e.disjoint_gb hg hb
+                                    simp at h
+                                . intros _
+                                  subst y
+                                  tauto
+                                . intros _
+                                  apply disjoint_s2_s3 y
+                                  . assumption
+                                  . rw [e.stack_finset]
+                                    simp_all
+                                . cases (stack_or_scc y (by tauto)) with
+                                  | inl h₁ => have h₁ : y ∈ e1.stack := by rw [← h₇]; simp; tauto
+                                              intros h
+                                              rw [union_helper, ← e1.num_infty] at h
+                                              rw [← stack_num] at h₁
+                                              omega
+                                  | inr h₁ => rw [← union_helper] at h₁
+                                              tauto
             simplelist_stack := e.simplelist_stack
             decreasing_stack := by have h := e.decreasing_stack
                                    simp [Sorted] at h
@@ -447,25 +458,25 @@ else
                                    . exact h
                                    . intros a b sa sb
                                      obtain ⟨h₇, _⟩ := h₇
-                                     have ha := e1.simplelist_stack a
-                                     have hb := e1.simplelist_stack b
-                                     rw [<- h₇] at ha hb
-                                     simp [num_occ] at ha hb
+                                     have ha := e1.simplelist_stack
+                                     unfold List.Nodup at ha
+                                     rw [<- h₇] at ha
+                                     rw [List.pairwise_append] at ha
+                                     obtain ⟨g₁, g₂, g₃⟩ := ha
                                      split <;> split
-                                     any_goals rw [mem_num_occ] at *
                                      any_goals rename_i h₁ h₂
                                      any_goals cases h₁
                                      any_goals cases h₂
-                                     any_goals split at ha
-                                     any_goals split at hb
                                      any_goals subst a
                                      any_goals subst b
                                      any_goals tauto
-                                     any_goals omega
-                                     rw [← mem_num_occ] at *
                                      rw [← p₁.stack_num, ← p₁.stack_num]
                                      all_goals simp [add_stack_incr]
                                      any_goals split
+                                     any_goals split
+                                     any_goals subst a
+                                     any_goals subst b
+                                     any_goals omega
                                      all_goals tauto
             wf_stack₂ := by simp
                             intros a sa b sb h
@@ -654,8 +665,7 @@ else
                                                specialize h₁ z x (by assumption) (by apply h₂; simp)
                                                obtain ⟨h₁, h₂⟩ := h₁
                                                cases h₂ with
-                                               | inl h₂ => apply h
-                                                           obtain ⟨l, h₂⟩ := h₂
+                                               | inl h₂ => obtain ⟨l, h₂⟩ := h₂
                                                            specialize h₃ z l x (by tauto) (by assumption) (by assumption)
                                                            simp at h₃
                                                            tauto
@@ -768,14 +778,17 @@ else
                             any_goals tauto
                             all_goals rename_i h₁
                             obtain ⟨h₇, _⟩ := h₇
-                            have h := e1.simplelist_stack y
+                            have h := e1.simplelist_stack
+                            unfold List.Nodup at h
                             rw [<- h₇] at h
-                            simp [num_occ] at h
+                            rw [List.pairwise_append] at h
+                            obtain ⟨h₂, h₃, h₄⟩ := h
                             cases h₁
-                            all_goals split at h
-                            any_goals subst y
-                            any_goals rw [mem_num_occ] at *
-                            all_goals omega
+                            . subst x
+                              simp at h₃
+                              tauto
+                            . exfalso
+                              apply h₄ y (by tauto) y (by tauto) rfl
             sub_stack := by simp
           }
     p₃ := by simp
@@ -786,7 +799,8 @@ else
 termination_by (Finset.card (((toFinset (DirectedGraph.vertices graph : List V)) \ (e.gray ∪ e.black)) : Finset V), 0)
 
 
-def dfs [DirectedGraph V Graph]
+def dfs {V Graph: Type*}
+        [DirectedGraph V Graph]
         [BEq V] [LawfulBEq V] [DecidableEq V]
         (graph : Graph) (roots: List V) (e : Env V graph)
         (a₁ : roots ⊆ DirectedGraph.vertices graph)

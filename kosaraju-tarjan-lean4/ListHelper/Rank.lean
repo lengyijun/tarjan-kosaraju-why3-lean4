@@ -1,6 +1,8 @@
-import Std.Data.List.Basic
-import Std.Data.List.Lemmas
+import Init.Data.List.Basic
+import Init.Data.List.Lemmas
 import Mathlib.Tactic.Tauto
+
+variable {α : Type*}
 
 def rank [BEq α] [LawfulBEq α] (x : α) (s : List α) (max_int : Nat) : Nat :=
   match s with

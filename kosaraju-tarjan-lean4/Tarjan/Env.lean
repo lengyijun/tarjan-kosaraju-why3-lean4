@@ -6,7 +6,6 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.List.Sort
 
-open Finset
 open Finset List
 
 structure Env (V : Type*) {Graph : Type*}
@@ -27,7 +26,7 @@ where
   disjoint_gb : Disjoint gray black
   color : no_black_to_white graph black gray
   stack_finset : ∀ x, x ∈ stack ↔ x ∈ (gray ∪ (black \ sccs.foldl Union.union ∅))
-  simplelist_stack : simplelist stack
+  simplelist_stack : List.Nodup stack
   decreasing_stack : List.Sorted (fun x y => num x ≥ num y) stack
   -- ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y ↔ precedes y x stack
   wf_stack₂ : ∀ x ∈ stack, ∀ y ∈ stack, num x ≤ num y → reachable graph x y
@@ -47,7 +46,8 @@ where
   stack_num : ∀ x ∈ e.stack, e.num x = e'.num x
   sub_stack : ∃ s, e'.stack = s ++ e.stack /\ ∀ x ∈ s, x ∈ e'.black
 
-def subenv_trans [DirectedGraph V Graph]
+def subenv_trans {V Graph: Type*}
+                 [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
                  {graph : Graph}
                  {e1 e2 e3: Env V graph}
@@ -77,13 +77,15 @@ def subenv_trans [DirectedGraph V Graph]
 }
 
 
-def num_of_reachable [DirectedGraph V Graph]
+def num_of_reachable {V Graph: Type*}
+                     [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      {graph : Graph}
                      (n: Int) (x: V) (e: Env V graph) : Prop :=
 ∃ y ∈ e.stack, n = e.num y /\ reachable graph x y
 
 theorem subenv_num_of_reachable
+          {V Graph: Type*}
           [DirectedGraph V Graph]
           [BEq V] [LawfulBEq V] [DecidableEq V]
           {graph : Graph}
@@ -98,7 +100,8 @@ use x
 obtain ⟨_, _, _, h, ⟨s, h₂⟩⟩ := h
 simp_all
 
-theorem stack_or_scc [DirectedGraph V Graph]
+theorem stack_or_scc {V Graph: Type*}
+                     [DirectedGraph V Graph]
                      [BEq V] [LawfulBEq V] [DecidableEq V]
                      {graph : Graph}
                      {e : Env V graph}
@@ -116,12 +119,13 @@ cases h₂
   simp
   tauto
 
-theorem gray_le_stack [DirectedGraph V Graph]
-                     [BEq V] [LawfulBEq V] [DecidableEq V]
-                     {graph : Graph}
-                     {e : Env V graph}
-                     {x : V}
-                     (h₁ : x ∈ e.gray) : x ∈ e.stack := by
+theorem gray_le_stack {V Graph: Type*}
+                      [DirectedGraph V Graph]
+                      [BEq V] [LawfulBEq V] [DecidableEq V]
+                      {graph : Graph}
+                      {e : Env V graph}
+                      {x : V}
+                      (h₁ : x ∈ e.gray) : x ∈ e.stack := by
 cases (stack_or_scc x (by tauto)) with
 | inl h => tauto
 | inr h => obtain ⟨cc, h, h₁⟩ := h
@@ -133,7 +137,8 @@ cases (stack_or_scc x (by tauto)) with
            have h := e.disjoint_gb hg hb
            simp at h
 
-theorem barrel [DirectedGraph V Graph]
+theorem barrel {V Graph: Type*}
+               [DirectedGraph V Graph]
                [BEq V] [LawfulBEq V] [DecidableEq V]
                {graph : Graph}
                {e : Env V graph} :
@@ -144,7 +149,8 @@ cases h₁
 . apply e.valid_gray; assumption
 . apply e.valid_black; assumption
 
-theorem croissant [DirectedGraph V Graph]
+theorem croissant {V Graph: Type*}
+              [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
               {graph : Graph}
               (e : Env V graph) :
@@ -154,7 +160,8 @@ apply List.subperm_of_subset
 . apply Finset.nodup_toList
 . apply barrel
 
-theorem shrewd [DirectedGraph V Graph]
+theorem shrewd {V Graph: Type*}
+              [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
               {graph : Graph}
               (e : Env V graph) :
@@ -186,7 +193,8 @@ apply Subset.antisymm
              rw [e.sccs_in_black] at h
              tauto
 
-theorem stature [DirectedGraph V Graph]
+theorem stature {V Graph: Type*}
+              [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
               {graph : Graph}
               (e : Env V graph) :
@@ -195,7 +203,8 @@ have h := shrewd e
 simp at h
 tauto
 
-theorem tepid [DirectedGraph V Graph]
+theorem tepid {V Graph: Type*}
+              [DirectedGraph V Graph]
               [BEq V] [LawfulBEq V] [DecidableEq V]
               {graph : Graph}
               (e : Env V graph) :
@@ -203,7 +212,8 @@ e.black = (toFinset e.stack ⊔ e.sccs.foldl Union.union ∅) \ e.gray := by
 rw [← shrewd, Disjoint.sup_sdiff_cancel_left]
 exact e.disjoint_gb
 
-theorem sn_bound [DirectedGraph V Graph]
+theorem sn_bound {V Graph: Type*}
+                 [DirectedGraph V Graph]
                  [BEq V] [LawfulBEq V] [DecidableEq V]
                  {graph : Graph}
                  (e : Env V graph) :
@@ -213,20 +223,22 @@ simp at h₁
 rw [Finset.card_union_of_disjoint e.disjoint_gb] at h₁
 omega
 
-theorem num_bound [DirectedGraph V Graph]
-                    [BEq V] [LawfulBEq V] [DecidableEq V]
-                    {graph : Graph}
-                    (e : Env V graph)
-                    {x : V} :
+theorem num_bound {V Graph: Type*}
+                  [DirectedGraph V Graph]
+                  [BEq V] [LawfulBEq V] [DecidableEq V]
+                  {graph : Graph}
+                  (e : Env V graph)
+                  {x : V} :
 e.num x ≤ (DirectedGraph.vertices graph: List V).length := by
 have := sn_bound e
 cases (e.num_clamp x) <;> omega
 
-theorem stack_num [DirectedGraph V Graph]
-                 [BEq V] [LawfulBEq V] [DecidableEq V]
-                 {graph : Graph}
-                 (e : Env V graph)
-                 (x : V) :
+theorem stack_num {V Graph: Type*}
+                  [DirectedGraph V Graph]
+                  [BEq V] [LawfulBEq V] [DecidableEq V]
+                  {graph : Graph}
+                  (e : Env V graph)
+                  (x : V) :
 (¬ e.num x = -1) /\ (¬ e.num x = (DirectedGraph.vertices graph: List V).length) ↔ x ∈ e.stack := by
 rw [e.stack_finset]
 simp
@@ -250,7 +262,8 @@ constructor
       simp at h
   | inr _ => tauto
 
-def add_stack_incr [DirectedGraph V Graph]
+def add_stack_incr {V Graph: Type*}
+                   [DirectedGraph V Graph]
                    [BEq V] [LawfulBEq V] [DecidableEq V]
                    {graph : Graph}
                    (e : Env V graph)
@@ -322,22 +335,19 @@ def add_stack_incr [DirectedGraph V Graph]
                      simp
                      rw [e.stack_finset]
                      simp
-  simplelist_stack := by rw [simplelist_tl]
+  simplelist_stack := by rw [List.nodup_cons]
                          constructor
-                         . exact e.simplelist_stack
                          . intros h
                            rw [e.stack_finset] at h
                            simp at h
                            tauto
+                         . exact e.simplelist_stack
   decreasing_stack := by
                   simp
                   repeat any_goals apply And.intro
                   all_goals intros
                   any_goals split
                   any_goals subst x
-                  repeat any_goals apply And.intro
-                  any_goals intros
-                  repeat any_goals apply And.intro
                   any_goals omega
                   all_goals rename_i y h₂ h₃
                   . have := e.num_clamp y
